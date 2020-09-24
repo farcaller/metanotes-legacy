@@ -1,0 +1,37 @@
+{
+  "folders": [
+    {
+      "name": "web",
+      "path": "./packages/metanotes-web"
+    },
+    {
+      "name": "mobile",
+      "path": "./packages/metanotes-mobile"
+    },
+    {
+      "name": "remark-metareact",
+      "path": "./packages/remark-metareact"
+    },
+    {
+      "name": "metanotes-filter",
+      "path": "./packages/metanotes-filter"
+    },
+    {
+      "name": "metanotes-store",
+      "path": "./packages/metanotes-store"
+    },
+    {
+      "name": "metanotes-server",
+      "path": "./packages/metanotes-server"
+    },
+    {
+      "name": "-- root --",
+      "path": "."
+    }
+  ],
+
+  "settings": {
+    "jest.pathToJest": "yarn test",
+    "jest.disabledWorkspaceFolders": ["-- root --", "metanotes-server", "mobile"],
+  },
+}

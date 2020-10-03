@@ -12,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { CssBaseline } from '@material-ui/core';
-import { Switch, Route } from 'react-router-dom';
-
-import SpreadItems from '../Spread/SpreadItems';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { red } from '@material-ui/core/colors';
 
 
-/**
- * Root component for the application.
- */
-function App() {
-  return <>
-    <CssBaseline />
-    <Switch>
-      <Route exact path="/spread/:ids">
-        <SpreadItems />
-      </Route>
-    </Switch>
-  </>;
-}
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#556cd6',
+    },
+    secondary: {
+      main: '#19857b',
+    },
+    error: {
+      main: red.A400,
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+});
 
-export default React.memo(App);
+export default theme;

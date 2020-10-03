@@ -14,15 +14,16 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 
-import sheetsReducer from './features/sheets/sheetsSlice';
+import sheetsReducer, { SheetsSliceType } from './features/sheets/sheetsSlice';
 
-const store = configureStore({
+const store = (preloadedState: { sheets: SheetsSliceType } | undefined) => configureStore({
   reducer: {
     sheets: sheetsReducer,
-  }
+  },
+  preloadedState,
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = { sheets: SheetsSliceType }; //ReturnType<typeof store.getState>;
 
 export default store;
 

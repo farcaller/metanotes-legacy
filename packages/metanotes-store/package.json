@@ -17,8 +17,9 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
+    "@metanotes/filter": "0.1.0",
     "@reduxjs/toolkit": "^1.4.0",
-    "@metanotes/filter": "0.1.0"
+    "cross-fetch": "^3.0.6"
   },
   "nodemonConfig": {
     "ignore": [

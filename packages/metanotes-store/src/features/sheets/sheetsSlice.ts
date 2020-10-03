@@ -13,9 +13,10 @@
 // limitations under the License.
 
 import { createAsyncThunk, createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../';
+import fetch from 'cross-fetch';
 
 import run from '@metanotes/filter';
+import { RootState } from '../../';
 
 
 export interface SheetDocument {
@@ -42,6 +43,8 @@ const initialState = sheetsAdapter.getInitialState({
   status: 'idle',
   error: null,
 } as SheetsState);
+
+export type SheetsSliceType = typeof initialState;
 
 export const fetchSheets = createAsyncThunk('sheets/fetchSheets', async () => {
   const resp = await fetch('http://localhost:8080/all', { method: 'post' });

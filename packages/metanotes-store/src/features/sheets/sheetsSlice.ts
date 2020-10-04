@@ -13,10 +13,10 @@
 // limitations under the License.
 
 import { createAsyncThunk, createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
-import fetch from 'cross-fetch';
 
 import run from '@metanotes/filter';
 import { RootState } from '../../';
+import { BackendAPI } from '../../api';
 
 
 export interface SheetDocument {
@@ -46,13 +46,8 @@ const initialState = sheetsAdapter.getInitialState({
 
 export type SheetsSliceType = typeof initialState;
 
-export const fetchSheets = createAsyncThunk('sheets/fetchSheets', async () => {
-  const resp = await fetch('http://localhost:8080/all', { method: 'post' });
-  // TODO: strict api schema
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const json = await resp.json();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return json;
+export const fetchSheets = createAsyncThunk<SheetDocument[], void, {extra: BackendAPI}>('sheets/fetchSheets', async (_, { extra }) => {
+  return await extra.getAllSheets();
 });
 
 const sheetsSlice = createSlice({

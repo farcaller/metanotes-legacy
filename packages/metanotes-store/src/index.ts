@@ -12,19 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 
+import { BackendAPI } from './api';
 import sheetsReducer, { SheetsSliceType } from './features/sheets/sheetsSlice';
 
-const store = (preloadedState: { sheets: SheetsSliceType } | undefined) => configureStore({
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const store = (preloadedState: { sheets: SheetsSliceType } | undefined, api: BackendAPI) => configureStore({
   reducer: {
     sheets: sheetsReducer,
   },
   preloadedState,
+  middleware: getDefaultMiddleware({
+    thunk: {
+      extraArgument: api,
+    }
+  }),
 });
 
-export type RootState = { sheets: SheetsSliceType }; //ReturnType<typeof store.getState>;
+export type RootState = { sheets: SheetsSliceType };
 
 export default store;
 
 export { selectAllSheets, fetchSheets, selectSheetByTitle, selectSheetById, setSheet, SheetDocument, selectSheetsByFilter, selectSheetsByIDs } from './features/sheets/sheetsSlice';
+
+export { createBackend, BackendConfig } from './api';

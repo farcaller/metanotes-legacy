@@ -14,23 +14,36 @@ class TouchBuildPlugin {
   }
 }
 
-module.exports = function override(config, env) {
-  config.entry = path.resolve('src/index-ssr.tsx');
-  config.target = 'node';
-  config.output.path = path.resolve('build-ssr');
-  config.output.filename = 'index-ssr.js';
-  config.output.chunkFilename = 'static/js/[name].chunk.js';
-  delete config.optimization.splitChunks.chunks;
-  config.optimization.runtimeChunk = false;
+const backendConfig = require(process.env.BACKEND_CONFIG);
 
-  config.plugins.push(new webpack.optimize.LimitChunkCountPlugin({
-    maxChunks: 1,
-  }));
-  config.plugins.push(new TouchBuildPlugin());
-  config.plugins.push(new webpack.DefinePlugin({
-    BUILD_DIR: JSON.stringify(path.resolve('build')),
-    INDEX_TEMPLATE: JSON.stringify(path.resolve('build/index.html')),
-  }));
+if (process.env.BUILD_MODE === 'ssr') {
+  module.exports = function override(config, env) {
+    config.entry = path.resolve('src-ssr/index-ssr.tsx');
+    config.target = 'node';
+    config.output.path = path.resolve('build-ssr');
+    config.output.filename = 'index-ssr.js';
+    config.output.chunkFilename = 'static/js/[name].chunk.js';
+    delete config.optimization.splitChunks.chunks;
+    config.optimization.runtimeChunk = false;
 
-  return config;
+    config.plugins.push(new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    }));
+    config.plugins.push(new TouchBuildPlugin());
+    config.plugins.push(new webpack.DefinePlugin({
+      BUILD_DIR: JSON.stringify(path.resolve('build')),
+      INDEX_TEMPLATE: JSON.stringify(path.resolve('build/index.html')),
+      BACKEND_CONFIG: JSON.stringify(backendConfig),
+    }));
+
+    return config;
+  }
+} else {
+  module.exports = function override(config, env) {
+    config.plugins.push(new webpack.DefinePlugin({
+      BACKEND_CONFIG: JSON.stringify(backendConfig),
+    }));
+
+    return config;
+  }
 }

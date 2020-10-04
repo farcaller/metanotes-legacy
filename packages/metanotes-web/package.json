@@ -4,11 +4,11 @@
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:ssr": "react-app-rewired build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "build:ssr": "env BUILD_MODE=ssr react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "lint": "eslint src/**/*.ts{,x}"
   },
   "eslintConfig": {
@@ -69,7 +69,8 @@
     "eslint-plugin-tsdoc": "^0.2.7",
     "eslint-plugin-unicorn": "^21.0.0",
     "prettier": "^2.1.1",
-    "react-app-rewired": "^2.1.6"
+    "react-app-rewired": "^2.1.6",
+    "source-map-support": "^0.5.19"
   },
   "resolutions": {
     "**/@typescript-eslint/parser": "^4.1.1",

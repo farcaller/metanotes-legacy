@@ -20,6 +20,7 @@
     "@metanotes/filter": "0.1.0",
     "@octokit/rest": "^18.0.6",
     "@reduxjs/toolkit": "^1.4.0",
+    "buffer": "^5.6.0",
     "cross-fetch": "^3.0.6",
     "markdown-yaml-metadata-parser": "^2.1.1"
   },

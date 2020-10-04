@@ -12,27 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'source-map-support/register';
+
 import path from 'path';
 import fs from 'fs';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import App from './components/App';
+import App from '../src/components/App';
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
-import { createGenerateClassName, ServerStyleSheets, ThemeProvider } from '@material-ui/core';
+import { ServerStyleSheets, ThemeProvider } from '@material-ui/core';
 import { nanoid } from '@reduxjs/toolkit';
 
-import store, { fetchSheets, SheetDocument } from '@metanotes/store';
-import theme from './theme';
+import store, { createBackend, fetchSheets, SheetDocument } from '@metanotes/store';
+import theme from '../src/theme';
 
 
 declare const BUILD_DIR: string;
 declare const INDEX_TEMPLATE: string;
+declare const BACKEND_CONFIG: string;
 
 const rootDiv = `<div id="root"></div>`;
 
-const theStore = store(undefined);
+const api = createBackend(BACKEND_CONFIG);
+
+const theStore = store(undefined, api);
 
 function Main({ loc }: { loc: string }) {
   const ctx = {};

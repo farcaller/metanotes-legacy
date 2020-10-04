@@ -22,7 +22,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 
-import store, { fetchSheets } from '@metanotes/store';
+import store, { createBackend, BackendConfig, fetchSheets } from '@metanotes/store';
 import theme from './theme';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
@@ -30,10 +30,14 @@ const preloadedState = (window as any).__PRELOADED_STATE__;
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
 delete (window as any).__PRELOADED_STATE__;
 
-const theStore = store(preloadedState);
+declare const BACKEND_CONFIG: BackendConfig;
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
+const api = createBackend(BACKEND_CONFIG);
+
+const theStore = store(preloadedState, api);
 
 void theStore.dispatch(fetchSheets());
-console.log(theStore.getState());
 
 function Main() {
   React.useEffect(() => {

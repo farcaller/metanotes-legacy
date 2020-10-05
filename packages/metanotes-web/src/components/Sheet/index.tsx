@@ -43,9 +43,13 @@ const Sheet = React.forwardRef(({ sheet, ...props }: SheetProps, ref) => {
     setEditing(false);
   };
 
+  const onCancelEditing = () => {
+    setEditing(false);
+  };
+
   return (
     <Paper ref={ref} className={classes.sheet} {...props}>
-      {editing ? <EditSheet sheet={sheet} onSave={onSave} /> : <ViewSheet sheet={sheet} onEdit={onEdit} />}
+      {editing ? <EditSheet sheet={sheet} onSave={onSave} onClose={onCancelEditing} /> : <ViewSheet sheet={sheet} onEdit={onEdit} />}
     </Paper>
   );
 });

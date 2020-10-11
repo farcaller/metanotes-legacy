@@ -14,8 +14,11 @@
 
 import React from 'react';
 
-type wikiLinkNavigator = (target: string) => void;
+interface SpreadActions {
+  naviagateToSheet(target: string): void;
+  closeSheet(id: string): void;
+}
 
-const WikiLinkingContext = React.createContext(null as unknown as wikiLinkNavigator);
+const WikiLinkingContext = React.createContext(null as unknown as SpreadActions);
 
 export default WikiLinkingContext;

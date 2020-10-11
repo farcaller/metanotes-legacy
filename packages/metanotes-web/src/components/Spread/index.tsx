@@ -42,23 +42,6 @@ function Spread({ ids }: { ids: string }) {
   }, {} as {[key: string]: React.RefObject<HTMLElement>});
   const sheetElements = sheets.map(sh => <Sheet key={sh._id} sheet={sh} ref={sheetRefs[sh._id]} />);
 
-  const onNavigateLink = (target: string) => {
-    const state = store.getState() as RootState;
-    const targetSheet = selectSheetByTitle(state, target);
-
-    if (!targetSheet) {
-      // TODO: what if nothing was found?
-      return;
-    }
-
-    let path = `/spread/${idsList.join(',')}`;
-    if (!idsList.includes(targetSheet._id)) {
-      path += `,${targetSheet._id}`;
-    }
-    path += `#${targetSheet._id}`;
-    history.push(path);
-  };
-
   useEffect(() => {
     if (loc.hash.length === 0) { return; }
     const id = loc.hash.slice(1);
@@ -70,8 +53,35 @@ function Spread({ ids }: { ids: string }) {
     ref.current.scrollIntoView();
   }, [loc, sheetRefs]);
 
+  const sa = {
+    naviagateToSheet(target: string) {
+      const state = store.getState() as RootState;
+      const targetSheet = selectSheetByTitle(state, target);
+
+      if (!targetSheet) {
+        // TODO: what if nothing was found?
+        return;
+      }
+
+      let path = `/spread/${idsList.join(',')}`;
+      if (!idsList.includes(targetSheet._id)) {
+        path += `,${targetSheet._id}`;
+      }
+      path += `#${targetSheet._id}`;
+      history.push(path);
+    },
+    closeSheet(id: string) {
+      if (!idsList.includes(id)) {
+        return;
+      }
+      const newIds = idsList.filter(e => e !== id);
+      const path = `/spread/${newIds.join(',')}`;
+      history.push(path);
+    },
+  };
+
   return (
-    <WikiLinkingContext.Provider value={onNavigateLink}>
+    <WikiLinkingContext.Provider value={sa}>
       <SearchBar />
 
       <Container maxWidth="md" className={classes.root}>

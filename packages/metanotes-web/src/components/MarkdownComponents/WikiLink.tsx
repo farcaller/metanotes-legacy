@@ -20,10 +20,10 @@ import { WikiLinkProps } from '@metanotes/remark-metareact';
 
 
 function WikiLink({ target }: WikiLinkProps): JSX.Element {
-  const wikiLinkNavigator = useContext(WikiLinkingContext);
+  const spreadActions = useContext(WikiLinkingContext);
   const onClick = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    wikiLinkNavigator(target);
+    spreadActions.naviagateToSheet(target);
   };
 
   return <Link component="button" onClick={onClick}>

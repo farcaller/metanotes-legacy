@@ -14,36 +14,39 @@
 
 import React, { useRef, useState } from 'react';
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
-
-import { Button } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import { Box, Button, IconButton, OutlinedInput } from '@material-ui/core';
 import Editor, { EditorDidMount } from '@monaco-editor/react';
+
 import { SheetDocument } from '@metanotes/store';
 import Markdown from '../Markdown';
 import MarkdownStacktrace from '../Markdown/MarkdownStacktraceContext';
+import useStyles from './styles';
 
 
 interface EditSheetProps {
   sheet: SheetDocument;
-  onSave: (data: string) => void;
+  onSave: (sheet: SheetDocument) => void;
   onClose: () => void;
 }
 
-export const EditSheet = ({ sheet, onSave, onClose }: EditSheetProps): JSX.Element => {
+export const EditSheet = ({ sheet, onSave, onClose }: EditSheetProps): JSX.Element => {  
+  const classes = useStyles();
+  
   const editorRef = useRef(undefined as monacoEditor.editor.IStandaloneCodeEditor|undefined);
 
   const [showPreview, setShowPreview] = useState(false);
   // TODO: we need to settle on wether the sheet always has data
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [previewedText, setPreviewedText] = useState(sheet._data!);
+  const [previewedTitle, setPreviewedTitle] = useState(sheet.title || '');
 
   const handleEditorDidMount: EditorDidMount = (_, editor) => {
     editorRef.current = editor;
 
     editorRef.current.onDidChangeModelContent(() => {
-      if (showPreview) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        setPreviewedText(editorRef.current!.getValue());
-      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      setPreviewedText(editorRef.current!.getValue());
     });
   };
 
@@ -52,7 +55,12 @@ export const EditSheet = ({ sheet, onSave, onClose }: EditSheetProps): JSX.Eleme
       console.error('monaco editor ref is undefined while saving');
       return;
     }
-    onSave(editorRef.current.getValue());
+    const sh = {
+      ...sheet,
+      title: previewedTitle,
+      _data: editorRef.current.getValue(),
+    };
+    onSave(sh);
   };
 
   const onTogglePreview = () => {
@@ -75,21 +83,33 @@ export const EditSheet = ({ sheet, onSave, onClose }: EditSheetProps): JSX.Eleme
     );
   }
 
+  const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // TODO: this triggers a full redraw for the shhet and is crazy slow
+    setPreviewedTitle(event.target.value);
+  };
+
   return <>
-    <Button variant="outlined" onClick={wrapOnSave}>save</Button>
-    <Button variant="outlined" onClick={onClose}>cancel</Button>
-    <Button variant="outlined" onClick={onTogglePreview}>toggle preview</Button>
+    <Box>
+      <Button variant="outlined" onClick={wrapOnSave}>save</Button>
+      <Button variant="outlined" onClick={onClose}>cancel</Button>
+      <Button variant="outlined" onClick={onTogglePreview}>toggle preview</Button>
+    </Box>
 
     {
       showPreview ? previewPane :
-      <Editor
-        height="400px"
-        width={showPreview?'50%':'100%'}
-        language="markdown"
-        value={sheet._data}
-        editorDidMount={handleEditorDidMount}
-        options={{minimap: {enabled: false}}}
-      />
+      <>
+        <div>
+          <OutlinedInput className={classes.title} value={previewedTitle} onChange={onTitleChange} label="Title" />
+        </div>
+        <Editor
+          height="400px"
+          width={showPreview?'50%':'100%'}
+          language="markdown"
+          value={previewedText}
+          editorDidMount={handleEditorDidMount}
+          options={{minimap: {enabled: false}, wordWrap: 'on'}}
+        />
+      </>
     }
   </>;
 };

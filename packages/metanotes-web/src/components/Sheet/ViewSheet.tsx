@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { Button } from '@material-ui/core';
+import { Box, Button, IconButton } from '@material-ui/core';
 import { parse } from '@metanotes/remark-metareact';
+import CloseIcon from '@material-ui/icons/Close';
 
 import Markdown from '../Markdown';
 import MarkdownStacktrace from '../Markdown/MarkdownStacktraceContext';
 import { SheetDocument } from '@metanotes/store';
+import useStyles from './styles';
+import WikiLinkingContext from '../Markdown/WikiLinkingContext';
 
 
 interface ViewSheetProps {
@@ -28,6 +31,8 @@ interface ViewSheetProps {
 }
 
 const ViewSheet = ({ sheet, onEdit }: ViewSheetProps) => {
+  const classes = useStyles();
+
   const stacktrace = {
     parentHasId: () => false,
     parentId: () => '',
@@ -42,10 +47,23 @@ const ViewSheet = ({ sheet, onEdit }: ViewSheetProps) => {
     console.log(ast);
   };
 
+  const spreadActions = useContext(WikiLinkingContext);
+  const onClose = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    spreadActions.closeSheet(sheet._id);
+  };
+
   return (
     <>
-      <Button variant="outlined" onClick={onEdit}>edit</Button>
-      <Button variant="outlined" onClick={onDumpAST}>dump AST</Button>
+      <Box>
+        <Button variant="outlined" onClick={onEdit}>edit</Button>
+        <Button variant="outlined" onClick={onDumpAST}>dump AST</Button>
+
+        <IconButton className={classes.floatRight} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
+      
       <h2>{sheet.title}</h2>
       <div>
         <MarkdownStacktrace.Provider value={stacktrace}>

@@ -19,6 +19,16 @@ const useStyles = makeStyles({
     padding: 8,
     marginBottom: 16,
   },
+
+  floatRight: {
+    float: 'right',
+  },
+
+  title: {
+    width: '100%',
+    marginTop: '8px',
+    marginBottom: '8px',
+  }
 });
 
 export default useStyles;

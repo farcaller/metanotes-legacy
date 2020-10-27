@@ -16,12 +16,12 @@ import React, { useEffect } from 'react';
 
 import { Container } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector, useStore } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import Sheet from '../Sheet';
 import WikiLinkingContext from '../Markdown/WikiLinkingContext';
 import useStyles from './styles';
-import { RootState, selectSheetByTitle, selectSheetsByIDs } from '@metanotes/store';
+import { createSheet, RootState, selectSheetByTitle, selectSheetsByIDs } from '@metanotes/store';
 import SearchBar from '../SearchBar';
 import Actions from '../Actions';
 
@@ -30,6 +30,7 @@ function Spread({ ids }: { ids: string }) {
   const classes = useStyles();
   const history = useHistory();
   const store = useStore();
+  const dispatch = useDispatch();
 
   // const { ids } = useParams() as { ids: string; };
   const loc = useLocation();
@@ -52,6 +53,15 @@ function Spread({ ids }: { ids: string }) {
     }
     ref.current.scrollIntoView();
   }, [loc, sheetRefs]);
+
+  const onAddSheet = () => {
+    const { payload } = dispatch(createSheet());
+
+    const ids = [payload._id, ...idsList];
+    let path = `/spread/${ids.join(',')}`;
+    path += `#${payload._id}`;
+    history.push(path);
+  };
 
   const sa = {
     naviagateToSheet(target: string) {
@@ -88,7 +98,7 @@ function Spread({ ids }: { ids: string }) {
         {sheetElements}
       </Container>
 
-      <Actions />
+      <Actions onAdd={onAddSheet} />
     </WikiLinkingContext.Provider>
   );
 }

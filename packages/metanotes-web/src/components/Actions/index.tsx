@@ -18,12 +18,18 @@ import AddIcon from '@material-ui/icons/Add';
 import useStyles from './styles';
 
 
-function Actions() {
+interface ActionsProps {
+  onAdd: () => void;
+}
+
+function Actions({ onAdd }: ActionsProps) {
   const classes = useStyles();
 
-  return <Fab color="primary" aria-label="add" className={classes.fab}>
-    <AddIcon />
-  </Fab>;
+  return (
+    <Fab color="primary" aria-label="add" className={classes.fab} onClick={onAdd}>
+      <AddIcon />
+    </Fab>
+  );
 }
 
 export default React.memo(Actions);

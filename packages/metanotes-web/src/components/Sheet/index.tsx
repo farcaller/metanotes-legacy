@@ -17,7 +17,7 @@ import React, { useCallback, useState } from 'react';
 import { Paper } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 
-import { setSheet, SheetDocument } from '@metanotes/store';
+import { upsertSheet, SheetDocument } from '@metanotes/store';
 import useStyles from './styles';
 import ViewSheet from './ViewSheet';
 import { EditSheet } from './EditSheet';
@@ -29,7 +29,7 @@ interface SheetProps {
 }
 
 const Sheet = React.forwardRef(({ sheet, ...props }: SheetProps, ref) => {
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(sheet.draft === 'true');
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -38,8 +38,11 @@ const Sheet = React.forwardRef(({ sheet, ...props }: SheetProps, ref) => {
     setEditing(true);
   }, []);
 
-  const onSave = (data: string) => {
-    dispatch(setSheet({id: sheet._id, data}));
+  const onSave = (newSheet: SheetDocument) => {
+    if (newSheet.draft) {
+      delete newSheet.draft;
+    };
+    dispatch(upsertSheet(newSheet));
     setEditing(false);
   };
 

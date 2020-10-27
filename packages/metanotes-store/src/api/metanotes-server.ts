@@ -35,4 +35,8 @@ export class MetanotesServerAPI {
     const json = (await resp.json()) as SheetDocument[];
     return json;
   }
+
+  upsertSheet(_sheet: SheetDocument): Promise<SheetDocument> {
+    throw Error('not implemented');
+  }
 }

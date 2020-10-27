@@ -18,6 +18,7 @@ import { MetanotesServerAPI, MetanotesServerConfig } from './metanotes-server';
 
 export interface BackendAPI {
   getAllSheets(): Promise<SheetDocument[]>;
+  upsertSheet(sheet: SheetDocument): Promise<SheetDocument>;
 }
 
 export interface BackendConfig {

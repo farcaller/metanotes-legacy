@@ -34,6 +34,6 @@ export type RootState = { sheets: SheetsSliceType };
 
 export default store;
 
-export { selectAllSheets, fetchSheets, selectSheetByTitle, selectSheetById, setSheet, SheetDocument, selectSheetsByFilter, selectSheetsByIDs } from './features/sheets/sheetsSlice';
+export { selectAllSheets, fetchSheets, selectSheetByTitle, selectSheetById, upsertSheet, SheetDocument, selectSheetsByFilter, selectSheetsByIDs, createSheet } from './features/sheets/sheetsSlice';
 
 export { createBackend, BackendConfig } from './api';

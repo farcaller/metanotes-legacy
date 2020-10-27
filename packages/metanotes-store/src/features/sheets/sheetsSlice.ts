@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createAsyncThunk, createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createEntityAdapter, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ulid } from 'ulid';
 
 import run from '@metanotes/filter';
 import { RootState } from '../../';
@@ -50,23 +51,32 @@ export const fetchSheets = createAsyncThunk<SheetDocument[], void, {extra: Backe
   return await extra.getAllSheets();
 });
 
+export const upsertSheet = createAsyncThunk<SheetDocument, SheetDocument, { extra: BackendAPI }>('sheets/upsertSheet', async (payload, { extra }) => {
+  return await extra.upsertSheet(payload);
+});
+
 const sheetsSlice = createSlice({
   name: 'sheets',
   initialState,
   reducers: {
-    setSheet: (store, action): void => {
-      // TODO: this must accept the default params
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const { id, data } = action.payload;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const sh = store.entities[id];
-      if (sh) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        sh._data = data;
-      } else {
-        // TODO: what are we updating again?
+    setSheet(state, action: PayloadAction<SheetDocument>): void {
+      const { payload } = action;
+      sheetsAdapter.upsertOne(state, payload);
+    },
+    createSheet: {
+      reducer(state, action: PayloadAction<SheetDocument>): void {
+        const { payload } = action;
+        sheetsAdapter.addOne(state, payload);
+      },
+      prepare(): { payload: SheetDocument } {
+        return {
+          payload: {
+            _id: ulid(),
+            draft: 'true',
+          }
+        };
       }
-    }
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchSheets.pending, (state) => {
@@ -81,10 +91,23 @@ const sheetsSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message ? action.error.message : null;
     });
+
+    builder.addCase(upsertSheet.pending, (state) => {
+      state.status = 'loading';
+    });
+    builder.addCase(upsertSheet.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.error = null;
+      sheetsAdapter.upsertOne(state, action.payload);
+    });
+    builder.addCase(upsertSheet.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message ? action.error.message : null;
+    });
   },
 });
 
-export const { setSheet } = sheetsSlice.actions;
+export const { setSheet, createSheet } = sheetsSlice.actions;
 
 export const {
   selectAll: selectAllSheets,

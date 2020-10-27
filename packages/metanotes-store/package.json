@@ -13,16 +13,20 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",
     "@types/jest": "^26.0.13",
+    "@types/js-yaml": "^3.12.5",
     "jest": "^26.4.2",
     "typescript": "^4.0.2"
   },
   "dependencies": {
     "@metanotes/filter": "0.1.0",
+    "@octokit/auth-token": "^2.4.2",
     "@octokit/rest": "^18.0.6",
     "@reduxjs/toolkit": "^1.4.0",
     "buffer": "^5.6.0",
     "cross-fetch": "^3.0.6",
-    "markdown-yaml-metadata-parser": "^2.1.1"
+    "js-yaml": "^3.14.0",
+    "markdown-yaml-metadata-parser": "^2.1.1",
+    "ulid": "^2.3.0"
   },
   "nodemonConfig": {
     "ignore": [

@@ -15,7 +15,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { createSyntaxDiagramsCode } from 'chevrotain';
-import parser from './parser';
+import parser from '../src/parser';
 
 const serializedGrammar = parser.getSerializedGastProductions();
 const htmlText = createSyntaxDiagramsCode(serializedGrammar);

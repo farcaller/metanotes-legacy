@@ -17,5 +17,5 @@
 
 export default function tagged(input: any[], args: string[]): any[] {
   const tag = args[0];
-  return input.filter(sheet => sheet.tags && (sheet.tags as string[]).indexOf(tag) !== -1);
+  return input.filter(sheet => sheet.tags && (sheet.tags as string[]).includes(tag));
 }

@@ -16,19 +16,6 @@ import unified from 'unified';
 import * as ast from 'ts-mdast';
 
 
-export default function(this: unified.Processor): void {
-  const parser = this.Parser;
-
-  attachParser(parser);
-}
-
-function attachParser(parser: unified.ParserConstructor | unified.ParserFunction) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  parser.prototype.inlineTokenizers.wikiLink = wikiLink;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-  parser.prototype.inlineMethods.splice(parser.prototype.inlineMethods.indexOf('reference'), 0, 'wikiLink');
-}
-
 const linkRe = /^\[\[((?:[^\]]|\](?!\]))*)\]\]/;
 
 export interface WikiLinkAst extends ast.Node {
@@ -55,3 +42,16 @@ function wikiLink(eat: (subvalue: string) => (node: unknown, parent?: unknown) =
 wikiLink.locator = (value: string, fromIndex: number) => {
   return value.indexOf('[', fromIndex);
 };
+
+function attachParser(parser: unified.ParserConstructor | unified.ParserFunction) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  parser.prototype.inlineTokenizers.wikiLink = wikiLink;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+  parser.prototype.inlineMethods.splice(parser.prototype.inlineMethods.indexOf('reference'), 0, 'wikiLink');
+}
+
+export default function (this: unified.Processor): void {
+  const parser = this.Parser;
+
+  attachParser(parser);
+}

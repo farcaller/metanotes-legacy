@@ -35,95 +35,11 @@ export interface ChildrenOptions {
   loose?: boolean;
 }
 
-function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenOptions?: ChildrenOptions): JSX.Element|undefined {
-  if (ast.isRoot(node)) {
-    return emitRoot(node, options);
-  }
-
-  const { components } = options;
-
-  // TopLevelContent = BlockContent | FrontmatterContent | DefinitionContent
-
-  // BlockContent = Paragraph | Heading | ThematicBreak | Blockquote | List | Table | HTML | Code
-  if (ast.isParagraph(node)) {
-    // TODO: transform several text elements in a paragraph so that they are nested (this repalaces divs with spans)
-    return emitSimpleComponent(node, components.paragraph, options);
-  }
-  if (ast.isHeading(node)) {
-    return emitHeading(node, options);
-  }
-  if (ast.isThematicBreak(node)) {
-    // nb: ast.ThematicBreak doesn't have children, but emitChildren can handle the undefined input.
-    return emitSimpleComponent(node as ast.Parent, components.thematicBreak, options);
-  }
-  if (ast.isBlockquote(node)) {
-    return emitSimpleComponent(node, components.blockquote, options);
-  }
-  if (ast.isList(node)) {
-    return emitList(node, options);
-  }
-  if (ast.isTable(node)) {
-    return emitTable(node, options);
-  }
-
-  if (ast.isListItem(node)) {
-    return emitListItem(node, options, parent as ast.List, childrenOptions);
-  }
-  if (ast.isTableRow(node)) {
-    return emitSimpleComponent(node, components.tableRow, options);
-  }
-  if (ast.isTableCell(node)) {
-    return emitSimpleComponent(node, components.tableCell, options);
-  }
-  // nb: html parser is disabled in index.ts
-  if (ast.isCode(node)) {
-    return emitCode(node, options);
-  }
-
-  // PhrasingContent = StaticPhrasingContent | Link | LinkReference
-
-  // StaticPhrasingContent = Text | Emphasis | Strong | Delete | HTML | InlineCode | Break | Image | ImageReference | Footnote | FootnoteReference
-  if (ast.isText(node)) {
-    return emitText(node, options);
-  }
-  if (ast.isEmphasis(node)) {
-    return emitSimpleComponent(node, components.emphasis, options);
-  }
-  if (ast.isStrong(node)) {
-    return emitSimpleComponent(node, components.strong, options);
-  }
-  if (ast.isDelete(node)) {
-    return emitSimpleComponent(node, components.delete, options);
-  }
-  if (ast.isInlineCode(node)) {
-    return emitInlineCode(node, options);
-  }
-  if (ast.isBreak(node)) {
-    return emitSimpleComponentNoChildren(node, components.break);
-  }
-  if (ast.isImage(node)) {
-    return emitImage(node, options);
-  }
-
-  if (ast.isLink(node)) {
-    return emitLink(node, options);
-  }
-
-  if (isInlineTag(node)) {
-    return emitMJTag(node, options);
-  }
-  if (isWikiLink(node)) {
-    return emitWikiLink(node, options);
-  }
-
-  console.error(`unhandled node type ${node.type}`, node);
-  return <></>;
-}
-
 function emitChildren(nodes: ast.Content[], options: Options, parent?: ast.Node, childrenOptions?: ChildrenOptions): JSX.Element[] {
   if (!nodes) {
     return [];
   }
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return nodes.map(n => emitNode(n, options, parent, childrenOptions) as JSX.Element);
 }
 
@@ -254,6 +170,91 @@ function emitMJTag(node: InlineTagAst, options: Options): JSX.Element {
 function emitWikiLink(node: WikiLinkAst, options: Options): JSX.Element {
   const { components } = options;
   return React.createElement(components.wikiLink, { target: node.value });
+}
+
+function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenOptions?: ChildrenOptions): JSX.Element | undefined {
+  if (ast.isRoot(node)) {
+    return emitRoot(node, options);
+  }
+
+  const { components } = options;
+
+  // TopLevelContent = BlockContent | FrontmatterContent | DefinitionContent
+
+  // BlockContent = Paragraph | Heading | ThematicBreak | Blockquote | List | Table | HTML | Code
+  if (ast.isParagraph(node)) {
+    // TODO: transform several text elements in a paragraph so that they are nested (this repalaces divs with spans)
+    return emitSimpleComponent(node, components.paragraph, options);
+  }
+  if (ast.isHeading(node)) {
+    return emitHeading(node, options);
+  }
+  if (ast.isThematicBreak(node)) {
+    // nb: ast.ThematicBreak doesn't have children, but emitChildren can handle the undefined input.
+    return emitSimpleComponent(node as ast.Parent, components.thematicBreak, options);
+  }
+  if (ast.isBlockquote(node)) {
+    return emitSimpleComponent(node, components.blockquote, options);
+  }
+  if (ast.isList(node)) {
+    return emitList(node, options);
+  }
+  if (ast.isTable(node)) {
+    return emitTable(node, options);
+  }
+
+  if (ast.isListItem(node)) {
+    return emitListItem(node, options, parent as ast.List, childrenOptions);
+  }
+  if (ast.isTableRow(node)) {
+    return emitSimpleComponent(node, components.tableRow, options);
+  }
+  if (ast.isTableCell(node)) {
+    return emitSimpleComponent(node, components.tableCell, options);
+  }
+  // nb: html parser is disabled in index.ts
+  if (ast.isCode(node)) {
+    return emitCode(node, options);
+  }
+
+  // PhrasingContent = StaticPhrasingContent | Link | LinkReference
+
+  // StaticPhrasingContent = Text | Emphasis | Strong | Delete | HTML | InlineCode | Break | Image | ImageReference | Footnote | FootnoteReference
+  if (ast.isText(node)) {
+    return emitText(node, options);
+  }
+  if (ast.isEmphasis(node)) {
+    return emitSimpleComponent(node, components.emphasis, options);
+  }
+  if (ast.isStrong(node)) {
+    return emitSimpleComponent(node, components.strong, options);
+  }
+  if (ast.isDelete(node)) {
+    return emitSimpleComponent(node, components.delete, options);
+  }
+  if (ast.isInlineCode(node)) {
+    return emitInlineCode(node, options);
+  }
+  if (ast.isBreak(node)) {
+    return emitSimpleComponentNoChildren(node, components.break);
+  }
+  if (ast.isImage(node)) {
+    return emitImage(node, options);
+  }
+
+  if (ast.isLink(node)) {
+    return emitLink(node, options);
+  }
+
+  if (isInlineTag(node)) {
+    return emitMJTag(node, options);
+  }
+  if (isWikiLink(node)) {
+    return emitWikiLink(node, options);
+  }
+
+  console.error(`unhandled node type ${node.type}`, node);
+  return <></>;
 }
 
 export function metaCompiler(this: unified.Processor, options: Options): void {

@@ -16,19 +16,6 @@ import unified from 'unified';
 import * as ast from 'ts-mdast';
 
 
-export default function(this: unified.Processor): void {
-  const parser = this.Parser;
-
-  attachParser(parser);
-}
-
-function attachParser(parser: unified.ParserConstructor | unified.ParserFunction) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  parser.prototype.inlineTokenizers.mjtag = inlineTag;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-  parser.prototype.inlineMethods.unshift('mjtag');
-}
-
 const openTagRe = /^{{(\/)?(\w+)\s*/;
 const closeTagRe = /^(\/)?}}/;
 // https://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes
@@ -73,7 +60,7 @@ function inlineTag(eat: (subvalue: string) => (node: unknown, parent?: unknown) 
     if (paramMatch) {
       index += paramMatch[0].length;
       let paramValue = paramMatch[2];
-      if (paramValue[0] === '"') {
+      if (paramValue.startsWith('"')) {
         paramValue = paramValue.substr(1, paramValue.length-2);
       }
       params[paramMatch[1]] = paramValue;
@@ -100,3 +87,16 @@ function inlineTag(eat: (subvalue: string) => (node: unknown, parent?: unknown) 
 inlineTag.locator = (value: string, fromIndex: number) => {
   return value.indexOf('{', fromIndex);
 };
+
+function attachParser(parser: unified.ParserConstructor | unified.ParserFunction) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  parser.prototype.inlineTokenizers.mjtag = inlineTag;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+  parser.prototype.inlineMethods.unshift('mjtag');
+}
+
+export default function (this: unified.Processor): void {
+  const parser = this.Parser;
+
+  attachParser(parser);
+}

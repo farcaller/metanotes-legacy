@@ -1,24 +1,34 @@
 module.exports = {
   apps : [
+    // build only
     {
-      name: 'web',
-      script: 'yarn workspace metanotes-web start',
-    }, {
-      name: 'mobile',
-      script: 'yarn workspace metanotes-mobile start',
-    }, {
-      name: 'metanotes-server',
-      script: 'yarn workspace metanotes-server start:watch',
-      watch: './packages/metanotes-server/src'
-    }, {
       name: 'remark-metareact',
       script: 'yarn workspace @metanotes/remark-metareact build:watch',
-    }, {
-      name: 'metanotes-filter',
+    },
+    {
+      name: 'filter',
       script: 'yarn workspace @metanotes/filter build:watch',
-    }, {
-      name: 'metanotes-store',
+    },
+    {
+      name: 'store',
       script: 'yarn workspace @metanotes/store build:watch',
-    }
+    },
+    {
+      name: 'server-api',
+      script: 'yarn workspace @metanotes/server-api build:watch',
+    },
+
+    // backend
+    {
+      name: 'server',
+      script: 'yarn workspace metanotes-server start:watch',
+      watch: './packages/metanotes-server/src'
+    },
+    {
+      name: 'server-envoy',
+      script: 'yarn workspace metanotes-server start:envoy',
+      watch: './packages/metanotes-server/envoy-config.yaml'
+    },
+
   ],
 };

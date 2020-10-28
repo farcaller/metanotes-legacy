@@ -1,0 +1,29 @@
+{
+  "name": "@metanotes/server-api",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "build:watch": "nodemon",
+    "build": "grpc_tools_node_protoc -Isrc api.proto --js_out=import_style=commonjs:lib/ --grpc_out=grpc_js:lib/ --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:lib/ && grpc_tools_node_protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --ts_out=lib/ -Isrc src/api.proto"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "grpc-tools": "^1.9.1",
+    "grpc_tools_node_protoc_ts": "^5.0.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "yarn build",
+    "ext": "proto"
+  }
+}

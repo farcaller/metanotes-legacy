@@ -12,25 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { SheetDocument } from '../features/sheets/sheetsSlice';
-import { GithubAPI, GithubConfig } from './github';
+import { Scribble } from '../features/scribbles/scribble';
 import { MetanotesServerAPI, MetanotesServerConfig } from './metanotes-server';
 
-export interface BackendAPI {
-  getAllSheets(): Promise<SheetDocument[]>;
-  upsertSheet(sheet: SheetDocument): Promise<SheetDocument>;
+export interface StorageAPI {
+  getAllMetadata(): Promise<Scribble[]>;
+  getScribble(id: string): Promise<Scribble>;
+  setScribble(scribble: Scribble): Promise<void>;
+  removeScribble(id: string): Promise<void>;
 }
 
-export interface BackendConfig {
+export interface APIConfiguration {
   backend: string;
-  config: MetanotesServerConfig | GithubConfig;
+  config: MetanotesServerConfig | unknown;
 }
 
-export function createBackend(config: BackendConfig): BackendAPI {
+export function createBackend(config: APIConfiguration): StorageAPI {
   switch (config.backend) {
-    case "github":
-      return new GithubAPI(config.config as GithubConfig);
-    case "metanotes-server":
+    case 'metanotes-server':
       return new MetanotesServerAPI(config.config as MetanotesServerConfig);
     default:
       throw Error(`unknown config backend "${config.backend}"`);

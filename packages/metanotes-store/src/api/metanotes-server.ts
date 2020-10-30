@@ -12,31 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import fetch from 'cross-fetch';
+import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
-import { SheetDocument } from '../features/sheets/sheetsSlice';
+import pb from '@metanotes/server-api/lib/api_pb';
+import grpcPb from '@metanotes/server-api/lib/api_grpc_web_pb';
+import { Scribble, fromProto } from '../features/scribbles/scribble';
 
 
 export interface MetanotesServerConfig {
-  baseURL: string;
+  hostname: string;
 }
 
 export class MetanotesServerAPI {
-  private readonly baseURL: string;
+  private readonly client: grpcPb.MetanotesPromiseClient;
 
   constructor(config: MetanotesServerConfig) {
-    this.baseURL = config.baseURL;
+    this.client = new grpcPb.MetanotesPromiseClient(config.hostname);
   }
 
-  async getAllSheets(): Promise<SheetDocument[]> {
-    const resp = await fetch(`${this.baseURL}/all`, { method: 'post' });
-    // TODO: strict api schema
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const json = (await resp.json()) as SheetDocument[];
-    return json;
+  async getAllMetadata(): Promise<Scribble[]> {
+    const rep = await this.client.getAllMetadata(new emptyPb.Empty());
+    return rep.getScribbleList().map(spb => {
+      const s = fromProto(spb, true);
+      s.status = 'syncedMetadataOnly';
+      return s;
+    });
   }
 
-  upsertSheet(_sheet: SheetDocument): Promise<SheetDocument> {
-    throw Error('not implemented');
+  async getScribble(id: string): Promise<Scribble> {
+    const req = new pb.GetScribbleRequest();
+    req.setId(id);
+
+    const rep = await this.client.getScribble(req);
+    const spb = rep.getScribble();
+    if (spb !== undefined) {
+      const s = fromProto(spb, false);
+      return s;
+    }
+    throw Error('scribble not found');
+  }
+
+  setScribble(scribble: Scribble): Promise<void> {
+    throw Error('unimplemented');
+  }
+
+  removeScribble(id: string): Promise<void> {
+    throw Error('unimplemented');
   }
 }

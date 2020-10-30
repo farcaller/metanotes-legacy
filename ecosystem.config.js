@@ -30,5 +30,10 @@ module.exports = {
       watch: './packages/metanotes-server/envoy-config.yaml'
     },
 
+    // apps
+    {
+      name: 'core',
+      script: 'yarn workspace metanotes-core start',
+    },
   ],
 };

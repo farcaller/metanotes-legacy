@@ -20,7 +20,6 @@ package metanotes.api;
 
 message Scribble {
   string id = 1;
-  string content_type = 2;
   string body = 3;
   map<string, string> attributes = 4;
 }

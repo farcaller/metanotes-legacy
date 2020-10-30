@@ -26,7 +26,6 @@ const unlink = util.promisify(fs.unlink);
 
 interface Scribble {
   id: string;
-  contentType: string;
   body?: string;
   attributes: Map<string, string>;
 }
@@ -54,21 +53,22 @@ export class Store {
     const filename = `${id}.md`;
     try {
       const data = await readFile(path.join(this.basePath, filename), { encoding: 'utf8' });
+      const { body, attributes } = parseMarkdown(data);
+      if (!attributes.has('content-type')) {
+        attributes.set('content-type', '"text/markdown"');
+      }
       return {
         id,
-        contentType: 'text/markdown',
-        ...parseMarkdown(data),
+        body,
+        attributes,
       };
     } catch (e) {
       const meta = await readFile(path.join(this.basePath, `${id}.meta`), { encoding: 'utf8' });
       const data = await readFile(path.join(this.basePath, `${id}.data`));
       const attributes = parseMarkdown(meta).attributes;
-      const contentType = attributes.get('content-type');
-      attributes.delete('content-type');
 
       return {
         id,
-        contentType,
         attributes,
         body: data.toString('base64'),
       };
@@ -85,10 +85,13 @@ export class Store {
         case '.md':
           {
             const data = await readFile(path.join(this.basePath, fullName), { encoding: 'utf8' });
+            const { attributes } = parseMarkdown(data);
+            if (!attributes.has('content-type')) {
+              attributes.set('content-type', '"text/markdown"');
+            }
             scribs.push({
               id: name,
-              contentType: 'text/markdown',
-              attributes: parseMarkdown(data).attributes,
+              attributes,
             });
           }
           break;
@@ -97,12 +100,9 @@ export class Store {
             // const content = await readFile(path.join(this.basePath, `${name}.data`));
 
             const data = await readFile(path.join(this.basePath, fullName), { encoding: 'utf8' });
-            const attributes = parseMarkdown(data).attributes;
-            const contentType = attributes.get('content-type');
-            attributes.delete('content-type');
+            const { attributes } = parseMarkdown(data);
             scribs.push({
               id: name,
-              contentType,
               attributes,
             });
           }
@@ -122,7 +122,7 @@ export class Store {
     sc.attributes.forEach((v, k) => {
       attrs[k] = JSON.parse(v) as never;
     }); 
-    if (sc.contentType === 'text/markdown') {
+    if (sc.attributes.get('content-type').startsWith('text/')) {
       let frontmatter;
       if (Object.keys(attrs).length === 0) {
         frontmatter = '---\n---\n';
@@ -132,7 +132,6 @@ export class Store {
       const doc = frontmatter + sc.body;
       await writeFile(path.join(this.basePath, `${sc.id}.md`), doc);
     } else {
-      attrs['content-type'] = sc.contentType as never;
       const frontmatter = '---\n' + safeDump(attrs).trim() + '\n---\n';
       const binaryData = Buffer.from(sc.body, 'base64');
       await writeFile(path.join(this.basePath, `${sc.id}.meta`), frontmatter);

@@ -29,7 +29,6 @@ function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, 
       const sc = new pb.Scribble();
       sc.setBody(s.body);
       sc.setId(s.id);
-      sc.setContentType(s.contentType);
       const amap = sc.getAttributesMap();
       s.attributes.forEach((v, k) => {
         amap.set(k, v);
@@ -52,7 +51,6 @@ function getAllMetadata(store: Store): grpc.handleUnaryCall<google_protobuf_empt
       const scribs = mds.map(s => {
         const sc = new pb.Scribble();
         sc.setId(s.id);
-        sc.setContentType(s.contentType);
         const amap = sc.getAttributesMap();
         s.attributes.forEach((v, k) => {
           amap.set(k, v);
@@ -77,7 +75,6 @@ function setScribble(store: Store): grpc.handleUnaryCall<pb.SetScribbleRequest, 
       sc.getAttributesMap().forEach((v, k) => amap.set(k, v));
       await store.setScribble({
         id: sc.getId(),
-        contentType: sc.getContentType(),
         body: sc.getBody(),
         attributes: amap,
       });

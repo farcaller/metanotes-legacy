@@ -39,8 +39,11 @@ function ScribbleContainer({ scribble }) {
       contentEl = <LinearProgress/>;
       break;
     case 'failed':
-      contentEl = <Alert severity="error">failed to fetch scribble {scribble.id}{
-        scribble.attributes.title ? '(' + scribble.attributes.title + ')' : ''}: <code>{scribble.error}</code></Alert>
+      {
+        const title = scribble.attributes.title ? '(' + scribble.attributes.title + ')' : '';
+        contentEl = <Alert severity="error">failed to fetch scribble {scribble.id}{title}: <code>{scribble.error}</code></Alert>
+      }
+      break;
   }
 
   return contentEl;

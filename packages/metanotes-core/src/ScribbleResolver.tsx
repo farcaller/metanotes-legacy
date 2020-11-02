@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React, { Dispatch, useContext } from 'react';
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/core/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';

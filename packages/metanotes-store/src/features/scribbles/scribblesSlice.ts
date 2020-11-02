@@ -18,7 +18,7 @@ import { ulid } from 'ulid';
 
 import { RootState } from '../..';
 import { StorageAPI } from '../../api';
-import { Scribble } from './scribble';
+import { Attributes, Scribble } from './scribble';
 
 
 export interface ScribblesState {
@@ -28,7 +28,7 @@ export interface ScribblesState {
   scribbles: EntityState<Scribble>;
 }
 
-const scribblesAdapter = createEntityAdapter<Scribble>({
+export const scribblesAdapter = createEntityAdapter<Scribble>({
   selectId: (scribble) => scribble.id,
   sortComparer: (a, b) => a.id.localeCompare(b.id),
 });
@@ -53,7 +53,7 @@ export const removeScribble = createAsyncThunk<Scribble, Scribble, { extra: Stor
   return payload;
 });
 
-function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]) {
+export function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]) {
   for (const sc of scribbles) {
     const title = sc.attributes['title'];
     const id = sc.id;
@@ -181,7 +181,7 @@ export const {
   selectIds: selectScribbleIds
 } = scribblesAdapter.getSelectors((state: RootState) => state.scribbles.scribbles);
 
-const selectScribbles = (state: RootState) => state.scribbles;
+export const selectScribbles = (state: RootState): ScribblesState => state.scribbles;
 const selectTitle = (_: RootState, title: string) => title;
 const selectTitlePrefix = (_: RootState, prefix: string) => prefix;
 

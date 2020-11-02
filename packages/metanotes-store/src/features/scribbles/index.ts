@@ -17,3 +17,4 @@ export * from './ScribbleResolverContext';
 export * from './scribblesSlice';
 export * from './useScribble';
 export * from './loaders';
+export * from './tagging';

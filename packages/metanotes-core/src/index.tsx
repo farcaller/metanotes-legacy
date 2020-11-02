@@ -19,6 +19,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 import store from '@metanotes/store';
 import { createBackend } from '@metanotes/store/lib/api';
@@ -36,13 +37,15 @@ theStore.dispatch(setCoreScribbles(scribbles));
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={theStore}>
-      <ScribbleResolver>
-        <UseScribbleContext.Provider value={{}}>
-          <App />
-        </UseScribbleContext.Provider>
-      </ScribbleResolver>
-    </Provider>
+    <BrowserRouter>
+      <Provider store={theStore}>
+        <ScribbleResolver>
+          <UseScribbleContext.Provider value={{}}>
+            <App />
+          </UseScribbleContext.Provider>
+        </ScribbleResolver>
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

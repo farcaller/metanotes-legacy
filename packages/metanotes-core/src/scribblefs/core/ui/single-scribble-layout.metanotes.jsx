@@ -15,20 +15,31 @@
 /* attributes *
  * id: 01ENT0T2HSX8J88NZ6R1RRC415
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/app
+ * title: $:core/ui/single-scribble-layout
  */
 
-const { useScribble, useSelector, selectScribbleById, useDispatch, fetchScribble } = core;
-const { LinearProgress } = components;
+const { useScribble, useSelector, selectScribbleById } = core;
+const { Grid, Paper, useParams } = components;
 
-function AppScribble() {
-  const dispatch = useDispatch();
-  const scribble = useSelector(state => selectScribbleById(state, '01EHHQDDF415GCT10BF96DZ31F'));
+function SingleScribbleLayout() {
+  const { id } = useParams();
+  
+  const scribble = useSelector(state => selectScribbleById(state, id));
   const ScribbleContainer = useScribble('$:core/ui/scribble-container');
+  const ScribblesList = useScribble('$:core/ui/scribbles-list');
 
   return (
-    <ScribbleContainer scribble={scribble} />
+    <Grid container>
+      <Grid item xs={3}>
+        <Paper>
+          <ScribblesList />
+        </Paper>
+      </Grid>
+      <Grid item xs style={{marginLeft: 8, marginRight: 8}}>
+        <ScribbleContainer scribble={scribble} />
+      </Grid>
+    </Grid>
   )
 }
 
-export default React.memo(AppScribble);
+export default React.memo(SingleScribbleLayout);

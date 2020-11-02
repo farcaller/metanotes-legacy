@@ -13,19 +13,10 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ENXHRRPZH3ECA6AYBQ26D0ZX
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/renderer/text/markdown
+ * id: 01EP2C9311M5M7JQ0789CQ2ESC
+ * content-type: application/json
+ * title: $:core/routes/single-scribble
+ * path: /:id
+ * exact: true
+ * element: $:core/ui/single-scribble-layout
  */
-
-const { Markdown, Paper } = components;
-
-function MarkdownRenderer({ scribble }) {
-  return (
-    <Paper>
-      <Markdown text={scribble.body} />;
-    </Paper>
-  );
-}
-
-export default React.memo(MarkdownRenderer);

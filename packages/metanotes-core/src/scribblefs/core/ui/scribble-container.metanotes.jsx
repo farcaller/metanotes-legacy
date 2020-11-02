@@ -18,8 +18,8 @@
  * title: $:core/ui/scribble-container
  */
 
-const { useScribble, useDispatch, fetchScribble, equals } = core;
-const { LinearProgress, Alert } = components;
+const { useState, useScribble, useDispatch, fetchScribble, equals, useEffect } = core;
+const { LinearProgress, Alert, Card, CardContent, SpeedDial, SpeedDialIcon, SpeedDialAction, CardHeader, icons } = components;
 
 function ScribbleContainer({ scribble }) {
   const dispatch = useDispatch();
@@ -32,7 +32,6 @@ function ScribbleContainer({ scribble }) {
       contentEl = <Renderer scribble={scribble} />;
       break;
     case 'syncedMetadataOnly':
-      dispatch(fetchScribble(scribble));
       contentEl = <LinearProgress />;
       break;
     case 'pullingBody':
@@ -46,7 +45,53 @@ function ScribbleContainer({ scribble }) {
       break;
   }
 
-  return contentEl;
+  // TODO: I don't quite understand the mechanics but having this outside useEffect causes a render loop
+  useEffect(() => {
+    if (scribble.status === 'syncedMetadataOnly') {
+      dispatch(fetchScribble(scribble));
+    }
+  });
+
+  const [actionsOpen, setActionsOpen] = useState(false);
+
+  const onActionsOpen = () => setActionsOpen(true);
+  const onActionsClose = () => setActionsOpen(false);
+
+  return (
+    <Card>
+      <CardHeader
+        action={
+          <SpeedDial
+            ariaLabel="actions"
+            icon={<icons.MoreVertIcon />}
+            direction="left"
+            open={actionsOpen}
+            onOpen={onActionsOpen}
+            onClose={onActionsClose}
+            FabProps={{
+              size: "small",
+              style: { backgroundColor: 'white', color: 'black' },
+            }}
+          >
+            <SpeedDialAction
+              icon={<icons.CloseIcon />}
+              tooltipPlacement="top"
+              tooltipTitle="close"
+            />
+            <SpeedDialAction
+              icon={<icons.EditIcon/>}
+              tooltipPlacement="top"
+              tooltipTitle="edit"
+            />
+          </SpeedDial>
+        }
+        title={scribble.attributes.title}
+      />
+      <CardContent>
+        {contentEl}
+      </CardContent>
+    </Card>
+  )
 }
 
 export default React.memo(ScribbleContainer, (prev, next) => equals(prev.scribble, next.scribble));

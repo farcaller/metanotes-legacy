@@ -14,7 +14,23 @@
 
 import React, { Dispatch } from 'react';
 import Alert from '@material-ui/lab/Alert';
-import { LinearProgress } from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import Typography from '@material-ui/core/Typography';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import EditIcon from '@material-ui/icons/Edit';
+import CloseIcon from '@material-ui/icons/Close';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
@@ -24,6 +40,28 @@ const componentLocals: { [key: string]: unknown } = {
   Markdown,
   LinearProgress,
   Alert,
+  List,
+  ListItem,
+  ListItemText,
+  Grid,
+  Paper,
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  SpeedDial,
+  SpeedDialIcon,
+  SpeedDialAction,
+  
+
+  // TODO: does not belong here
+  useParams,
+  RouterLink,
+  icons: {
+    EditIcon,
+    CloseIcon,
+    MoreVertIcon,
+  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

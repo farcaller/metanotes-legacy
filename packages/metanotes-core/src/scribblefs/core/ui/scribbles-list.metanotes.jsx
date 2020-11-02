@@ -13,19 +13,29 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ENXHRRPZH3ECA6AYBQ26D0ZX
+ * id: 01EP1TBVVNRJBJKB12XBYQ4A49
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/renderer/text/markdown
+ * title: $:core/ui/scribbles-list
  */
 
-const { Markdown, Paper } = components;
+const { selectAllScribbles, useSelector } = core;
+const { List, ListItem, ListItemText, RouterLink } = components;
 
-function MarkdownRenderer({ scribble }) {
-  return (
-    <Paper>
-      <Markdown text={scribble.body} />;
-    </Paper>
-  );
+function ScribblesList({ scribble }) {
+  const scribbles = useSelector(state => selectAllScribbles(state));
+
+  const scribbleItems = scribbles.map(s => {
+    const label = s.attributes.title ? s.attributes.title : `$$${s.id}`;
+    return (
+      <ListItem key={s.id} button component={RouterLink} to={`/${s.id}`}>
+        <ListItemText primary={label} />
+      </ListItem>
+    );
+  });
+
+  return <List dense>
+    {scribbleItems}
+  </List>;
 }
 
-export default React.memo(MarkdownRenderer);
+export default React.memo(ScribblesList);

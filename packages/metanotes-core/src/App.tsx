@@ -14,37 +14,52 @@
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { LinearProgress } from '@material-ui/core';
+import { CssBaseline, LinearProgress } from '@material-ui/core';
 
 import { useTypedSelector } from '@metanotes/store';
-import { useScribble, fetchStoreMetadata } from '@metanotes/store/lib/features/scribbles';
+import { fetchStoreMetadata, Scribble, selectScribblesByTitlePrefix, useScribble } from '@metanotes/store/lib/features/scribbles';
 import { ErrorBoundary } from './ScribbleResolver';
+import { Route, Switch } from 'react-router-dom';
 
 
 function App(): JSX.Element {
   const preloaderStatus = useTypedSelector(state => state.scribbles.status);
 
   const dispatch = useDispatch();
-  let RootEl = useScribble('$:core/app');
+  const routeScribbles = useTypedSelector(state => selectScribblesByTitlePrefix(state, '$:core/routes/'));
+  let rootEl = <LinearProgress />;
 
   switch (preloaderStatus) {
     case 'idle':
       dispatch(fetchStoreMetadata());
-      RootEl = () => <div>loading app core</div>;
       break;
     case 'succeeded':
+      rootEl = (
+        <Switch>
+          {routeScribbles.map(sc => <ScribbleRoute key={sc.id} scribble={sc} />)}
+        </Switch>
+      );
       break;
     default:
       // TODO: what's the generic type for these?
-      RootEl = LinearProgress as unknown as React.FunctionComponent<unknown>;
   }
 
   return (
-    <div className="App">
+    <>
+      <CssBaseline />
       <ErrorBoundary>
-        <RootEl/>
+        {rootEl}
       </ErrorBoundary>
-    </div>
+    </>
+  );
+}
+
+function ScribbleRoute({ scribble }: { scribble: Scribble }) {
+  const RouteEl = useScribble(scribble.attributes['element']);
+  return (
+    <Route exact={scribble.attributes['exact'] === 'exact'} path={scribble.attributes['path']}>
+      <RouteEl />
+    </Route>
   );
 }
 

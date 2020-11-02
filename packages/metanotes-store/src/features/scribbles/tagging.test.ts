@@ -14,7 +14,7 @@
 
 import { RootState } from '../..';
 import { Scribble } from './scribble';
-import { scribblesAdapter, selectScribbleByTitle, updateTitleMapAdd } from './scribblesSlice';
+import { scribblesAdapter, updateTitleMapAdd } from './scribblesSlice';
 import { selectScribblesByTag } from './tagging';
 
 
@@ -108,4 +108,46 @@ test('it puts the scribble with and empty `list-after` last', () => {
   const selection = selectScribblesByTag(state, 'hello');
 
   expect(getIDs(selection)).toEqual(['1', '3', '2']);
+});
+
+test('it puts the scribble before its `list-before`', () => {
+  const state = makeState([
+    makeScribble('5', '5', { tags: 'hello' }),
+    makeScribble('4', '4', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: 'hello', 'list-before': '2' }),
+    makeScribble('2', '2', { tags: 'hello', 'list-before': '' }),
+    makeScribble('1', '1', { tags: 'hello' }),
+  ]);
+
+  const selection = selectScribblesByTag(state, 'hello');
+
+  expect(getIDs(selection)).toEqual(['3', '2', '1', '4', '5']);
+});
+
+test('it puts the scribble after its `list-after`', () => {
+  const state = makeState([
+    makeScribble('5', '5', { tags: 'hello' }),
+    makeScribble('4', '4', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: 'hello', 'list-after': '2' }),
+    makeScribble('2', '2', { tags: 'hello', 'list-before': '' }),
+    makeScribble('1', '1', { tags: 'hello' }),
+  ]);
+
+  const selection = selectScribblesByTag(state, 'hello');
+
+  expect(getIDs(selection)).toEqual(['2', '3', '1', '4', '5']);
+});
+
+test('it puts the scribble after its `list-after` in the very end', () => {
+  const state = makeState([
+    makeScribble('5', '5', { tags: 'hello' }),
+    makeScribble('4', '4', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: 'hello', 'list-after': '2' }),
+    makeScribble('2', '2', { tags: 'hello', 'list-after': '' }),
+    makeScribble('1', '1', { tags: 'hello' }),
+  ]);
+
+  const selection = selectScribblesByTag(state, 'hello');
+
+  expect(getIDs(selection)).toEqual(['1', '4', '5', '2', '3']);
 });

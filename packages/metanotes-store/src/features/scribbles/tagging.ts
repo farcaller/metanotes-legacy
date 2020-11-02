@@ -86,6 +86,18 @@ export const selectScribblesByTag = createSelector(
         idx = 0;
       } else if (after === '') {
         idx = result.length;
+      } else if (before !== undefined) {
+        const beforeScribble = result.find(s => s.attributes.title === before);
+        if (beforeScribble !== undefined) {
+          reorder(beforeScribble);
+          idx = result.indexOf(beforeScribble);
+        }
+      } else if (after !== undefined) {
+        const afterScribble = result.find(s => s.attributes.title === after);
+        if (afterScribble !== undefined) {
+          reorder(afterScribble);
+          idx = result.indexOf(afterScribble) + 1;
+        }        
       }
       
       if (idx !== undefined) {
@@ -93,14 +105,15 @@ export const selectScribblesByTag = createSelector(
         if (currentIdx !== idx) {
           result.splice(currentIdx, 1);
           if (currentIdx < idx) {
-            ++idx;
+            --idx;
           }
           result.splice(idx, 0, scribble);
         }
       }
     };
 
-    for (const s of result) {
+    const immResult = result.slice(0);
+    for (const s of immResult) {
       reorder(s);
     }
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useContext } from 'react';
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
@@ -30,10 +30,12 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { useParams, Link as RouterLink } from 'react-router-dom';
+import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
+import MonacoEditor from '@monaco-editor/react';
 
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
+import { CoreEventsContext } from './CoreEvents';
 
 // TODO: unknown is a lie. it's a memo
 const componentLocals: { [key: string]: unknown } = {
@@ -52,16 +54,19 @@ const componentLocals: { [key: string]: unknown } = {
   SpeedDial,
   SpeedDialIcon,
   SpeedDialAction,
+  MonacoEditor,
   
 
   // TODO: does not belong here
   useParams,
   RouterLink,
+  useHistory,
   icons: {
     EditIcon,
     CloseIcon,
     MoreVertIcon,
-  }
+  },
+  useCoreEvents: () => useContext(CoreEventsContext),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

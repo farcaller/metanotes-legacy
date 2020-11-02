@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { transform } from '@babel/standalone';
 import { useDispatch, useSelector } from 'react-redux';
 import equals from 'deep-equal';
 
 import { SyncedScribble } from '../scribble';
-import { fetchScribble, selectScribbleByTitle, selectScribbleById, selectAllScribbles } from '../scribblesSlice';
+import { fetchScribble, selectScribbleByTitle, selectScribbleById, selectAllScribbles, removeScribble } from '../scribblesSlice';
 import { useScribble } from '../useScribble';
 
 
 const coreLocals = {
+  useRef,
   useState,
   useSelector,
   useEffect,
@@ -32,6 +33,7 @@ const coreLocals = {
   selectAllScribbles,
   useScribble,
   fetchScribble,
+  removeScribble,
   equals,
 };
 const exportedLocals = { React, core: coreLocals };

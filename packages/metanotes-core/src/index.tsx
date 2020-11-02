@@ -26,6 +26,7 @@ import { createBackend } from '@metanotes/store/lib/api';
 import scribbles from './scribblefs';
 import { setCoreScribbles, UseScribbleContext } from '@metanotes/store/lib/features/scribbles';
 import ScribbleResolver from './ScribbleResolver';
+import CoreEvents from './CoreEvents';
 
 const api = createBackend({
   backend: 'metanotes-server',
@@ -41,7 +42,9 @@ ReactDOM.render(
       <Provider store={theStore}>
         <ScribbleResolver>
           <UseScribbleContext.Provider value={{}}>
-            <App />
+            <CoreEvents>
+              <App />
+            </CoreEvents>
           </UseScribbleContext.Provider>
         </ScribbleResolver>
       </Provider>

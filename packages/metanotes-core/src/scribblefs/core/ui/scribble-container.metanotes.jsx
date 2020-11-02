@@ -18,18 +18,19 @@
  * title: $:core/ui/scribble-container
  */
 
-const { useState, useScribble, useDispatch, fetchScribble, equals, useEffect } = core;
-const { LinearProgress, Alert, Card, CardContent, SpeedDial, SpeedDialIcon, SpeedDialAction, CardHeader, icons } = components;
+const { useState, useScribble, useDispatch, fetchScribble, equals, useEffect, removeScribble } = core;
+const { LinearProgress, Alert, Card, CardContent, SpeedDial, SpeedDialIcon, SpeedDialAction, CardHeader, icons, useHistory, useCoreEvents } = components;
 
 function ScribbleContainer({ scribble }) {
   const dispatch = useDispatch();
   const Renderer = useScribble(`$:core/renderer/${scribble.attributes['content-type']}`);
+  const Editor = useScribble(`$:core/editor/${scribble.attributes['content-type']}`);
 
   let contentEl;
   switch (scribble.status) {
     case 'core':
     case 'synced':
-      contentEl = <Renderer scribble={scribble} />;
+      contentEl = scribble.attributes['draft-of'] !== undefined ? <Editor scribble={scribble} /> : <Renderer scribble={scribble} />;
       break;
     case 'syncedMetadataOnly':
       contentEl = <LinearProgress />;
@@ -57,6 +58,27 @@ function ScribbleContainer({ scribble }) {
   const onActionsOpen = () => setActionsOpen(true);
   const onActionsClose = () => setActionsOpen(false);
 
+  const history = useHistory();
+  const coreEvents = useCoreEvents();
+
+  const onEdit = () => {
+    if (scribble.status !== 'core' && scribble.status !== 'synced') {
+      console.log('cannot edit non-synced scribble');
+      return;
+    }
+    const draftId = coreEvents.createDraft(scribble);
+    history.push(`/${draftId}`);
+  };
+
+  const onClose = () => {
+    const originalId = scribble.attributes['draft-of'];
+    if (!originalId) {
+      return;
+    }
+    dispatch(removeScribble(scribble));
+    history.push(`/${originalId}`);
+  }
+
   return (
     <Card>
       <CardHeader
@@ -77,11 +99,13 @@ function ScribbleContainer({ scribble }) {
               icon={<icons.CloseIcon />}
               tooltipPlacement="top"
               tooltipTitle="close"
+              onClick={onClose}
             />
             <SpeedDialAction
               icon={<icons.EditIcon/>}
               tooltipPlacement="top"
               tooltipTitle="edit"
+              onClick={onEdit}
             />
           </SpeedDial>
         }

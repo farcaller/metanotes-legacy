@@ -23,6 +23,7 @@ const scribbles: Scribble[] = [
 
   require('./core/routes/single-scribble.metanotes.jsx'),
   
+  require('./core/editor/text/markdown.metanotes.jsx'),
   require('./core/renderer/text/markdown.metanotes.jsx'),
   
   require('./core/ui/scribbles-list.metanotes.jsx'),

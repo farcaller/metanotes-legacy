@@ -14,6 +14,7 @@
 
 import { createAsyncThunk, createEntityAdapter, createSelector, createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit';
 import createCachedSelector from 're-reselect';
+import { ulid } from 'ulid';
 
 import { RootState } from '../..';
 import { StorageAPI } from '../../api';
@@ -45,6 +46,11 @@ export const fetchStoreMetadata = createAsyncThunk<Scribble[], void, {extra: Sto
 
 export const fetchScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/fetchScribble', async (payload, { extra }) => {
   return await extra.getScribble(payload.id);
+});
+
+export const removeScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/removeScribble', (payload, { extra }) => {
+  // TODO: implement on the backend
+  return payload;
 });
 
 function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]) {
@@ -80,7 +86,6 @@ function updateTitleMapRemove(state: ScribblesState, scribbles: Scribble[]) {
   }
 }
 
-
 const scribblesSlice = createSlice({
   name: 'scribbles',
   initialState,
@@ -88,7 +93,28 @@ const scribblesSlice = createSlice({
     setCoreScribbles(state, action: PayloadAction<Scribble[]>) {
       scribblesAdapter.upsertMany(state.scribbles, action.payload);
       updateTitleMapAdd(state, action.payload);
-    }
+    },
+    createDraft: {
+      reducer(state, action: PayloadAction<Scribble>): void {
+        const { payload } = action;
+        scribblesAdapter.addOne(state.scribbles, payload);
+      },
+      prepare(id: string, scribble: Scribble): { payload: Scribble } {
+        return {
+          payload: {
+            id: id,
+            // TODO: clone?
+            body: scribble.body,
+            attributes: {
+              ...JSON.parse(JSON.stringify(scribble.attributes)),
+              'draft-of': scribble.id,
+            } as unknown as { [key: string]: string; },
+
+            status: 'synced',
+          }
+        };
+      }
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchStoreMetadata.pending, (state) => {
@@ -132,12 +158,22 @@ const scribblesSlice = createSlice({
         },
       });
     });
+
+    builder.addCase(removeScribble.pending, (state, action) => {
+      scribblesAdapter.removeOne(state.scribbles, action.meta.arg.id);
+    });
+    builder.addCase(removeScribble.fulfilled, (_state, _action) => {
+      // no action
+    });
+    builder.addCase(removeScribble.rejected, (state, action) => {
+      // TODO: revert removal?
+    });
   },
 });
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

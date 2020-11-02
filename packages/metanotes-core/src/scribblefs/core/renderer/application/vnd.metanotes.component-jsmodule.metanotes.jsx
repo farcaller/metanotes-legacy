@@ -13,19 +13,19 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ENXHRRPZH3ECA6AYBQ26D0ZX
+ * id: 01EP4N4J73R8GE5BEXDS9QG9GH
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/renderer/text/markdown
+ * title: $:core/renderer/application/vnd.metanotes.component-jsmodule
  */
 
-const { Markdown, Paper } = components;
+const { SyntaxHighlighter, Paper } = components;
 
-function MarkdownRenderer({ scribble }) {
+function SyntaxHighlighterRenderer({ scribble }) {
   return (
     <Paper>
-      <Markdown text={scribble.body} />
+      <SyntaxHighlighter language="javascript">{scribble.body}</SyntaxHighlighter>
     </Paper>
   );
 }
 
-export default React.memo(MarkdownRenderer);
+export default React.memo(SyntaxHighlighterRenderer);

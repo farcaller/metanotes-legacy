@@ -32,6 +32,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
 import MonacoEditor from '@monaco-editor/react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
@@ -55,7 +56,7 @@ const componentLocals: { [key: string]: unknown } = {
   SpeedDialIcon,
   SpeedDialAction,
   MonacoEditor,
-  
+  SyntaxHighlighter,
 
   // TODO: does not belong here
   useParams,

@@ -17,6 +17,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
+    "react-syntax-highlighter": "^15.3.0",
     "typescript": "^4.0.3",
     "ulid": "^2.3.0",
     "web-vitals": "^0.2.4"
@@ -56,6 +57,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.6",
+    "@types/react-syntax-highlighter": "^13.5.0",
     "@welldone-software/why-did-you-render": "^5.0.0",
     "eslint-plugin-disable": "^2.0.1",
     "react-app-rewired": "^2.1.6",

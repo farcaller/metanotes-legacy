@@ -15,11 +15,25 @@
 import { Scribble as ScribbleProto } from '@metanotes/server-api/lib/api_pb';
 
 
+export type ScribbleID = string;
+
+export interface Attributes {
+  'content-type': string;
+  title?: string;
+  tags?: string[];
+  list?: string[];
+  'list-before'?: ScribbleID;
+  'list-after'?: ScribbleID;
+  'draft-of'?: ScribbleID;
+
+  [x: string]: unknown;
+}
+
 export interface Scribble {
-  id: string;
+  id: ScribbleID;
 
   body?: string;
-  attributes: {[key: string]: string};
+  attributes: Attributes;
 
   status: 'core' | 'syncedMetadataOnly' | 'pullingBody' | 'synced' | 'failed';
   error?: string;
@@ -35,11 +49,11 @@ export function isSyncedScribble(scribble: Scribble): scribble is SyncedScribble
 }
 
 export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
-  const attrs: { [key: string]: string } = {};
+  const attrs: Attributes = {} as Attributes;
 
   // FIXME: this is bad
   try {
-    s.getAttributesMap().forEach((v, k) => attrs[k] = JSON.parse(v) as unknown as string);
+    s.getAttributesMap().forEach((v, k) => attrs[k] = JSON.parse(v) as unknown);
   } catch (e) {
     console.log(e);
     console.log(s.getAttributesMap());

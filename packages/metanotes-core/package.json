@@ -60,6 +60,7 @@
     "@types/react-syntax-highlighter": "^13.5.0",
     "@welldone-software/why-did-you-render": "^5.0.0",
     "eslint-plugin-disable": "^2.0.1",
+    "js-yaml": "^3.14.0",
     "react-app-rewired": "^2.1.6",
     "webpack-extended-import-glob-loader": "^1.6.6"
   }

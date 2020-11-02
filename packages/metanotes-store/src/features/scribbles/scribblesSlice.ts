@@ -106,9 +106,9 @@ const scribblesSlice = createSlice({
             // TODO: clone?
             body: scribble.body,
             attributes: {
-              ...JSON.parse(JSON.stringify(scribble.attributes)),
+              ...(JSON.parse(JSON.stringify(scribble.attributes)) as Attributes),
               'draft-of': scribble.id,
-            } as unknown as { [key: string]: string; },
+            },
 
             status: 'synced',
           }

@@ -1,3 +1,5 @@
+const yaml = require('js-yaml');
+
 module.exports = function (source, map) {
   const lines = source.split('\n');  
 
@@ -12,35 +14,36 @@ module.exports = function (source, map) {
     throw Error(`magic not found`);
   }
 
-  let id;
-  const attributes = {};
+  const attrLines = []
   while (lines.length > 0) {
     const l = lines.shift();
     if (l === ' */') {
       break;
     }
 
-    const groups = l.match(/ \*\s+([\w-]+):\s*(.+)/);
+    const groups = l.match(/ \* (.*)/);
     if (!groups) {
       throw Error(`cannot parse attibute from "${l}"`);
     }
-    const aname = groups[1];
-    const aval = groups[2];
-    switch (aname) {
-      case 'id':
-        id = aval;
-        break;
-      default:
-        attributes[aname] = aval;
-    }
+    attrLines.push(groups[1]);
   }
+  const attrsYAML = attrLines.join('\n');
+  const attrs = yaml.safeLoad(attrsYAML);
+  if (!attrs.id) {
+    throw Error('id not present in attributes');
+  }
+  if (!attrs['content-type']) {
+    throw Error('id not present in attributes');
+  }
+  const id = attrs.id;
+  delete attrs.id;
 
   const body = lines.join('\n').trim();
 
   const doc = {
     id,
     body,
-    attributes,
+    attributes: attrs,
     status: 'core',
   }
 

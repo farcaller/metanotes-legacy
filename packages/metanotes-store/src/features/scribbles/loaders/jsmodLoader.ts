@@ -12,22 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { transform } from '@babel/standalone';
 import { useDispatch, useSelector } from 'react-redux';
 import equals from 'deep-equal';
 
 import { SyncedScribble } from '../scribble';
-import { fetchScribble, selectScribbleByTitle, selectScribbleById } from '../scribblesSlice';
+import { fetchScribble, selectScribbleByTitle, selectScribbleById, selectAllScribbles } from '../scribblesSlice';
 import { useScribble } from '../useScribble';
 
 
 const coreLocals = {
   useState,
   useSelector,
+  useEffect,
   useDispatch,
   selectScribbleById,
   selectScribbleByTitle,
+  selectAllScribbles,
   useScribble,
   fetchScribble,
   equals,

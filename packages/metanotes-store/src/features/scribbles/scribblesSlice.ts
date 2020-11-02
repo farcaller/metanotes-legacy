@@ -147,6 +147,7 @@ export const {
 
 const selectScribbles = (state: RootState) => state.scribbles;
 const selectTitle = (_: RootState, title: string) => title;
+const selectTitlePrefix = (_: RootState, prefix: string) => prefix;
 
 const selectIDsByTitle = createSelector(
   selectScribbles,
@@ -158,22 +159,41 @@ const selectIDsByTitle = createSelector(
     }
     return ids;
   }
-); // ((_, title) => title);
+);
+
+const selectTitlesByPrefix = createSelector(
+  selectScribbles,
+  selectTitlePrefix,
+  (scribbles, titlePrefix) => {
+    const matchingTitles = Object.keys(scribbles.titleToIdMap).filter(t => t.startsWith(titlePrefix));
+    const ids = matchingTitles.map(title => scribbles.titleToIdMap[title]);
+    return ids;
+  }
+);
+
+const selectScribbleByIDList = (state: RootState, ids: string[]) => {
+  if (ids.length === 1) {
+    return selectScribbleById(state, ids[0]);
+  }
+  if (ids.length === 2) {
+    const first = selectScribbleById(state, ids[0]);
+    if (first?.status === 'core') {
+      return selectScribbleById(state, ids[1]);
+    } else {
+      return undefined;
+    }
+  }
+  return undefined;
+};
 
 export const selectScribbleByTitle = createSelector(
   [(state) => state, selectIDsByTitle],
-  (state: RootState, ids: string[]) => {
-    if (ids.length === 1) {
-      return selectScribbleById(state, ids[0]);
-    }
-    if (ids.length === 2) {
-      const first = selectScribbleById(state, ids[0]);
-      if (first?.status === 'core') {
-        return selectScribbleById(state, ids[1]);
-      } else {
-        return undefined;
-      }
-    }
-    return undefined;
+  selectScribbleByIDList,
+);
+
+export const selectScribblesByTitlePrefix = createSelector(
+  [(state) => state, selectTitlesByPrefix],
+  (state: RootState, ids: string[][]) => {
+    return ids.map(id => selectScribbleByIDList(state, id)).filter(Boolean) as Scribble[];
   }
-); //((_, title) => title);
+);

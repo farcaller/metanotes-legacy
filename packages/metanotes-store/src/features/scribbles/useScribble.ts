@@ -15,10 +15,11 @@
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import equals from 'deep-equal';
+import { Action, Dispatch } from '@reduxjs/toolkit';
 
 import { useTypedSelector } from '../../index';
 import { Scribble } from './scribble';
-import { ScribbleResolverContext } from './ScribbleResolverContext';
+import { ScribbleResolverContext, ScribbleResolverContextType } from './ScribbleResolverContext';
 import { selectScribbleByTitle } from './scribblesSlice';
 
 type ComponentCache = { [key: string]: { scribble: Scribble, component: React.FunctionComponent<unknown> } };
@@ -31,19 +32,23 @@ export function useScribble(title: string): React.FunctionComponent<unknown> {
   const resolver = useContext(ScribbleResolverContext);
   const sc = useTypedSelector(state => selectScribbleByTitle(state, title));
 
-  if (sc === undefined) {
-    return resolver.resolver({ title }, dispatch, sc);
+  return loadScribbleComponent(resolver, dispatch, cache, title, sc);
+}
+
+export function loadScribbleComponent(resolver: ScribbleResolverContextType, dispatch: Dispatch<Action<unknown>>, cache: ComponentCache, title: string, scribble?: Scribble): React.FunctionComponent<unknown> {
+  if (scribble === undefined) {
+    return resolver.resolver({ title }, dispatch, scribble);
   }
 
-  const cached = cache[sc.id];
-  if (cached && equals(cached.scribble, sc, { strict: true })) {
+  const cached = cache[scribble.id];
+  if (cached && equals(cached.scribble, scribble, { strict: true })) {
     return cached.component;
   }
 
-  const el = resolver.resolver({ title }, dispatch, sc);
-  if (sc.status === 'core' || sc.status === 'synced') {
-    cache[sc.id] = {
-      scribble: sc,
+  const el = resolver.resolver({ title }, dispatch, scribble);
+  if (scribble.status === 'core' || scribble.status === 'synced') {
+    cache[scribble.id] = {
+      scribble: scribble,
       component: el,
     };
   }

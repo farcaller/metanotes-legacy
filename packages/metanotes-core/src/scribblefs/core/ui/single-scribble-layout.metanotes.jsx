@@ -36,7 +36,7 @@ function SingleScribbleLayout() {
         </Paper>
       </Grid>
       <Grid item xs style={{marginLeft: 8, marginRight: 8}}>
-        <ScribbleContainer scribble={scribble} />
+        {scribble ? <ScribbleContainer scribble={scribble} /> : ''}
       </Grid>
     </Grid>
   )

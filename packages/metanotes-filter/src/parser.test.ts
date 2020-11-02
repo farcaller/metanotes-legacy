@@ -14,34 +14,83 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-return */
 
-import parser from './parser';
-import lexer from './lexer';
-import * as ast from './ast';
+import Lang from './parser';
 
 
-const parse = (query: string, rule: string) => {
-  const lexingResult = lexer.tokenize(query);
-  if (lexingResult.errors.length > 0) {
-    throw new Error(`lexer failed: ${lexingResult.errors.join(', ')}`);
-  }
-  parser.input = lexingResult.tokens;
-  const a = parser[rule]();
-  if (parser.errors.length > 0) {
-    throw new Error(`parser failed: ${parser.errors.join(', ')}`);
-  }
-  return a;
-};
+test('it parses a cmdlet call', () => {
+  const a = Lang.CmdletCall.tryParse(`Get-Scribbles`);
 
-test('it parses a call to filter function', () => {
-  const a = parse(`get_by_id doc1 "doc2"`, 'call') as ast.Call;
-
-  expect(a.functionName).toEqual('get_by_id');
-  expect(a.arguments).toEqual(['doc1', 'doc2']);
+  expect(a).toEqual({
+    name: 'Get-Scribbles',
+    flags: {},
+    args: [],
+  });
 });
 
-test('it parses several pipelined functions', () => {
-  const a = parse(`get_by_id doc1 | filter doc2`, 'pipeline') as ast.Pipeline;
+test('it parses a cmdlet call with a named arg', () => {
+  const a = Lang.CmdletCall.tryParse(`Get-Scribble -Name hello`);
 
-  expect(a.calls[0].functionName).toEqual('get_by_id');
-  expect(a.calls[1].functionName).toEqual('filter');
+  expect(a).toEqual({
+    name: 'Get-Scribble',
+    flags: {
+      Name: 'hello',
+    },
+    args: [],
+  });
+});
+
+test('it parses a cmdlet call with several named args', () => {
+  const a = Lang.CmdletCall.tryParse(`Get-Scribble -Name hello -Core true`);
+
+  expect(a).toEqual({
+    name: 'Get-Scribble',
+    flags: {
+      Name: 'hello',
+      Core: 'true',
+    },
+    args: [],
+  });
+});
+
+test('it fails to parse a cmdlet call with repeated named arg', () => {
+  expect(() => Lang.CmdletCall.tryParse(`Get-Scribble -Name hello -Name true`)).toThrow(`repeated argument 'Name'`);
+});
+
+test('it parses a cmdlet call with a positional arg', () => {
+  const a = Lang.CmdletCall.tryParse(`Get-Attribute 'content-type'`);
+
+  expect(a).toEqual({
+    name: 'Get-Attribute',
+    flags: {},
+    args: ['content-type'],
+  });
+});
+
+test('it parses a pipeline', () => {
+  const a = Lang.CmdletCall.tryParse(`Get-Attribute 'content-type'`);
+
+  expect(a).toEqual({
+    name: 'Get-Attribute',
+    flags: {},
+    args: ['content-type'],
+  });
+});
+
+test('it parses several pipelined cmdlets', () => {
+  const a = Lang.Pipeline.tryParse(`Get-Scribble -Name hello | Get-Attribute "content-type"`);
+
+  expect(a).toEqual([
+    {
+      name: 'Get-Scribble',
+      flags: {
+        Name: 'hello',
+      },
+      args: [],
+    },
+    {
+      name: 'Get-Attribute',
+      flags: {},
+      args: ['content-type'],
+    },
+  ]);
 });

@@ -12,6 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import run from './interpreter';
-
-export default run;
+import Lang from './parser';
+export const Pipeline = Lang.Pipeline;

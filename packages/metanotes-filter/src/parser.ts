@@ -12,59 +12,80 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: chevrotain is extremely type unsafe
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-explicit-any */
-
-import { EmbeddedActionsParser } from 'chevrotain';
-
-import * as l from './lexer';
-import * as ast from './ast';
+import { alt, any, createLanguage, noneOf, oneOf, regexp, seq, seqMap, string, succeed, whitespace } from 'parsimmon';
 
 
-class FilterParser extends EmbeddedActionsParser {
-  constructor() {
-    super(l.tokens);
+type CmdletCall = { name: string, flags: { [key: string]: string }, args: (string | number)[] };
 
-    const $ = this as any;
+const Lang = createLanguage<{
+  Keyword: string,
+  QuotedString: string,
 
-    $.RULE('argument', () => $.OR([
-        { ALT: () => $.CONSUME(l.Identifier).image },
-        { ALT: () => {
-          const stringLiteral = $.CONSUME(l.StringLiteral).image;
-          return stringLiteral.substr(1, stringLiteral.length - 2);
-        } },
-        { ALT: () => Number($.CONSUME(l.NumberLiteral).image) },
-      ])
-    );
+  CmdletName: string,
+  CmdletFlagName: string,
+  CmdletFlagValue: string,
+  CmdletFlag: { name: string; value: string },
+  CmdletCall: CmdletCall,
+  CmdletArgument: string|number,
 
-    $.RULE('arguments', () => {
-      const args: any[] = [];
-      $.MANY(() => { args.push($.SUBRULE($.argument)); });
-      return args;
+  Pipeline: CmdletCall[],
+}>({
+  Keyword() {
+    return regexp(/[\w]+/);
+  },
+  QuotedString() {
+    return oneOf(`"'`).chain(function (q) {
+      return alt(
+        noneOf(`\\${q}`)
+          .atLeast(1)
+          .tie(), // everything but quote and escape sign
+        string(`\\`).then(any) // escape sequence like \"
+      )
+        .many()
+        .tie()
+        .skip(string(q));
     });
+  },
 
-    $.RULE('call', (): ast.Call => ({
-      functionName: $.CONSUME(l.Identifier).image,
-      arguments: $.SUBRULE($.arguments),
-    }));
-
-    $.RULE('pipeline', (): ast.Pipeline => {
-      const calls: ast.Call[] = [];
-      $.AT_LEAST_ONE_SEP({
-        SEP: l.Pipe,
-        DEF: () => {
-          calls.push($.SUBRULE($.call));
+  CmdletName() {
+    return regexp(/[A-Za-z][\w-]*/);
+  },
+  CmdletFlagName(r) {
+    return string('-').then(r.Keyword);
+  },
+  CmdletFlagValue() {
+    return regexp(/[^ ]+/);
+  },
+  CmdletFlag(r) {
+    return seqMap(r.CmdletFlagName, whitespace, r.CmdletFlagValue, (name, _, value) => ({ name, value }));
+  },
+  CmdletArgument(r) {
+    return alt(r.Keyword, r.QuotedString);
+  },
+  CmdletCall(r) {
+    return seqMap(
+      r.CmdletName,
+      alt(
+        whitespace.then(seq(
+          r.CmdletFlag.sepBy(whitespace),
+          r.CmdletArgument.sepBy(whitespace)
+        )), succeed<[{ name: string, value: string }[], string[]]>([[], []])),
+        (name, a) => {
+        const [flagsList, args] = a;
+        const flags: { [key: string]: string } = {};
+        for (const f of flagsList) {
+          if (flags[f.name]) {
+            throw `repeated argument '${f.name}'`;
+          }
+          flags[f.name] = f.value;
         }
-      });
-      return { calls };
+        return { name, flags, args };
     });
+  },
 
-    $.RULE('filter', (): ast.Pipeline => $.SUBRULE($.pipeline));
-
-    this.performSelfAnalysis();
+  Pipeline(r) {
+    return r.CmdletCall.sepBy1(string('|').trim(whitespace));
   }
-}
+});
 
-const parser = new FilterParser();
-
-export default parser;
+export default Lang;

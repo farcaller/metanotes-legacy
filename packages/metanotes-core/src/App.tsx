@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux';
 import { CssBaseline, LinearProgress } from '@material-ui/core';
 
 import { useTypedSelector } from '@metanotes/store';
-import { fetchStoreMetadata, loadScribbleComponent, Scribble, ScribbleResolverContext, selectScribbleByTitle, selectScribblesByTag, useScribble, UseScribbleContext } from '@metanotes/store/lib/features/scribbles';
+import { fetchStoreMetadata, loadScribbleComponent, ScribbleResolverContext, selectScribbleByTitle, selectScribblesByTag, UseScribbleContext } from '@metanotes/store/lib/features/scribbles';
 import { ErrorBoundary } from './ScribbleResolver';
 import { Route, Switch } from 'react-router-dom';
 
@@ -33,6 +33,7 @@ function App(): JSX.Element {
   const resolver = useContext(ScribbleResolverContext);
   const routeScribbleElements = useTypedSelector(state => routeScribbles.map(rs => selectScribbleByTitle(state, rs.attributes['element'] as string))) ;
   const routeScribbleRoutes = routeScribbles.map((scribble, idx) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title!, routeScribbleElements[idx]);
     return (
       <Route exact={scribble.attributes['exact'] === true} path={scribble.attributes['path'] as string}>

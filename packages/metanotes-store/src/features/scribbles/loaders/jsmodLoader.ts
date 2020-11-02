@@ -41,7 +41,6 @@ const localKeys = Object.keys(exportedLocals) as (keyof typeof exportedLocals)[]
 const localValues = localKeys.map(k => exportedLocals[k]);
 
 export function loadJsModule(sc: SyncedScribble, components: { [key: string]: React.FunctionComponent<unknown> }): React.FunctionComponent<unknown> {
-  console.log(`loading jsmodule for ${sc.attributes['title']} (${sc.id})`);
   const modBody = transform(sc.body, {
     presets: ['env', 'react']
   }).code;

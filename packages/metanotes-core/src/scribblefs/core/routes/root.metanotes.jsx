@@ -13,11 +13,12 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EP2C9311M5M7JQ0789CQ2ESC
+ * id: 01EP4NJRY5Z12YWC9MB07PATQS
  * content-type: application/json
- * title: $:core/routes/single-scribble
+ * title: $:core/routes/root
  * tags: ['$:core/routes']
- * path: /:id
+ * list-after: ''
+ * path: /
  * exact: true
  * element: $:core/ui/single-scribble-layout
  */

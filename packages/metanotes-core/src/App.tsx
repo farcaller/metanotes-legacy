@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React, { createElement, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { CssBaseline, LinearProgress } from '@material-ui/core';
 
 import { useTypedSelector } from '@metanotes/store';
-import { fetchStoreMetadata, Scribble, selectScribblesByTitlePrefix, useScribble } from '@metanotes/store/lib/features/scribbles';
+import { fetchStoreMetadata, loadScribbleComponent, Scribble, ScribbleResolverContext, selectScribbleByTitle, selectScribblesByTag, useScribble, UseScribbleContext } from '@metanotes/store/lib/features/scribbles';
 import { ErrorBoundary } from './ScribbleResolver';
 import { Route, Switch } from 'react-router-dom';
 
@@ -26,19 +26,27 @@ function App(): JSX.Element {
   const preloaderStatus = useTypedSelector(state => state.scribbles.status);
 
   const dispatch = useDispatch();
-  const routeScribbles = useTypedSelector(state => selectScribblesByTitlePrefix(state, '$:core/routes/'));
+  const routeScribbles = useTypedSelector(state => selectScribblesByTag(state, '$:core/routes'));
   let rootEl = <LinearProgress />;
 
+  const cache = useContext(UseScribbleContext);
+  const resolver = useContext(ScribbleResolverContext);
+  const routeScribbleElements = useTypedSelector(state => routeScribbles.map(rs => selectScribbleByTitle(state, rs.attributes['element'] as string))) ;
+  const routeScribbleRoutes = routeScribbles.map((scribble, idx) => {
+    const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title!, routeScribbleElements[idx]);
+    return (
+      <Route exact={scribble.attributes['exact'] === true} path={scribble.attributes['path'] as string}>
+        <Comp />
+      </Route>
+    );
+  });
+  
   switch (preloaderStatus) {
     case 'idle':
       dispatch(fetchStoreMetadata());
       break;
     case 'succeeded':
-      rootEl = (
-        <Switch>
-          {routeScribbles.map(sc => <ScribbleRoute key={sc.id} scribble={sc} />)}
-        </Switch>
-      );
+      rootEl = createElement(Switch, null, ...routeScribbleRoutes);
       break;
     default:
       // TODO: what's the generic type for these?
@@ -51,15 +59,6 @@ function App(): JSX.Element {
         {rootEl}
       </ErrorBoundary>
     </>
-  );
-}
-
-function ScribbleRoute({ scribble }: { scribble: Scribble }) {
-  const RouteEl = useScribble(scribble.attributes['element']);
-  return (
-    <Route exact={scribble.attributes['exact'] === 'exact'} path={scribble.attributes['path']}>
-      <RouteEl />
-    </Route>
   );
 }
 

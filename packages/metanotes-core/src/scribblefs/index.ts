@@ -21,6 +21,7 @@ import { Scribble } from '@metanotes/store/lib/features/scribbles';
 const scribbles: Scribble[] = [
   require('./core/ui/single-scribble-layout.metanotes.jsx'),
 
+  require('./core/routes/root.metanotes.jsx'),
   require('./core/routes/single-scribble.metanotes.jsx'),
   
   require('./core/editor/text/markdown.metanotes.jsx'),

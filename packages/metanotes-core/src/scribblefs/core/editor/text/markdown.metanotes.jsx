@@ -18,8 +18,16 @@
  * title: $:core/editor/text/markdown
  */
 
-const { useRef, useState } = core;
+const { useRef, useState, useDispatch, updateScribble, useCallback } = core;
 const { MonacoEditor, Paper } = components;
+
+
+const monacoConfig = {
+  minimap: {
+    enabled: false
+  },
+  wordWrap: 'on',
+};
 
 function MarkdownEditor({ scribble }) {
   const editorRef = useRef();
@@ -27,13 +35,19 @@ function MarkdownEditor({ scribble }) {
   const [previewedText, setPreviewedText] = useState(scribble.body);
   const [previewedTitle, setPreviewedTitle] = useState(scribble.attributes.title || '');
 
-  const handleEditorDidMount = (_, editor) => {
+  const handleEditorDidMount = useCallback((_, editor) => {
     editorRef.current = editor;
 
     editorRef.current.onDidChangeModelContent(() => {
       setPreviewedText(editorRef.current.getValue());
     });
-  };
+  }, [editorRef]);
+
+  const dispatch = useDispatch();
+
+  const onChange = useCallback((ev, value) => {
+    dispatch(updateScribble({ id: scribble.id, changes: { body: value }}));
+  }, [scribble]);
 
   return (
     <Paper>
@@ -43,7 +57,8 @@ function MarkdownEditor({ scribble }) {
         language="markdown"
         value={scribble.body}
         editorDidMount={handleEditorDidMount}
-        options={{ minimap: { enabled: false }, wordWrap: 'on' }}
+        onChange={onChange}
+        options={monacoConfig}
       />
     </Paper>
   );

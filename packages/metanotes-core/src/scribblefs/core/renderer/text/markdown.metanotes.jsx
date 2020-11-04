@@ -22,9 +22,7 @@ const { Markdown, Paper } = components;
 
 function MarkdownRenderer({ scribble }) {
   return (
-    <Paper>
-      <Markdown text={scribble.body} />
-    </Paper>
+    <Markdown text={scribble.body} />
   );
 }
 

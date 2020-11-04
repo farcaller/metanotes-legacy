@@ -18,7 +18,7 @@
  * title: $:core/ui/scribble-container
  */
 
-const { useState, useScribble, useDispatch, fetchScribble, equals, useEffect, removeScribble } = core;
+const { useState, useScribble, useDispatch, useCallback, fetchScribble, equals, useEffect, removeScribble } = core;
 const { LinearProgress, Alert, Card, CardContent, SpeedDial, SpeedDialIcon, SpeedDialAction, CardHeader, icons, useHistory, useCoreEvents } = components;
 
 function ScribbleContainer({ scribble }) {
@@ -26,11 +26,13 @@ function ScribbleContainer({ scribble }) {
   const Renderer = useScribble(`$:core/renderer/${scribble.attributes['content-type']}`);
   const Editor = useScribble(`$:core/editor/${scribble.attributes['content-type']}`);
 
+  const isEditing = scribble.attributes['draft-of'] !== undefined;
+
   let contentEl;
   switch (scribble.status) {
     case 'core':
     case 'synced':
-      contentEl = scribble.attributes['draft-of'] !== undefined ? <Editor scribble={scribble} /> : <Renderer scribble={scribble} />;
+      contentEl = isEditing ? <Editor scribble={scribble} /> : <Renderer scribble={scribble} />;
       break;
     case 'syncedMetadataOnly':
       contentEl = <LinearProgress />;
@@ -41,7 +43,7 @@ function ScribbleContainer({ scribble }) {
     case 'failed':
       {
         const title = scribble.attributes.title ? '(' + scribble.attributes.title + ')' : '';
-        contentEl = <Alert severity="error">failed to fetch scribble {scribble.id}{title}: <code>{scribble.error}</code></Alert>
+        contentEl = <Alert severity="error">failed to fetch the scribble {scribble.id}{title}: <code>{scribble.error}</code></Alert>
       }
       break;
   }
@@ -55,29 +57,29 @@ function ScribbleContainer({ scribble }) {
 
   const [actionsOpen, setActionsOpen] = useState(false);
 
-  const onActionsOpen = () => setActionsOpen(true);
-  const onActionsClose = () => setActionsOpen(false);
+  const onActionsOpen = useCallback(() => setActionsOpen(true), []);
+  const onActionsClose = useCallback(() => setActionsOpen(false), []);
 
   const history = useHistory();
   const coreEvents = useCoreEvents();
 
-  const onEdit = () => {
+  const onEdit = useCallback(() => {
     if (scribble.status !== 'core' && scribble.status !== 'synced') {
       console.log('cannot edit non-synced scribble');
       return;
     }
     const draftId = coreEvents.createDraft(scribble);
     history.push(`/${draftId}`);
-  };
+  }, [scribble.status, history]);
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     const originalId = scribble.attributes['draft-of'];
     if (!originalId) {
       return;
     }
     dispatch(removeScribble(scribble));
     history.push(`/${originalId}`);
-  }
+  }, [scribble, history]);
 
   return (
     <Card>

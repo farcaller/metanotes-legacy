@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { createElement, useContext } from 'react';
+import React, { createElement, useContext, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { CssBaseline, LinearProgress } from '@material-ui/core';
+import equals from 'deep-equal';
 
 import { useTypedSelector } from '@metanotes/store';
 import { fetchStoreMetadata, loadScribbleComponent, ScribbleResolverContext, selectScribbleByTitle, selectScribblesByTag, UseScribbleContext } from '@metanotes/store/lib/features/scribbles';
@@ -26,21 +27,22 @@ function App(): JSX.Element {
   const preloaderStatus = useTypedSelector(state => state.scribbles.status);
 
   const dispatch = useDispatch();
-  const routeScribbles = useTypedSelector(state => selectScribblesByTag(state, '$:core/routes'));
+  const routeScribbles = useTypedSelector(state => selectScribblesByTag(state, '$:core/routes'), equals);
   let rootEl = <LinearProgress />;
 
   const cache = useContext(UseScribbleContext);
   const resolver = useContext(ScribbleResolverContext);
-  const routeScribbleElements = useTypedSelector(state => routeScribbles.map(rs => selectScribbleByTitle(state, rs.attributes['element'] as string))) ;
-  const routeScribbleRoutes = routeScribbles.map((scribble, idx) => {
+  const routeScribbleElements = useTypedSelector(state => routeScribbles.map(rs => selectScribbleByTitle(state, rs.attributes['element'] as string)), equals);
+  const routeScribbleRoutes = useMemo(() => routeScribbles.map((scribble, idx) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title!, routeScribbleElements[idx]);
+    console.log('loading el for', scribble, routeScribbleElements[idx]);
     return (
       <Route exact={scribble.attributes['exact'] === true} path={scribble.attributes['path'] as string}>
         <Comp />
       </Route>
     );
-  });
+  }), [resolver, dispatch, cache, routeScribbles, routeScribbleElements]);
   
   switch (preloaderStatus) {
     case 'idle':

@@ -18,13 +18,11 @@
  * title: $:core/renderer/application/vnd.metanotes.component-jsmodule
  */
 
-const { SyntaxHighlighter, Paper } = components;
+const { SyntaxHighlighter } = components;
 
 function SyntaxHighlighterRenderer({ scribble }) {
   return (
-    <Paper>
-      <SyntaxHighlighter language="javascript">{scribble.body}</SyntaxHighlighter>
-    </Paper>
+    <SyntaxHighlighter language="javascript">{scribble.body}</SyntaxHighlighter>
   );
 }
 

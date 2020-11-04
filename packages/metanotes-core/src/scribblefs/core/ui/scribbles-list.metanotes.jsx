@@ -18,11 +18,11 @@
  * title: $:core/ui/scribbles-list
  */
 
-const { selectAllScribbles, useSelector } = core;
+const { selectAllScribbles, useSelector, equals } = core;
 const { List, ListItem, ListItemText, RouterLink } = components;
 
 function ScribblesList({ scribble }) {
-  const scribbles = useSelector(state => selectAllScribbles(state));
+  const scribbles = useSelector(state => selectAllScribbles(state).map(s => ({ id: s.id, attributes: { title: s.attributes.title } })), equals);
 
   const scribbleItems = scribbles.map(s => {
     const label = s.attributes.title ? s.attributes.title : `$$${s.id}`;

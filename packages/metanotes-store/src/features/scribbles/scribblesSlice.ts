@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createAsyncThunk, createEntityAdapter, createSelector, createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit';
-import createCachedSelector from 're-reselect';
-import { ulid } from 'ulid';
+import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../..';
 import { StorageAPI } from '../../api';
@@ -48,12 +46,12 @@ export const fetchScribble = createAsyncThunk<Scribble, Scribble, { extra: Stora
   return await extra.getScribble(payload.id);
 });
 
-export const removeScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/removeScribble', (payload, { extra }) => {
+export const removeScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/removeScribble', (payload) => {
   // TODO: implement on the backend
   return payload;
 });
 
-export function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]) {
+export function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]): void {
   for (const sc of scribbles) {
     const title = sc.attributes['title'];
     const id = sc.id;
@@ -115,6 +113,9 @@ const scribblesSlice = createSlice({
         };
       }
     },
+    updateScribble(state, action: PayloadAction<{ id: string, changes: Partial<Scribble> }>) {
+      scribblesAdapter.updateOne(state.scribbles, action);
+    }
   },
   extraReducers: builder => {
     builder.addCase(fetchStoreMetadata.pending, (state) => {
@@ -165,7 +166,7 @@ const scribblesSlice = createSlice({
     builder.addCase(removeScribble.fulfilled, (_state, _action) => {
       // no action
     });
-    builder.addCase(removeScribble.rejected, (state, action) => {
+    builder.addCase(removeScribble.rejected, () => {
       // TODO: revert removal?
     });
   },
@@ -173,63 +174,10 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribble } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,
   selectById: selectScribbleById,
   selectIds: selectScribbleIds
 } = scribblesAdapter.getSelectors((state: RootState) => state.scribbles.scribbles);
-
-export const selectScribbles = (state: RootState): ScribblesState => state.scribbles;
-const selectTitle = (_: RootState, title: string) => title;
-const selectTitlePrefix = (_: RootState, prefix: string) => prefix;
-
-const selectIDsByTitle = createSelector(
-  selectScribbles,
-  selectTitle,
-  (scribbles, title) => {
-    const ids = scribbles.titleToIdMap[title];
-    if (ids === undefined) {
-      return [];
-    }
-    return ids;
-  }
-);
-
-const selectTitlesByPrefix = createSelector(
-  selectScribbles,
-  selectTitlePrefix,
-  (scribbles, titlePrefix) => {
-    const matchingTitles = Object.keys(scribbles.titleToIdMap).filter(t => t.startsWith(titlePrefix));
-    const ids = matchingTitles.map(title => scribbles.titleToIdMap[title]);
-    return ids;
-  }
-);
-
-const selectScribbleByIDList = (state: RootState, ids: string[]) => {
-  if (ids.length === 1) {
-    return selectScribbleById(state, ids[0]);
-  }
-  if (ids.length === 2) {
-    const first = selectScribbleById(state, ids[0]);
-    if (first?.status === 'core') {
-      return selectScribbleById(state, ids[1]);
-    } else {
-      return undefined;
-    }
-  }
-  return undefined;
-};
-
-export const selectScribbleByTitle = createSelector(
-  [(state) => state, selectIDsByTitle],
-  selectScribbleByIDList,
-);
-
-export const selectScribblesByTitlePrefix = createSelector(
-  [(state) => state, selectTitlesByPrefix],
-  (state: RootState, ids: string[][]) => {
-    return ids.map(id => selectScribbleByIDList(state, id)).filter(Boolean) as Scribble[];
-  }
-);

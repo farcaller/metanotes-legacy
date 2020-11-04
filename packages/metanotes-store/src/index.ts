@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { configureStore, getDefaultMiddleware, combineReducers, AnyAction } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware, combineReducers } from '@reduxjs/toolkit';
 import { useSelector, TypedUseSelectorHook } from 'react-redux';
+import logger from 'redux-logger';
 
 import { StorageAPI } from './api';
 import scribblesReducer, { ScribblesState as _ScribblesState } from './features/scribbles/scribblesSlice';
@@ -25,15 +26,6 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
-
-const logger = (store: { getState: () => unknown; }) => (next: (arg0: AnyAction) => unknown) => (action: AnyAction) => {
-  console.log('dispatching', action);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const result = next(action);
-  console.log('next state', store.getState());
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return result;
-};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const store = (preloadedState: RootState | undefined, api: StorageAPI) => configureStore({

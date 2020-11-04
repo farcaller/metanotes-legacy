@@ -18,3 +18,4 @@ export * from './scribblesSlice';
 export * from './useScribble';
 export * from './loaders';
 export * from './tagging';
+export * from './selectors';

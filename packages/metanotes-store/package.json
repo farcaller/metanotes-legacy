@@ -23,6 +23,7 @@
     "@types/jest": "^26.0.13",
     "@types/js-yaml": "^3.12.5",
     "@types/react-redux": "^7.1.9",
+    "@types/redux-logger": "^3.0.8",
     "jest": "=26.6.0",
     "typescript": "^4.0.2"
   },
@@ -42,6 +43,8 @@
     "js-yaml": "^3.14.0",
     "markdown-yaml-metadata-parser": "^2.1.1",
     "re-reselect": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "reselect-tools": "^0.0.7",
     "ulid": "^2.3.0"
   },
   "peerDependencies": {

@@ -103,7 +103,22 @@ const scribblesSlice = createSlice({
     },
     removeScribble(state, action: PayloadAction<ScribbleID>) {
       scribblesAdapter.removeOne(state.scribbles, action.payload);
-    }
+    },
+    commitDraft(state, action: PayloadAction<ScribbleID>) {
+      const draftScribble = selectScribbleById({ scribbles: state }, action.payload)!;
+      const originalScribbleId = draftScribble.attributes['draft-of']!;
+      const draftScribbleId = draftScribble.id;
+
+      const newScribble = JSON.parse(JSON.stringify(draftScribble)) as Scribble;
+      newScribble.id = originalScribbleId;
+      delete newScribble.attributes['draft-of'];
+
+      scribblesAdapter.updateOne(state.scribbles, {
+        id: originalScribbleId,
+        changes: newScribble,
+      });
+      scribblesAdapter.removeOne(state.scribbles, draftScribbleId);
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchStoreMetadata.pending, (state) => {
@@ -152,7 +167,7 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribble, removeScribble } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribble, removeScribble, commitDraft } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

@@ -36,6 +36,7 @@ const scribbles: Scribble[] = [
 
   require('./core/ui/actions/view/edit.metanotes.jsx'),
   require('./core/ui/actions/edit/close.metanotes.jsx'),
+  require('./core/ui/actions/edit/save.metanotes.jsx'),
 ];
 
 export default scribbles;

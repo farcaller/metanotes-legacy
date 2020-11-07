@@ -32,6 +32,7 @@ import TextField from '@material-ui/core/TextField';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SaveIcon from '@material-ui/icons/Save';
 import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
 import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -70,6 +71,7 @@ const componentLocals: { [key: string]: unknown } = {
     EditIcon,
     CloseIcon,
     MoreVertIcon,
+    SaveIcon,
   },
   useCoreEvents: () => useContext(CoreEventsContext),
 };

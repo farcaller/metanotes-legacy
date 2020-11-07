@@ -16,7 +16,7 @@ import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, Payloa
 
 import { RootState } from '../..';
 import { StorageAPI } from '../../api';
-import { Attributes, Scribble } from './scribble';
+import { Attributes, Scribble, ScribbleID } from './scribble';
 
 
 export interface ScribblesState {
@@ -44,11 +44,6 @@ export const fetchStoreMetadata = createAsyncThunk<Scribble[], void, {extra: Sto
 
 export const fetchScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/fetchScribble', async (payload, { extra }) => {
   return await extra.getScribble(payload.id);
-});
-
-export const removeScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/removeScribble', (payload) => {
-  // TODO: implement on the backend
-  return payload;
 });
 
 export function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]): void {
@@ -92,29 +87,22 @@ const scribblesSlice = createSlice({
       scribblesAdapter.upsertMany(state.scribbles, action.payload);
       updateTitleMapAdd(state, action.payload);
     },
-    createDraft: {
-      reducer(state, action: PayloadAction<Scribble>): void {
-        const { payload } = action;
-        scribblesAdapter.addOne(state.scribbles, payload);
-      },
-      prepare(id: string, scribble: Scribble): { payload: Scribble } {
-        return {
-          payload: {
-            id: id,
-            // TODO: clone?
-            body: scribble.body,
-            attributes: {
-              ...(JSON.parse(JSON.stringify(scribble.attributes)) as Attributes),
-              'draft-of': scribble.id,
-            },
-
-            status: 'synced',
-          }
-        };
-      }
+    createDraft(state, action: PayloadAction<{ id: ScribbleID, newId: ScribbleID }>) {
+      const { id, newId } = action.payload;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const oldScribble = selectScribbleById({ scribbles: state }, id)!;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const newScribble = JSON.parse(JSON.stringify(oldScribble)) as Scribble;
+      newScribble.id = newId;
+      newScribble.attributes['draft-of'] = id;
+      newScribble.status = 'synced';
+      scribblesAdapter.addOne(state.scribbles, newScribble);
     },
-    updateScribble(state, action: PayloadAction<{ id: string, changes: Partial<Scribble> }>) {
+    updateScribble(state, action: PayloadAction<{ id: ScribbleID, changes: Partial<Scribble> }>) {
       scribblesAdapter.updateOne(state.scribbles, action);
+    },
+    removeScribble(state, action: PayloadAction<ScribbleID>) {
+      scribblesAdapter.removeOne(state.scribbles, action.payload);
     }
   },
   extraReducers: builder => {
@@ -159,22 +147,12 @@ const scribblesSlice = createSlice({
         },
       });
     });
-
-    builder.addCase(removeScribble.pending, (state, action) => {
-      scribblesAdapter.removeOne(state.scribbles, action.meta.arg.id);
-    });
-    builder.addCase(removeScribble.fulfilled, (_state, _action) => {
-      // no action
-    });
-    builder.addCase(removeScribble.rejected, () => {
-      // TODO: revert removal?
-    });
   },
 });
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribble } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribble, removeScribble } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

@@ -24,9 +24,11 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import SpeedDial from '@material-ui/core/SpeedDial';
 import SpeedDialIcon from '@material-ui/core/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
+import TextField from '@material-ui/core/TextField';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -57,6 +59,8 @@ const componentLocals: { [key: string]: unknown } = {
   SpeedDialAction,
   MonacoEditor,
   SyntaxHighlighter,
+  TextField,
+  IconButton,
 
   // TODO: does not belong here
   useParams,

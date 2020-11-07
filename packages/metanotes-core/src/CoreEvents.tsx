@@ -16,11 +16,11 @@ import React, { ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 import { ulid } from 'ulid';
 
-import { Scribble, createDraft } from '@metanotes/store/lib/features/scribbles';
+import { createDraft } from '@metanotes/store/lib/features/scribbles';
 
 
 export interface CoreEventsContextType {
-  createDraft(scribble: Scribble): string;
+  createDraft(id: string): string;
 }
 
 export const CoreEventsContext = React.createContext(null as unknown as CoreEventsContextType);
@@ -29,10 +29,10 @@ function CoreEvents({ children }: { children: ReactNode }): JSX.Element {
   const dispatch = useDispatch();
 
   const handlers = {
-    createDraft(scribble: Scribble): string {
-      const id = ulid();
-      dispatch(createDraft(id, scribble));
-      return id;
+    createDraft(id: string): string {
+      const newId = ulid();
+      dispatch(createDraft({ id, newId }));
+      return newId;
     },
   };
 

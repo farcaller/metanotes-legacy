@@ -24,7 +24,7 @@ const { Grid, Paper, useParams } = components;
 function SingleScribbleLayout() {
   const { id } = useParams();
   
-  const scribble = useSelector(state => selectScribbleById(state, id));
+  const scribbleExists = useSelector(state => selectScribbleById(state, id) !== undefined);
   const ScribbleContainer = useScribble('$:core/ui/scribble-container');
   const ScribblesList = useScribble('$:core/ui/scribbles-list');
 
@@ -36,7 +36,7 @@ function SingleScribbleLayout() {
         </Paper>
       </Grid>
       <Grid item xs style={{marginLeft: 8, marginRight: 8}}>
-        {scribble ? <ScribbleContainer scribble={scribble} /> : ''}
+        {scribbleExists ? <ScribbleContainer id={id} /> : ''}
       </Grid>
     </Grid>
   )

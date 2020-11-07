@@ -36,7 +36,6 @@ function App(): JSX.Element {
   const routeScribbleRoutes = useMemo(() => routeScribbles.map((scribble, idx) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title!, routeScribbleElements[idx]);
-    console.log('loading el for', scribble, routeScribbleElements[idx]);
     return (
       <Route exact={scribble.attributes['exact'] === true} path={scribble.attributes['path'] as string}>
         <Comp />

@@ -31,6 +31,11 @@ const scribbles: Scribble[] = [
   
   require('./core/ui/scribbles-list.metanotes.jsx'),
   require('./core/ui/scribble-container.metanotes.jsx'),
+  require('./core/ui/scribble-card-header.metanotes.jsx'),
+  require('./core/ui/scribble-card-actions.metanotes.jsx'),
+
+  require('./core/ui/actions/view/edit.metanotes.jsx'),
+  require('./core/ui/actions/edit/close.metanotes.jsx'),
 ];
 
 export default scribbles;

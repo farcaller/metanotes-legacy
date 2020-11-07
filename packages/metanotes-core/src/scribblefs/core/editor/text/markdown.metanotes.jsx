@@ -18,7 +18,8 @@
  * title: $:core/editor/text/markdown
  */
 
-const { useRef, useState, useDispatch, updateScribble, useCallback } = core;
+const { useCallback } = React;
+const { useDispatch, updateScribble, useSelector, selectScribbleById } = core;
 const { MonacoEditor, Paper } = components;
 
 
@@ -29,25 +30,13 @@ const monacoConfig = {
   wordWrap: 'on',
 };
 
-function MarkdownEditor({ scribble }) {
-  const editorRef = useRef();
-
-  const [previewedText, setPreviewedText] = useState(scribble.body);
-  const [previewedTitle, setPreviewedTitle] = useState(scribble.attributes.title || '');
-
-  const handleEditorDidMount = useCallback((_, editor) => {
-    editorRef.current = editor;
-
-    editorRef.current.onDidChangeModelContent(() => {
-      setPreviewedText(editorRef.current.getValue());
-    });
-  }, [editorRef]);
-
+function MarkdownEditor({ id }) {
+  const body = useSelector(state => selectScribbleById(state, id).body);
   const dispatch = useDispatch();
 
   const onChange = useCallback((ev, value) => {
-    dispatch(updateScribble({ id: scribble.id, changes: { body: value }}));
-  }, [scribble]);
+    dispatch(updateScribble({ id, changes: { body: value }}));
+  }, [id]);
 
   return (
     <Paper>
@@ -55,8 +44,7 @@ function MarkdownEditor({ scribble }) {
         height="400px"
         width={'100%'}
         language="markdown"
-        value={scribble.body}
-        editorDidMount={handleEditorDidMount}
+        value={body}
         onChange={onChange}
         options={monacoConfig}
       />

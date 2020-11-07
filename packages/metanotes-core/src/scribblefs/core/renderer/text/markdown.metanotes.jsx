@@ -18,12 +18,13 @@
  * title: $:core/renderer/text/markdown
  */
 
-const { Markdown, Paper } = components;
+const { useSelector, selectScribbleById } = core;
+const { Markdown } = components;
 
-function MarkdownRenderer({ scribble }) {
-  return (
-    <Markdown text={scribble.body} />
-  );
+function MarkdownRenderer({ id }) {
+  const body = useSelector(state => selectScribbleById(state, id).body );
+
+  return <Markdown text={body} />;
 }
 
 export default React.memo(MarkdownRenderer);

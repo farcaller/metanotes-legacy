@@ -18,8 +18,9 @@
  * title: $:core/ui/view-scribble-card
  */
 
-const { useState, useScribble, useDispatch, fetchScribble, equals, useEffect, removeScribble } = core;
-const { LinearProgress, Alert, Card, CardContent, SpeedDial, SpeedDialAction, CardHeader, icons, useHistory, useCoreEvents } = components;
+const { useState } = React;
+const { useScribble, useDispatch, equals, removeScribble } = core;
+const { Card, CardContent, CardHeader, useHistory, useCoreEvents } = components;
 
 function ViewScribbleCard({ scribble, children }) {
   const dispatch = useDispatch();

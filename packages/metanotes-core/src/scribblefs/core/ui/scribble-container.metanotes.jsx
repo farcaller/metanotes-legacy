@@ -18,13 +18,29 @@
  * title: $:core/ui/scribble-container
  */
 
-const { useState, useScribble, useDispatch, useCallback, fetchScribble, equals, useEffect, removeScribble } = core;
-const { LinearProgress, Alert, Card, CardContent, SpeedDial, SpeedDialIcon, SpeedDialAction, CardHeader, icons, useHistory, useCoreEvents } = components;
+const { useState, useEffect, useCallback } = React;
+const { useSelector, selectScribbleById, useScribble, useDispatch, fetchScribble, equals, removeScribble } = core;
+const { LinearProgress, Alert, Card, CardContent, useHistory, useCoreEvents } = components;
 
-function ScribbleContainer({ scribble }) {
+function ScribbleContainer({ id }) {
+  const scribble = useSelector(state => {
+    const sc = selectScribbleById(state, id);
+    return {
+      id: sc.id,
+      status: sc.status,
+      error: sc.error,
+      attributes: {
+        'content-type': sc.attributes['content-type'],
+        'draft-of': sc.attributes['draft-of'],
+        title: sc.attributes.title,
+      }
+    };
+  }, equals);
+
   const dispatch = useDispatch();
   const Renderer = useScribble(`$:core/renderer/${scribble.attributes['content-type']}`);
   const Editor = useScribble(`$:core/editor/${scribble.attributes['content-type']}`);
+  const Header = useScribble(`$:core/ui/scribble-card-header`);
 
   const isEditing = scribble.attributes['draft-of'] !== undefined;
 
@@ -32,7 +48,7 @@ function ScribbleContainer({ scribble }) {
   switch (scribble.status) {
     case 'core':
     case 'synced':
-      contentEl = isEditing ? <Editor scribble={scribble} /> : <Renderer scribble={scribble} />;
+      contentEl = isEditing ? <Editor id={id} /> : <Renderer id={id} />;
       break;
     case 'syncedMetadataOnly':
       contentEl = <LinearProgress />;
@@ -55,64 +71,9 @@ function ScribbleContainer({ scribble }) {
     }
   });
 
-  const [actionsOpen, setActionsOpen] = useState(false);
-
-  const onActionsOpen = useCallback(() => setActionsOpen(true), []);
-  const onActionsClose = useCallback(() => setActionsOpen(false), []);
-
-  const history = useHistory();
-  const coreEvents = useCoreEvents();
-
-  const onEdit = useCallback(() => {
-    if (scribble.status !== 'core' && scribble.status !== 'synced') {
-      console.log('cannot edit non-synced scribble');
-      return;
-    }
-    const draftId = coreEvents.createDraft(scribble);
-    history.push(`/${draftId}`);
-  }, [scribble.status, history]);
-
-  const onClose = useCallback(() => {
-    const originalId = scribble.attributes['draft-of'];
-    if (!originalId) {
-      return;
-    }
-    dispatch(removeScribble(scribble));
-    history.push(`/${originalId}`);
-  }, [scribble, history]);
-
   return (
     <Card>
-      <CardHeader
-        action={
-          <SpeedDial
-            ariaLabel="actions"
-            icon={<icons.MoreVertIcon />}
-            direction="left"
-            open={actionsOpen}
-            onOpen={onActionsOpen}
-            onClose={onActionsClose}
-            FabProps={{
-              size: "small",
-              style: { backgroundColor: 'white', color: 'black' },
-            }}
-          >
-            <SpeedDialAction
-              icon={<icons.CloseIcon />}
-              tooltipPlacement="top"
-              tooltipTitle="close"
-              onClick={onClose}
-            />
-            <SpeedDialAction
-              icon={<icons.EditIcon/>}
-              tooltipPlacement="top"
-              tooltipTitle="edit"
-              onClick={onEdit}
-            />
-          </SpeedDial>
-        }
-        title={scribble.attributes.title}
-      />
+      <Header id={id} />
       <CardContent>
         {contentEl}
       </CardContent>
@@ -120,4 +81,4 @@ function ScribbleContainer({ scribble }) {
   )
 }
 
-export default React.memo(ScribbleContainer, (prev, next) => equals(prev.scribble, next.scribble));
+export default React.memo(ScribbleContainer);

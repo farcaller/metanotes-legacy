@@ -12,32 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { transform } from '@babel/standalone';
 import { useDispatch, useSelector } from 'react-redux';
 import equals from 'deep-equal';
+import createCachedSelector from 're-reselect';
 
 import { SyncedScribble } from '../scribble';
 import { fetchScribble, selectScribbleById, selectAllScribbles, removeScribble, updateScribble } from '../scribblesSlice';
 import { selectScribbleByTitle } from '../selectors';
-import { useScribble } from '../useScribble';
+import { loadScribbleComponent, useScribble, UseScribbleContext } from '../useScribble';
+import { selectScribblesByTag } from '../tagging';
+import { ScribbleResolverContext } from '../ScribbleResolverContext';
 
 
 const coreLocals = {
-  useRef,
-  useState,
+  createCachedSelector,
   useSelector,
-  useEffect,
-  useCallback,
   useDispatch,
   selectScribbleById,
   selectScribbleByTitle,
+  selectScribblesByTag,
   selectAllScribbles,
   useScribble,
   fetchScribble,
   removeScribble,
   updateScribble,
   equals,
+  loadScribbleComponent,
+  UseScribbleContext,
+  ScribbleResolverContext,
 };
 const exportedLocals = { React, core: coreLocals };
 const localKeys = Object.keys(exportedLocals) as (keyof typeof exportedLocals)[];

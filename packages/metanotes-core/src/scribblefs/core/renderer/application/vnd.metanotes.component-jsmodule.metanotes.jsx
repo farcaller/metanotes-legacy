@@ -18,12 +18,13 @@
  * title: $:core/renderer/application/vnd.metanotes.component-jsmodule
  */
 
+const { useSelector, selectScribbleById } = core;
 const { SyntaxHighlighter } = components;
 
-function SyntaxHighlighterRenderer({ scribble }) {
-  return (
-    <SyntaxHighlighter language="javascript">{scribble.body}</SyntaxHighlighter>
-  );
+function SyntaxHighlighterRenderer({ id }) {
+  const body = useSelector(state => selectScribbleById(state, id).body);
+
+  return <SyntaxHighlighter language="javascript">{body}</SyntaxHighlighter>;
 }
 
 export default React.memo(SyntaxHighlighterRenderer);

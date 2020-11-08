@@ -12,4 +12,4 @@ services:
   envoy:
     image: ghcr.io/farcaller/metanotes-envoy:master
     ports:
-    - "3000:80"
+    - "4000:8000"

@@ -117,6 +117,6 @@ jobs:
           org.opencontainers.image.source=${{ github.event.repository.clone_url }}
           org.opencontainers.image.created=${{ steps.prep_envoy.outputs.created }}
           org.opencontainers.image.revision=${{ github.sha }}
-        target: deploy_core
+        target: deploy_envoy
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache

@@ -28,9 +28,12 @@ import { setCoreScribbles, UseScribbleContext } from '@metanotes/store/lib/featu
 import ScribbleResolver from './ScribbleResolver';
 import CoreEvents from './CoreEvents';
 
+
+const backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
+
 const api = createBackend({
   backend: 'metanotes-server',
-  config: { hostname: 'http://127.0.0.1:55080' },
+  config: { hostname: backendAddress },
 });
 const theStore = store(undefined, api);
 

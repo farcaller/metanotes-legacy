@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  core:
+    image: ghcr.io/farcaller/metanotes-core:master
+  server:
+    image: ghcr.io/farcaller/metanotes-server:master
+    environment:
+    - "DATA_DIR=/data"
+    - "LISTEN_ADDRESS=0.0.0.0:55001"
+    volumes:
+    - "./data:/data"
+  envoy:
+    image: ghcr.io/farcaller/metanotes-envoy:master
+    ports:
+    - "3000:80"

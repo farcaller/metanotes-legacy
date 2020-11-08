@@ -68,3 +68,13 @@ COPY --from=build_server /usr/src/app/packages/metanotes-server/dist/index.js /u
 WORKDIR /usr/src/app
 CMD ["sh", "-c", "exec node ./index.js \"${DATA_DIR}\" \"${LISTEN_ADDRESS}\""]
 
+
+####
+
+FROM envoyproxy/envoy-alpine:v1.16-latest as deploy_envoy
+
+RUN apk --no-cache add ca-certificates
+
+COPY /packages/metanotes-server/envoy-config-compose.yaml /envoy-config.yaml
+
+CMD ["/usr/local/bin/envoy", "-c", "/envoy-config.yaml"]

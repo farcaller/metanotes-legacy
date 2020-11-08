@@ -16,30 +16,55 @@ RUN yarn
 COPY ./packages/metanotes-server-api ./
 RUN yarn build
 
-FROM node:15-alpine3.12 as build
+####
+
+FROM node:15-alpine3.12 as build_deps
 
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN apk --update add python3 build-base; yarn
 COPY . ./
 
-WORKDIR /usr/src/app/packages/metanotes-filter
-RUN yarn && yarn build
-
 WORKDIR /usr/src/app/packages/metanotes-server-api
-RUN yarn --prod
+RUN yarn
 COPY --from=build_protoc /usr/src/app/packages/metanotes-server-api/lib ./lib
 
+####
+
+FROM build_deps as build_server
+
+WORKDIR /usr/src/app/packages/metanotes-server
+RUN yarn build
+
+####
+
+FROM build_deps as build_core
+
+WORKDIR /usr/src/app/packages/metanotes-filter
+RUN yarn build
+
 WORKDIR /usr/src/app/packages/metanotes-store
-RUN yarn && yarn build
+RUN yarn build
 
 WORKDIR /usr/src/app/packages/remark-metareact
-RUN yarn && yarn build
+RUN yarn build
 
 WORKDIR /usr/src/app/packages/metanotes-core
-RUN yarn && yarn build
+RUN yarn build
 
-FROM nginx:1.12-alpine
-COPY --from=build /usr/src/app/packages/metanotes-core/build /usr/share/nginx/html
+####
+
+FROM nginx:1.12-alpine as deploy_core
+
+COPY --from=build_core /usr/src/app/packages/metanotes-core/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
+####
+
+FROM node:15-alpine3.12 as deploy_server
+
+COPY --from=build_server /usr/src/app/packages/metanotes-server/dist/index.js /usr/src/app/index.js
+WORKDIR /usr/src/app
+CMD ["sh", "-c", "exec node ./index.js \"${DATA_DIR}\" \"${LISTEN_ADDRESS}\""]
+

@@ -20,7 +20,7 @@
 
 const { useMemo, useContext } = React;
 const {
-  dispatch, useSelector, selectScribbleById, createCachedSelector, selectScribblesByTag,
+  useDispatch, useSelector, selectScribbleById, createCachedSelector, selectScribblesByTag,
   equals, loadScribbleComponent, UseScribbleContext, ScribbleResolverContext } = core;
 
 
@@ -39,6 +39,7 @@ function ScribbleCardActions({ id }) {
 
   const cache = useContext(UseScribbleContext);
   const resolver = useContext(ScribbleResolverContext);
+  const dispatch = useDispatch();
   const actions = useMemo(() => actionScribbles.map(scribble => {
     const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title, scribble);
     return <Comp key={scribble.id} id={id} />;

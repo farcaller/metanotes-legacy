@@ -19,7 +19,7 @@
  */
 
 const { useCallback } = React;
-const { dispatch, useSelector, selectScribbleById, updateScribble, equals, useScribble } = core;
+const { useDispatch, useSelector, selectScribbleById, updateScribble, equals, useScribble } = core;
 const { CardHeader, TextField } = components;
 
 
@@ -37,6 +37,8 @@ function ScribbleCardHeader({ id }) {
   }, equals);
 
   const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
+
+  const dispatch = useDispatch();
 
   const onTitleChange = useCallback((event) => {
     dispatch(updateScribble({ id, changes: { attributes: { title: event.target.value } } }));

@@ -23,11 +23,17 @@ const { useDispatch, updateScribble, useSelector, selectScribbleById } = core;
 const { MonacoEditor, Paper } = components;
 
 
-const monacoConfig = {
+const MonacoConfig = {
   minimap: {
     enabled: false
   },
   wordWrap: 'on',
+  lineNumbers: 'off',
+  renderLineHighlight: 'none',
+  glyphMargin: false,
+  folding: false,
+  lineDecorationsWidth: 0,
+  lineNumbersMinChars: 0,
 };
 
 function MarkdownEditor({ id }) {
@@ -46,7 +52,7 @@ function MarkdownEditor({ id }) {
         language="markdown"
         value={body}
         onChange={onChange}
-        options={monacoConfig}
+        options={MonacoConfig}
       />
     </Paper>
   );

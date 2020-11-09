@@ -36,6 +36,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
 import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import Autocomplete from '@material-ui/core/Autocomplete';
 
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
@@ -62,6 +63,7 @@ const componentLocals: { [key: string]: unknown } = {
   SyntaxHighlighter,
   TextField,
   IconButton,
+  Autocomplete,
 
   // TODO: does not belong here
   useParams,

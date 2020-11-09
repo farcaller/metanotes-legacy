@@ -41,6 +41,7 @@ function ScribbleContainer({ id }) {
   const Renderer = useScribble(`$:core/renderer/${scribble.attributes['content-type']}`);
   const Editor = useScribble(`$:core/editor/${scribble.attributes['content-type']}`);
   const Header = useScribble(`$:core/ui/scribble-card-header`);
+  const AttributesEditor = useScribble(`$:core/ui/scribble-attributes-editor`);
 
   const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
 
@@ -48,7 +49,14 @@ function ScribbleContainer({ id }) {
   switch (scribble.status) {
     case 'core':
     case 'synced':
-      contentEl = isEditing ? <Editor id={id} /> : <Renderer id={id} />;
+      if (isEditing) {
+        contentEl = <>
+          <Editor id={id} />
+          <AttributesEditor id={id} />
+        </>;
+      } else {
+        contentEl = <Renderer id={id} />;
+      }
       break;
     case 'syncedMetadataOnly':
       contentEl = <LinearProgress />;

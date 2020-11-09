@@ -37,18 +37,15 @@ export function useScribble(title: string): React.FunctionComponent<unknown> {
 
 export function loadScribbleComponent(resolver: ScribbleResolverContextType, dispatch: Dispatch<Action<unknown>>, cache: ComponentCache, title: string, scribble?: Scribble): React.FunctionComponent<unknown> {
   if (scribble === undefined) {
-    console.warn(`non-caching undefined loadScribbleComponent ${title}`);
     return resolver.resolver({ title }, dispatch, scribble);
   }
 
   const cached = cache[scribble.id];
   if (cached && equals(cached.scribble, scribble, { strict: true })) {
-    console.log(`cached loadScribbleComponent ${title}`);
     return cached.component;
   }
 
   const el = resolver.resolver({ title }, dispatch, scribble);
-  console.log(`non-cached first render loadScribbleComponent ${title}`);
   if (scribble.status === 'core' || scribble.status === 'synced') {
     cache[scribble.id] = {
       scribble: scribble,

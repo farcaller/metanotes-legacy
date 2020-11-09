@@ -55,8 +55,7 @@ export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
   try {
     s.getAttributesMap().forEach((v, k) => attrs[k] = JSON.parse(v) as unknown);
   } catch (e) {
-    console.log(e);
-    console.log(s.getAttributesMap());
+    console.error('failed to parse scribble attrs:', e, s.getAttributesMap());
     throw e;
   }
   return {

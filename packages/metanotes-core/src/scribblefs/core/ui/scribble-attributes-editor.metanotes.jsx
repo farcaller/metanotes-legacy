@@ -19,7 +19,7 @@
  */
 
 const { useMemo, useContext, useCallback } = React;
-const { useDispatch, useSelector, selectScribbleById, createCachedSelector, updateScribble } = core;
+const { useDispatch, useSelector, selectScribbleById, createCachedSelector, updateScribbleAttributes } = core;
 const { Autocomplete, TextField } = components;
 
 
@@ -39,14 +39,7 @@ function ScribbleAttributesEditor({ id }) {
   const dispatch = useDispatch();
 
   const onChangeContentType = useCallback((_, newValue) => {
-    const changes = (v) => ({
-      attributes: {
-        ...attributes,
-        'content-type': v,
-      },
-    });
-    
-    dispatch(updateScribble({ id, changes: changes(newValue) }));
+    dispatch(updateScribbleAttributes({ id, attributes: { 'content-type': newValue } }));
   }, [id, attributes]);
 
   return (

@@ -19,32 +19,37 @@
  */
 
 const { useCallback } = React;
-const { useDispatch, useSelector, selectScribbleById, updateScribble, equals, useScribble } = core;
+const { useDispatch, useSelector, selectScribbleById, updateScribbleAttributes, equals, useScribble, createCachedSelector } = core;
 const { CardHeader, TextField } = components;
 
+
+const filtered = (attrs, keys) => keys.reduce((obj, key) => ({ ...obj, [key]: attrs[key] }), {});
+
+const RequiredAttributes = ['mn-draft-of', 'title'];
+
+const selectScribblePartialAttributesById = createCachedSelector(
+  selectScribbleById,
+  (scribble) => filtered(scribble.attributes, RequiredAttributes),
+)((_, id) => id);
 
 function ScribbleCardHeader({ id }) {
   const Actions = useScribble(`$:core/ui/scribble-card-actions`);
 
-  const scribble = useSelector(state => {
-    const sc = selectScribbleById(state, id);
-    return {
-      attributes: {
-        'mn-draft-of': sc.attributes['mn-draft-of'],
-        title: sc.attributes.title,
-      }
-    };
-  }, equals);
-
-  const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
+  const attributes = useSelector(state => selectScribblePartialAttributesById(state, id), equals);
+  const isEditing = attributes['mn-draft-of'] !== undefined;
 
   const dispatch = useDispatch();
 
   const onTitleChange = useCallback((event) => {
-    dispatch(updateScribble({ id, changes: { attributes: { title: event.target.value } } }));
+    dispatch(updateScribbleAttributes({
+      id,
+      attributes: {
+        title: event.target.value,
+      },
+    }));
   }, [id]);
 
-  let titleEl = isEditing ? <TextField fullWidth value={scribble.attributes.title} onChange={onTitleChange} /> : scribble.attributes.title;
+  let titleEl = isEditing ? <TextField fullWidth value={attributes.title} onChange={onTitleChange} /> : attributes.title;
 
   return (
     <CardHeader title={titleEl} action={<Actions id={id} />} />

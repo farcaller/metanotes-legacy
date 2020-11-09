@@ -101,6 +101,19 @@ const scribblesSlice = createSlice({
     updateScribble(state, action: PayloadAction<{ id: ScribbleID, changes: Partial<Scribble> }>) {
       scribblesAdapter.updateOne(state.scribbles, action);
     },
+    updateScribbleAttributes(state, action: PayloadAction<{ id: ScribbleID, attributes: Partial<Attributes> }>) {
+      const { id, attributes } = action.payload;
+      const scribble = selectScribbleById({ scribbles: state }, id)!;
+      scribblesAdapter.updateOne(state.scribbles, {
+        id,
+        changes: {
+          attributes: {
+            ...scribble.attributes,
+            ...attributes,
+          }
+        }
+      });
+    },
     removeScribble(state, action: PayloadAction<ScribbleID>) {
       scribblesAdapter.removeOne(state.scribbles, action.payload);
     },
@@ -167,7 +180,7 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribble, removeScribble, commitDraft } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribble, updateScribbleAttributes, removeScribble, commitDraft } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

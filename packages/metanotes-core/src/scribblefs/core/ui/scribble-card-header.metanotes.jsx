@@ -30,13 +30,13 @@ function ScribbleCardHeader({ id }) {
     const sc = selectScribbleById(state, id);
     return {
       attributes: {
-        'draft-of': sc.attributes['draft-of'],
+        'mn-draft-of': sc.attributes['mn-draft-of'],
         title: sc.attributes.title,
       }
     };
   }, equals);
 
-  const isEditing = scribble.attributes['draft-of'] !== undefined;
+  const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
 
   const onTitleChange = useCallback((event) => {
     dispatch(updateScribble({ id, changes: { attributes: { title: event.target.value } } }));

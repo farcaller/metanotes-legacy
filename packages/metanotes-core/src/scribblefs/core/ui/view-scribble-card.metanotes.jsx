@@ -44,7 +44,7 @@ function ViewScribbleCard({ scribble, children }) {
   };
 
   const onClose = () => {
-    const originalId = scribble.attributes['draft-of'];
+    const originalId = scribble.attributes['mn-draft-of'];
     if (!originalId) {
       return;
     }

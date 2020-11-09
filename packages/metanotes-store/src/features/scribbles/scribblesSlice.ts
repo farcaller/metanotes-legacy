@@ -94,7 +94,7 @@ const scribblesSlice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const newScribble = JSON.parse(JSON.stringify(oldScribble)) as Scribble;
       newScribble.id = newId;
-      newScribble.attributes['draft-of'] = id;
+      newScribble.attributes['mn-draft-of'] = id;
       newScribble.status = 'synced';
       scribblesAdapter.addOne(state.scribbles, newScribble);
     },
@@ -106,12 +106,12 @@ const scribblesSlice = createSlice({
     },
     commitDraft(state, action: PayloadAction<ScribbleID>) {
       const draftScribble = selectScribbleById({ scribbles: state }, action.payload)!;
-      const originalScribbleId = draftScribble.attributes['draft-of']!;
+      const originalScribbleId = draftScribble.attributes['mn-draft-of']!;
       const draftScribbleId = draftScribble.id;
 
       const newScribble = JSON.parse(JSON.stringify(draftScribble)) as Scribble;
       newScribble.id = originalScribbleId;
-      delete newScribble.attributes['draft-of'];
+      delete newScribble.attributes['mn-draft-of'];
 
       scribblesAdapter.updateOne(state.scribbles, {
         id: originalScribbleId,

@@ -21,10 +21,12 @@ export interface Attributes {
   'content-type': string;
   title?: string;
   tags?: string[];
+  
   list?: string[];
   'list-before'?: ScribbleID;
   'list-after'?: ScribbleID;
-  'draft-of'?: ScribbleID;
+  
+  'mn-draft-of'?: ScribbleID;
 
   [x: string]: unknown;
 }

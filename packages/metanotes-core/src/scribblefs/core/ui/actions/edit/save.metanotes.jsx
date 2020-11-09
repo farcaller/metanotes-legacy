@@ -26,7 +26,7 @@ const { icons, IconButton, useHistory } = components;
 
 const selectScribbleDraftOfById = createCachedSelector(
   selectScribbleById,
-  (scribble) => scribble.attributes['draft-of'],
+  (scribble) => scribble.attributes['mn-draft-of'],
 )((_, id) => id);
 
 function SaveAction({ id }) {

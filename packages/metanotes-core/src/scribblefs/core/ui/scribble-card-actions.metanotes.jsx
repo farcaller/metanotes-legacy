@@ -26,7 +26,7 @@ const {
 
 const selectScribbleIsDraftById = createCachedSelector(
   selectScribbleById,
-  (scribble) => scribble.attributes['draft-of'] !== undefined,
+  (scribble) => scribble.attributes['mn-draft-of'] !== undefined,
 )((_, id) => id);
 
 function ScribbleCardActions({ id }) {

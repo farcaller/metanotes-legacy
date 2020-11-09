@@ -31,7 +31,7 @@ function ScribbleContainer({ id }) {
       error: sc.error,
       attributes: {
         'content-type': sc.attributes['content-type'],
-        'draft-of': sc.attributes['draft-of'],
+        'mn-draft-of': sc.attributes['mn-draft-of'],
         title: sc.attributes.title,
       }
     };
@@ -42,7 +42,7 @@ function ScribbleContainer({ id }) {
   const Editor = useScribble(`$:core/editor/${scribble.attributes['content-type']}`);
   const Header = useScribble(`$:core/ui/scribble-card-header`);
 
-  const isEditing = scribble.attributes['draft-of'] !== undefined;
+  const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
 
   let contentEl;
   switch (scribble.status) {

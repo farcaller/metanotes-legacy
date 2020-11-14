@@ -19,9 +19,14 @@
  */
 
 const { useCallback } = React;
-const { useDispatch, createDraftScribble, ulid } = core;
+const { useDispatch, createDraftScribble, ulid, createSelector, selectAllScribbles, useSelector, equals, syncScribble } = core;
 const { icons, IconButton, useHistory } = components;
 
+
+const selectDirtyScribbles = createSelector(
+  selectAllScribbles,
+  (scribbles) => scribbles.filter(s => s.dirty === true),
+);
 
 function ActionsBar() {
   const dispatch = useDispatch();
@@ -59,6 +64,14 @@ function ActionsBar() {
     history.push(`/${scribble.id}`);
   }, [dispatch, history]);
 
+  const dirtyScribbles = useSelector(state => selectDirtyScribbles(state), equals);
+
+  const onSync = useCallback(() => {
+    for (const s of dirtyScribbles) {
+      dispatch(syncScribble(s));
+    }
+  }, [dispatch, dirtyScribbles]);
+
   // TODO: should use a tagged collection
   return (
     <>
@@ -72,6 +85,10 @@ function ActionsBar() {
             <icons.PhotoCamera />
         </IconButton>
       </label>
+
+      <IconButton color="primary" aria-label="sync to server" onClick={onSync}>
+        <icons.Sync />
+      </IconButton>
     </>
   );
 }

@@ -47,6 +47,7 @@ export interface Scribble {
 
   status: 'core' | 'syncedMetadataOnly' | 'pullingBody' | 'synced' | 'failed';
   error?: string;
+  dirty?: boolean;
 }
 
 export interface SyncedScribble extends Scribble {
@@ -84,6 +85,26 @@ export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
   scribble.computedAttributes = recomputeAttributes(scribble);
 
   return scribble;
+}
+
+export async function toProto(s: Scribble): Promise<ScribbleProto> {
+  const spb = new ScribbleProto();
+  spb.setId(s.id);
+  const props = spb.getPropsMap();
+  for (const k of Object.keys(s.attributes)) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    props.set(k, s.attributes[k]!);
+  }
+  if (s.binaryBodyURL) {
+    // TODO: yay browser specific bs
+    const res = await fetch(s.binaryBodyURL);
+    const uint8 = new Uint8Array(await res.arrayBuffer());
+    spb.setBinaryBody(uint8);
+  } else {
+    spb.setTextBody(s.body!);
+  }
+
+  return spb;
 }
 
 const ajv = new Ajv();

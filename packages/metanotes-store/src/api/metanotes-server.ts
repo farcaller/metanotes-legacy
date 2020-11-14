@@ -16,7 +16,7 @@ import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
 import pb from '@metanotes/server-api/lib/api_pb';
 import grpcPb from '@metanotes/server-api/lib/api_grpc_web_pb';
-import { Scribble, fromProto } from '../features/scribbles/scribble';
+import { Scribble, fromProto, toProto } from '../features/scribbles/scribble';
 
 
 export interface MetanotesServerConfig {
@@ -52,8 +52,12 @@ export class MetanotesServerAPI {
     throw Error('scribble not found');
   }
 
-  setScribble(scribble: Scribble): Promise<void> {
-    throw Error('unimplemented');
+  async setScribble(scribble: Scribble): Promise<void> {
+    const req = new pb.SetScribbleRequest();
+    const spb = await toProto(scribble);
+    req.setScribble(spb);
+
+    await this.client.setScribble(req);
   }
 
   removeScribble(id: string): Promise<void> {

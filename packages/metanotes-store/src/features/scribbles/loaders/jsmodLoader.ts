@@ -18,9 +18,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import equals from 'deep-equal';
 import createCachedSelector from 're-reselect';
 import { ulid } from 'ulid';
+import { createSelector } from '@reduxjs/toolkit';
 
 import { SyncedScribble } from '../scribble';
-import { fetchScribble, selectScribbleById, selectAllScribbles, removeScribble, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, commitDraft, createDraftScribble } from '../scribblesSlice';
+import { fetchScribble, selectScribbleById, selectAllScribbles, removeScribble, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, commitDraft, createDraftScribble, syncScribble } from '../scribblesSlice';
 import { selectScribbleByTitle } from '../selectors';
 import { loadScribbleComponent, useScribble, UseScribbleContext } from '../useScribble';
 import { selectScribblesByTag } from '../tagging';
@@ -29,6 +30,7 @@ import { ScribbleResolverContext } from '../ScribbleResolverContext';
 
 const coreLocals = {
   createCachedSelector,
+  createSelector,
   useSelector,
   useDispatch,
   selectScribbleById,
@@ -48,6 +50,7 @@ const coreLocals = {
   ScribbleResolverContext,
   createDraftScribble,
   ulid,
+  syncScribble,
 };
 const exportedLocals = { React, core: coreLocals };
 const localKeys = Object.keys(exportedLocals) as (keyof typeof exportedLocals)[];

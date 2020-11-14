@@ -46,6 +46,11 @@ export const fetchScribble = createAsyncThunk<Scribble, Scribble, { extra: Stora
   return await extra.getScribble(payload.id);
 });
 
+export const syncScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/syncScribble', async (payload, { extra }) => {
+  await extra.setScribble(payload);
+  return payload;
+});
+
 export function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]): void {
   for (const sc of scribbles) {
     const title = sc.attributes['title'];
@@ -92,6 +97,7 @@ const scribblesSlice = createSlice({
       updateTitleMapAdd(state, action.payload);
     },
     createDraft(state, action: PayloadAction<{ id: ScribbleID, newId: ScribbleID }>) {
+      // TODO: update title map?
       const { id, newId } = action.payload;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldScribble = selectScribbleById({ scribbles: state }, id)!;
@@ -101,24 +107,30 @@ const scribblesSlice = createSlice({
       newScribble.attributes['mn-draft-of'] = id;
       newScribble.status = 'synced';
       newScribble.computedAttributes = recomputeAttributes(newScribble);
+      newScribble.dirty = true;
       scribblesAdapter.addOne(state.scribbles, newScribble);
     },
     createDraftScribble(state, action: PayloadAction<Scribble>) {
+      // TODO: update title map
       // TODO: this doesn't create a "draft" per se. The API needs to be revisited and the surface reduced.
       const scribble = action.payload;
       scribble.computedAttributes = recomputeAttributes(scribble);
+      scribble.dirty = true;
       scribblesAdapter.addOne(state.scribbles, scribble);
     },
     updateScribbleBody(state, action: PayloadAction<{ id: ScribbleID, body: string }>) {
+      // TODO: binary body
       const { id, body } = action.payload;
       scribblesAdapter.updateOne(state.scribbles, {
         id,
         changes: {
           body,
+          dirty: true,
         }
       });
     },
     updateScribbleAttributes(state, action: PayloadAction<{ id: ScribbleID, attributes: Partial<Attributes> }>) {
+      // TODO: update title map
       const { id, attributes } = action.payload;
       const scribble = selectScribbleById({ scribbles: state }, id)!;
       const newScribble = JSON.parse(JSON.stringify(scribble)) as Scribble;
@@ -132,6 +144,7 @@ const scribblesSlice = createSlice({
           ...attributes,
         },
         computedAttributes: recomputeAttributes(newScribble),
+        dirty: true,
       };
       scribblesAdapter.updateOne(state.scribbles, {
         id,
@@ -139,6 +152,7 @@ const scribblesSlice = createSlice({
       });
     },
     removeScribbleAttributes(state, action: PayloadAction<{ id: ScribbleID, attributes: string[] }>) {
+      // TODO: update title map
       const { id, attributes } = action.payload;
       const scribble = selectScribbleById({ scribbles: state }, id)!;
       const newScribble = JSON.parse(JSON.stringify(scribble)) as Scribble;
@@ -149,6 +163,7 @@ const scribblesSlice = createSlice({
       const changes = {
         attributes: newScribble.attributes,
         computedAttributes: recomputeAttributes(newScribble),
+        dirty: true,
       };
       scribblesAdapter.updateOne(state.scribbles, {
         id,
@@ -156,9 +171,16 @@ const scribblesSlice = createSlice({
       });
     },
     removeScribble(state, action: PayloadAction<ScribbleID>) {
+      // TODO: update title map
+      // TODO: dirty it how, exactly?..
+      const scribble = selectScribbleById({ scribbles: state }, action.payload)!;
+      if (scribble.binaryBodyURL) {
+        URL.revokeObjectURL(scribble.binaryBodyURL);
+      }
       scribblesAdapter.removeOne(state.scribbles, action.payload);
     },
     commitDraft(state, action: PayloadAction<ScribbleID>) {
+      // TODO: update title map
       const draftScribble = selectScribbleById({ scribbles: state }, action.payload)!;
       const originalScribbleId = draftScribble.attributes['mn-draft-of']!;
       const draftScribbleId = draftScribble.id;
@@ -172,6 +194,7 @@ const scribblesSlice = createSlice({
       } else {
         const newScribble = JSON.parse(JSON.stringify(draftScribble)) as Scribble;
         newScribble.id = originalScribbleId;
+        newScribble.dirty = true;
         delete newScribble.attributes['mn-draft-of'];
 
         scribblesAdapter.updateOne(state.scribbles, {
@@ -220,6 +243,30 @@ const scribblesSlice = createSlice({
         id: action.meta.arg.id,
         changes: {
           status: 'failed',
+          error: action.error.message,
+        },
+      });
+    });
+
+    builder.addCase(syncScribble.pending, (state, action) => {
+      // TODO: do something?
+    });
+    builder.addCase(syncScribble.fulfilled, (state, action) => {
+      scribblesAdapter.updateOne(state.scribbles, {
+        id: action.meta.arg.id,
+        changes: {
+          status: 'synced',
+          error: undefined,
+          dirty: false,
+        },
+      });
+    });
+    builder.addCase(syncScribble.rejected, (state, action) => {
+      scribblesAdapter.updateOne(state.scribbles, {
+        id: action.meta.arg.id,
+        changes: {
+          // TODO: weird state
+          status: 'synced',
           error: action.error.message,
         },
       });

@@ -54,9 +54,9 @@ function getIDs(scribbles: Scribble[]): string[] {
 
 test('it sorts tags by title', () => {
   const state = makeState([
-    makeScribble('3', '3', { tags: 'hello' }),
-    makeScribble('2', '2', { tags: 'hello' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: '["hello"]' }),
+    makeScribble('2', '2', { tags: '["hello"]' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -66,10 +66,10 @@ test('it sorts tags by title', () => {
 
 test('it includes the `list`-ed scribbles first', () => {
   const state = makeState([
-    makeScribble('3', '3', { tags: 'hello' }),
-    makeScribble('2', '2', { tags: 'hello' }),
-    makeScribble('1', '1', { tags: 'hello' }),
-    makeScribble('4', 'hello', { list: ['3'] }),
+    makeScribble('3', '3', { tags: '["hello"]' }),
+    makeScribble('2', '2', { tags: '["hello"]' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
+    makeScribble('4', 'hello', { list: '["3"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -79,9 +79,9 @@ test('it includes the `list`-ed scribbles first', () => {
 
 test('it includes the untitled scribbles last', () => {
   const state = makeState([
-    makeScribble('3', '3', { tags: 'hello' }),
-    makeScribble('2', undefined, { tags: 'hello' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: '["hello"]' }),
+    makeScribble('2', undefined, { tags: '["hello"]' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -91,9 +91,9 @@ test('it includes the untitled scribbles last', () => {
 
 test('it puts the scribble with and empty `list-before` first', () => {
   const state = makeState([
-    makeScribble('3', '3', { tags: 'hello', 'list-before': '' }),
-    makeScribble('2', '2', { tags: 'hello' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: '["hello"]', 'list-before': '' }),
+    makeScribble('2', '2', { tags: '["hello"]' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -103,9 +103,9 @@ test('it puts the scribble with and empty `list-before` first', () => {
 
 test('it puts the scribble with and empty `list-after` last', () => {
   const state = makeState([
-    makeScribble('3', '3', { tags: 'hello' }),
-    makeScribble('2', '2', { tags: 'hello', 'list-after': '' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('3', '3', { tags: '["hello"]' }),
+    makeScribble('2', '2', { tags: '["hello"]', 'list-after': '' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -115,11 +115,11 @@ test('it puts the scribble with and empty `list-after` last', () => {
 
 test('it puts the scribble before its `list-before`', () => {
   const state = makeState([
-    makeScribble('5', '5', { tags: 'hello' }),
-    makeScribble('4', '4', { tags: 'hello' }),
-    makeScribble('3', '3', { tags: 'hello', 'list-before': '2' }),
-    makeScribble('2', '2', { tags: 'hello', 'list-before': '' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('5', '5', { tags: '["hello"]' }),
+    makeScribble('4', '4', { tags: '["hello"]' }),
+    makeScribble('3', '3', { tags: '["hello"]', 'list-before': '2' }),
+    makeScribble('2', '2', { tags: '["hello"]', 'list-before': '' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -129,11 +129,11 @@ test('it puts the scribble before its `list-before`', () => {
 
 test('it puts the scribble after its `list-after`', () => {
   const state = makeState([
-    makeScribble('5', '5', { tags: 'hello' }),
-    makeScribble('4', '4', { tags: 'hello' }),
-    makeScribble('3', '3', { tags: 'hello', 'list-after': '2' }),
-    makeScribble('2', '2', { tags: 'hello', 'list-before': '' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('5', '5', { tags: '["hello"]' }),
+    makeScribble('4', '4', { tags: '["hello"]' }),
+    makeScribble('3', '3', { tags: '["hello"]', 'list-after': '2' }),
+    makeScribble('2', '2', { tags: '["hello"]', 'list-before': '' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');
@@ -143,11 +143,11 @@ test('it puts the scribble after its `list-after`', () => {
 
 test('it puts the scribble after its `list-after` in the very end', () => {
   const state = makeState([
-    makeScribble('5', '5', { tags: 'hello' }),
-    makeScribble('4', '4', { tags: 'hello' }),
-    makeScribble('3', '3', { tags: 'hello', 'list-after': '2' }),
-    makeScribble('2', '2', { tags: 'hello', 'list-after': '' }),
-    makeScribble('1', '1', { tags: 'hello' }),
+    makeScribble('5', '5', { tags: '["hello"]' }),
+    makeScribble('4', '4', { tags: '["hello"]' }),
+    makeScribble('3', '3', { tags: '["hello"]', 'list-after': '2' }),
+    makeScribble('2', '2', { tags: '["hello"]', 'list-after': '' }),
+    makeScribble('1', '1', { tags: '["hello"]' }),
   ]);
 
   const selection = selectScribblesByTag(state, 'hello');

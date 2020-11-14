@@ -47,7 +47,6 @@ export const selectScribblesByTag = createCachedSelector(
   selectScribblesTagged,
   selectScribbleByTitle,
   (matchingScribbles, tagScribble) => {
-
     // sorting is adopted from TW5 rules: https://tiddlywiki.com/static/Order%2520of%2520Tagged%2520Tiddlers.html
     // 1. Get the scribble named ${tag} and add all the results in the order of the scribble's `list` attribute
     // 2. Append all the remaining scribbles with non-empty `title` sorted alphabetically

@@ -103,6 +103,12 @@ const scribblesSlice = createSlice({
       newScribble.computedAttributes = recomputeAttributes(newScribble);
       scribblesAdapter.addOne(state.scribbles, newScribble);
     },
+    createDraftScribble(state, action: PayloadAction<Scribble>) {
+      // TODO: this doesn't create a "draft" per se. The API needs to be revisited and the surface reduced.
+      const scribble = action.payload;
+      scribble.computedAttributes = recomputeAttributes(scribble);
+      scribblesAdapter.addOne(state.scribbles, scribble);
+    },
     updateScribbleBody(state, action: PayloadAction<{ id: ScribbleID, body: string }>) {
       const { id, body } = action.payload;
       scribblesAdapter.updateOne(state.scribbles, {
@@ -215,7 +221,7 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, removeScribble, commitDraft } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, removeScribble, commitDraft, createDraftScribble } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

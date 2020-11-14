@@ -44,14 +44,34 @@ function ActionsBar() {
     history.push(`/${scribble.id}`);
   }, [dispatch, history]);
 
+  const onCreateNew = useCallback(() => {
+    const scribble = {
+      id: ulid(),
+      body: '',
+      attributes: {
+        'content-type': 'text/markdown',
+        'mn-draft-of': '',
+      },
+      status: 'synced',
+    };
+
+    dispatch(createDraftScribble(scribble));
+    history.push(`/${scribble.id}`);
+  }, [dispatch, history]);
+
+  // TODO: should use a tagged collection
   return (
     <>
-    <input accept="image/*" style={{ display: 'none' }} id="icon-button-file" type="file" onChange={onUploadImage} />
-    <label htmlFor="icon-button-file">
-      <IconButton color="primary" aria-label="upload picture" component="span">
-          <icons.PhotoCamera />
+      <IconButton color="primary" aria-label="create scribble" onClick={onCreateNew}>
+        <icons.NoteAddIcon />
       </IconButton>
-    </label>
+
+      <input accept="image/*" style={{ display: 'none' }} id="icon-button-file" type="file" onChange={onUploadImage} />
+      <label htmlFor="icon-button-file">
+        <IconButton color="primary" aria-label="upload picture" component="span">
+            <icons.PhotoCamera />
+        </IconButton>
+      </label>
     </>
   );
 }

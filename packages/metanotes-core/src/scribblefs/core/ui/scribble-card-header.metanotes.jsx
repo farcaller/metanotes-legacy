@@ -49,7 +49,7 @@ function ScribbleCardHeader({ id }) {
     }));
   }, [id]);
 
-  let titleEl = isEditing ? <TextField fullWidth value={attributes.title} onChange={onTitleChange} /> : attributes.title;
+  let titleEl = isEditing ? <TextField fullWidth value={attributes.title ? attributes.title : ''} onChange={onTitleChange} /> : attributes.title;
 
   return (
     <CardHeader title={titleEl} action={<Actions id={id} />} />

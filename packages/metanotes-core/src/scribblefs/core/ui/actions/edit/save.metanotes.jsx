@@ -36,12 +36,11 @@ function SaveAction({ id }) {
   const dispatch = useDispatch();
 
   const onClose = useCallback(() => {
-    if (!originalId) {
-      return;
-    }
     // TODO: use core events?
     dispatch(commitDraft(id));
-    history.push(`/${originalId}`);
+    if (originalId) {
+      history.push(`/${originalId}`);
+    }
   }, [id, originalId, history]);
 
   return (

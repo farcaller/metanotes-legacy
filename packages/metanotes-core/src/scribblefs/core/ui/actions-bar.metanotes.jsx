@@ -63,7 +63,7 @@ function ActionsBar() {
   return (
     <>
       <IconButton color="primary" aria-label="create scribble" onClick={onCreateNew}>
-        <icons.NoteAddIcon />
+        <icons.NoteAdd />
       </IconButton>
 
       <input accept="image/*" style={{ display: 'none' }} id="icon-button-file" type="file" onChange={onUploadImage} />

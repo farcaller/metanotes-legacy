@@ -27,15 +27,9 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import SpeedDial from '@material-ui/core/SpeedDial';
-import SpeedDialIcon from '@material-ui/core/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
 import TextField from '@material-ui/core/TextField';
-import EditIcon from '@material-ui/icons/Edit';
-import CloseIcon from '@material-ui/icons/Close';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import SaveIcon from '@material-ui/icons/Save';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import * as icons from '@material-ui/icons';
 import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
 import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -137,15 +131,7 @@ const componentLocals: { [key: string]: unknown } = {
   useParams,
   RouterLink,
   useHistory,
-  icons: {
-    EditIcon,
-    CloseIcon,
-    MoreVertIcon,
-    SaveIcon,
-    SpeedDialIcon,
-    PhotoCamera,
-    NoteAddIcon,
-  },
+  icons,
   useCoreEvents: () => useContext(CoreEventsContext),
   ErrorBoundary,
 };

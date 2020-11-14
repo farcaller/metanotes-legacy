@@ -45,7 +45,7 @@ function SaveAction({ id }) {
 
   return (
     <IconButton onClick={onClose}>
-      <icons.SaveIcon />
+      <icons.Save />
     </IconButton>
   )
 }

@@ -47,7 +47,7 @@ function CloseAction({ id }) {
 
   return (
     <IconButton onClick={onClose}>
-      <icons.CloseIcon />
+      <icons.Close />
     </IconButton>
   )
 }

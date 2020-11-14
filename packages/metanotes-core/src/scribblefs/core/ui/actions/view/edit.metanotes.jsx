@@ -46,7 +46,7 @@ function EditAction({ id }) {
 
   return (
     <IconButton onClick={onEdit}>
-      <icons.EditIcon />
+      <icons.Edit />
     </IconButton>
   )
 }

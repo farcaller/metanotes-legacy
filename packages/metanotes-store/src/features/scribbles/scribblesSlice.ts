@@ -163,15 +163,23 @@ const scribblesSlice = createSlice({
       const originalScribbleId = draftScribble.attributes['mn-draft-of']!;
       const draftScribbleId = draftScribble.id;
 
-      const newScribble = JSON.parse(JSON.stringify(draftScribble)) as Scribble;
-      newScribble.id = originalScribbleId;
-      delete newScribble.attributes['mn-draft-of'];
+      if (originalScribbleId === '') {
+        delete draftScribble.attributes['mn-draft-of'];
+        scribblesAdapter.updateOne(state.scribbles, {
+          id: originalScribbleId,
+          changes: draftScribble,
+        });
+      } else {
+        const newScribble = JSON.parse(JSON.stringify(draftScribble)) as Scribble;
+        newScribble.id = originalScribbleId;
+        delete newScribble.attributes['mn-draft-of'];
 
-      scribblesAdapter.updateOne(state.scribbles, {
-        id: originalScribbleId,
-        changes: newScribble,
-      });
-      scribblesAdapter.removeOne(state.scribbles, draftScribbleId);
+        scribblesAdapter.updateOne(state.scribbles, {
+          id: originalScribbleId,
+          changes: newScribble,
+        });
+        scribblesAdapter.removeOne(state.scribbles, draftScribbleId);
+      }
     },
   },
   extraReducers: builder => {

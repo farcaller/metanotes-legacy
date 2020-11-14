@@ -20,8 +20,11 @@ package metanotes.api;
 
 message Scribble {
   string id = 1;
-  string body = 3;
-  map<string, string> attributes = 4;
+  oneof body {
+    string text_body = 3;
+    bytes binary_body = 4;
+  }
+  map<string, string> props = 5;
 }
 
 message GetScribbleRequest {
@@ -45,8 +48,9 @@ message RemoveScribbleRequest {
 }
 
 service Metanotes {
-  rpc GetAllMetadata(google.protobuf.Empty) returns (GetAllMetadataReply) {}
   rpc GetScribble(GetScribbleRequest) returns (GetScribbleReply) {}
   rpc SetScribble(SetScribbleRequest) returns (google.protobuf.Empty) {}
   rpc RemoveScribble(RemoveScribbleRequest) returns (google.protobuf.Empty) {}
+
+  rpc GetAllMetadata(google.protobuf.Empty) returns (GetAllMetadataReply) {}
 }

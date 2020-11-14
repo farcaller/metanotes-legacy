@@ -49,6 +49,7 @@ function ScribbleCardHeader({ id }) {
     }));
   }, [id]);
 
+  // TODO: tabbing out from here should go into the text field
   let titleEl = isEditing ? <TextField fullWidth value={attributes.title ? attributes.title : ''} onChange={onTitleChange} /> : attributes.title;
 
   return (

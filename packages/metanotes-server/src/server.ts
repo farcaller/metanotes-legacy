@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import util from 'util';
 import * as grpc from '@grpc/grpc-js';
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
 
@@ -26,16 +25,8 @@ function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, 
   return async function(call, callback) {
     try {
       const s = await store.getScribble(call.request.getId());
-      const sc = new pb.Scribble();
-      sc.setBody(s.body);
-      sc.setId(s.id);
-      const amap = sc.getAttributesMap();
-      s.attributes.forEach((v, k) => {
-        amap.set(k, v);
-      });
-
       const rep = new pb.GetScribbleReply();
-      rep.setScribble(sc);
+      rep.setScribble(s);
       callback(null, rep);
     } catch (e) {
       callback(e, null);
@@ -46,20 +37,9 @@ function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, 
 function getAllMetadata(store: Store): grpc.handleUnaryCall<google_protobuf_empty_pb.Empty, pb.GetAllMetadataReply> {
   return async function (_, callback) {
     try {
-      const mds = await store.getAllMetadata();
-
-      const scribs = mds.map(s => {
-        const sc = new pb.Scribble();
-        sc.setId(s.id);
-        const amap = sc.getAttributesMap();
-        s.attributes.forEach((v, k) => {
-          amap.set(k, v);
-        });
-        return sc;
-      });
-
+      const scribbles = await store.getAllMetadata();
       const rep = new pb.GetAllMetadataReply();
-      rep.setScribbleList(scribs);
+      rep.setScribbleList(scribbles);
       callback(null, rep);
     } catch (e) {
       callback(e, null);
@@ -70,14 +50,7 @@ function getAllMetadata(store: Store): grpc.handleUnaryCall<google_protobuf_empt
 function setScribble(store: Store): grpc.handleUnaryCall<pb.SetScribbleRequest, google_protobuf_empty_pb.Empty> {
   return async function (call, callback) {
     try {
-      const sc = call.request.getScribble();
-      const amap = new Map<string, string>();
-      sc.getAttributesMap().forEach((v, k) => amap.set(k, v));
-      await store.setScribble({
-        id: sc.getId(),
-        body: sc.getBody(),
-        attributes: amap,
-      });
+      await store.setScribble(call.request.getScribble());
       callback(null, new google_protobuf_empty_pb.Empty());
     } catch (e) {
       callback(e, null);
@@ -96,6 +69,19 @@ function removeScribble(store: Store): grpc.handleUnaryCall<pb.RemoveScribbleReq
   };
 }
 
+function getScribblesByTextSearch(store: Store): grpc.handleUnaryCall<pb.GetScribblesByTextSearchRequest, pb.GetScribblesByTextSearchReply> {
+  return async function (call, callback) {
+    try {
+      const result = await store.getScribblesByTextSearch(call.request.getQuery());
+      const rep = new pb.GetScribblesByTextSearchReply();
+      rep.setResultList(result);
+      callback(null, rep);
+    } catch (e) {
+      callback(e, null);
+    }
+  };
+}
+
 export function runServer(bind: string, store: Store): void {
   const server = new grpc.Server({
     'grpc.max_send_message_length': -1,
@@ -107,6 +93,7 @@ export function runServer(bind: string, store: Store): void {
     getAllMetadata: getAllMetadata(store),
     setScribble: setScribble(store),
     removeScribble: removeScribble(store),
+    getScribblesByTextSearch: getScribblesByTextSearch(store),
   });
   server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e, _) => {
     if (e) {

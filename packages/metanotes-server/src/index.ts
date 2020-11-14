@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import process from 'process';
+import process, { exit } from 'process';
 
 import { runServer } from './server';
 import { Store } from './store';
@@ -23,4 +23,8 @@ const args = process.argv.slice(2);
 console.log(`running on ${args[1]} serving from ${args[0]}`);
 
 const store = new Store(args[0]);
-runServer(args[1], store);
+
+store.init().then(() => runServer(args[1], store)).catch((e) => {
+  console.log(e);
+  exit(1);
+});

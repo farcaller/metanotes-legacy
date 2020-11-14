@@ -47,10 +47,23 @@ message RemoveScribbleRequest {
   string id = 1;
 }
 
+message GetScribblesByTextSearchRequest {
+  string query = 1;
+}
+
+message GetScribblesByTextSearchReply {
+  message SearchResult {
+    string id = 1;
+    string snippet = 2;
+  }
+  repeated SearchResult result = 1;
+}
+
 service Metanotes {
   rpc GetScribble(GetScribbleRequest) returns (GetScribbleReply) {}
   rpc SetScribble(SetScribbleRequest) returns (google.protobuf.Empty) {}
   rpc RemoveScribble(RemoveScribbleRequest) returns (google.protobuf.Empty) {}
 
   rpc GetAllMetadata(google.protobuf.Empty) returns (GetAllMetadataReply) {}
+  rpc GetScribblesByTextSearch(GetScribblesByTextSearchRequest) returns (GetScribblesByTextSearchReply) {}
 }

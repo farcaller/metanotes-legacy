@@ -25,6 +25,7 @@ const scribbles: Scribble[] = [
   require('./core/routes/single-scribble.metanotes.jsx'),
   
   require('./core/editor/text/markdown.metanotes.jsx'),
+  require('./core/editor/application/vnd.metanotes.component-jsmodule.metanotes.jsx'),
   require('./core/editor/image/jpeg.metanotes.jsx'),
   require('./core/renderer/image/jpeg.metanotes.jsx'),
   require('./core/renderer/text/markdown.metanotes.jsx'),

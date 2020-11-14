@@ -17,7 +17,7 @@
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/ui/actions/edit/close
  * tags: ['$:core/ui/actions/edit']
- * list-after: ''
+ * list-after:
  */
 
 const { useCallback } = React;

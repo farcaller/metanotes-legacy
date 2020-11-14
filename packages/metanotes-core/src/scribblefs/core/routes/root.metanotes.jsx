@@ -17,7 +17,7 @@
  * content-type: application/json
  * title: $:core/routes/root
  * tags: ['$:core/routes']
- * list-after: ''
+ * list-after:
  * path: /
  * exact: true
  * element: $:core/ui/single-scribble-layout

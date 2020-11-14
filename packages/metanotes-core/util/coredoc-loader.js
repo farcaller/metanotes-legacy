@@ -19,7 +19,7 @@ module.exports = function (source, map) {
       break;
     }
 
-    const groups = l.match(/ \*\s+([^:]+)\s*:\s*(.+)/);
+    const groups = l.match(/ \*\s+([^:]+)\s*:\s*(.*)/);
     if (!groups) {
       throw Error(`cannot parse attibute from "${l}"`);
     }

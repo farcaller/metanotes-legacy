@@ -23,6 +23,7 @@ FROM node:15-alpine3.12 as build_deps
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN apk --update add python3 build-base; yarn
+ENV PYTHON /usr/bin/python3
 COPY . ./
 
 WORKDIR /usr/src/app/packages/metanotes-server-api

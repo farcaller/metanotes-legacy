@@ -34,6 +34,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SaveIcon from '@material-ui/icons/Save';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
 import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -123,7 +124,6 @@ const componentLocals: { [key: string]: unknown } = {
   CardContent,
   Typography,
   SpeedDial,
-  SpeedDialIcon,
   SpeedDialAction,
   MonacoEditor,
   SyntaxHighlighter,
@@ -141,6 +141,8 @@ const componentLocals: { [key: string]: unknown } = {
     CloseIcon,
     MoreVertIcon,
     SaveIcon,
+    SpeedDialIcon,
+    PhotoCamera,
   },
   useCoreEvents: () => useContext(CoreEventsContext),
   ErrorBoundary,

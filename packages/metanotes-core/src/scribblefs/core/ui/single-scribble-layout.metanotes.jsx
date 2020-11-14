@@ -27,10 +27,14 @@ function SingleScribbleLayout() {
   const scribbleExists = useSelector(state => selectScribbleById(state, id) !== undefined);
   const ScribbleContainer = useScribble('$:core/ui/scribble-container');
   const ScribblesList = useScribble('$:core/ui/scribbles-list');
+  const ActionsBar = useScribble('$:core/ui/actions-bar');
 
   return (
     <Grid container>
       <Grid item xs={3}>
+        <Paper>
+          <ActionsBar />
+        </Paper>
         <Paper>
           <ScribblesList />
         </Paper>

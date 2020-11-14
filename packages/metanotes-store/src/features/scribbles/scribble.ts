@@ -41,6 +41,7 @@ export interface Scribble {
   id: ScribbleID;
 
   body?: string;
+  binaryBodyURL?: string;
   attributes: Attributes;
   computedAttributes: ComputedAttributes;
 

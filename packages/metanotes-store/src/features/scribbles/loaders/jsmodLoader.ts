@@ -19,7 +19,7 @@ import equals from 'deep-equal';
 import createCachedSelector from 're-reselect';
 
 import { SyncedScribble } from '../scribble';
-import { fetchScribble, selectScribbleById, selectAllScribbles, removeScribble, updateScribble, updateScribbleAttributes, commitDraft } from '../scribblesSlice';
+import { fetchScribble, selectScribbleById, selectAllScribbles, removeScribble, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, commitDraft } from '../scribblesSlice';
 import { selectScribbleByTitle } from '../selectors';
 import { loadScribbleComponent, useScribble, UseScribbleContext } from '../useScribble';
 import { selectScribblesByTag } from '../tagging';
@@ -37,8 +37,9 @@ const coreLocals = {
   useScribble,
   fetchScribble,
   removeScribble,
-  updateScribble,
+  updateScribbleBody,
   updateScribbleAttributes,
+  removeScribbleAttributes,
   commitDraft,
   equals,
   loadScribbleComponent,

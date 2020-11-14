@@ -20,7 +20,7 @@
 
 const { useState, useEffect, useCallback } = React;
 const { useSelector, selectScribbleById, useScribble, useDispatch, fetchScribble, equals, removeScribble } = core;
-const { LinearProgress, Alert, Card, CardContent, useHistory, useCoreEvents } = components;
+const { ErrorBoundary, LinearProgress, Alert, Card, CardContent, useHistory, useCoreEvents } = components;
 
 function ScribbleContainer({ id }) {
   const scribble = useSelector(state => {
@@ -41,6 +41,7 @@ function ScribbleContainer({ id }) {
   const Renderer = useScribble(`$:core/renderer/${scribble.attributes['content-type']}`);
   const Editor = useScribble(`$:core/editor/${scribble.attributes['content-type']}`);
   const Header = useScribble(`$:core/ui/scribble-card-header`);
+  const ContentTypeEditor = useScribble(`$:core/ui/scribble-content-type-editor`);
   const AttributesEditor = useScribble(`$:core/ui/scribble-attributes-editor`);
 
   const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
@@ -52,7 +53,12 @@ function ScribbleContainer({ id }) {
       if (isEditing) {
         contentEl = <>
           <Editor id={id} />
-          <AttributesEditor id={id} />
+          <div style={{ marginTop: 14 }}>
+            <ContentTypeEditor id={id} />
+          </div>
+          <div style={{ marginTop: 14 }}>
+            <AttributesEditor id={id} />
+          </div>
         </>;
       } else {
         contentEl = <Renderer id={id} />;

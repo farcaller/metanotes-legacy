@@ -16,7 +16,7 @@ import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, Payloa
 
 import { RootState } from '../..';
 import { StorageAPI } from '../../api';
-import { Attributes, Scribble, ScribbleID } from './scribble';
+import { Attributes, recomputeAttributes, Scribble, ScribbleID } from './scribble';
 
 
 export interface ScribblesState {
@@ -84,6 +84,10 @@ const scribblesSlice = createSlice({
   initialState,
   reducers: {
     setCoreScribbles(state, action: PayloadAction<Scribble[]>) {
+      const scribbles = action.payload;
+      for (const s of scribbles) {
+        s.computedAttributes = recomputeAttributes(s);
+      }
       scribblesAdapter.upsertMany(state.scribbles, action.payload);
       updateTitleMapAdd(state, action.payload);
     },
@@ -96,22 +100,53 @@ const scribblesSlice = createSlice({
       newScribble.id = newId;
       newScribble.attributes['mn-draft-of'] = id;
       newScribble.status = 'synced';
+      newScribble.computedAttributes = recomputeAttributes(newScribble);
       scribblesAdapter.addOne(state.scribbles, newScribble);
     },
-    updateScribble(state, action: PayloadAction<{ id: ScribbleID, changes: Partial<Scribble> }>) {
-      scribblesAdapter.updateOne(state.scribbles, action);
+    updateScribbleBody(state, action: PayloadAction<{ id: ScribbleID, body: string }>) {
+      const { id, body } = action.payload;
+      scribblesAdapter.updateOne(state.scribbles, {
+        id,
+        changes: {
+          body,
+        }
+      });
     },
     updateScribbleAttributes(state, action: PayloadAction<{ id: ScribbleID, attributes: Partial<Attributes> }>) {
       const { id, attributes } = action.payload;
       const scribble = selectScribbleById({ scribbles: state }, id)!;
+      const newScribble = JSON.parse(JSON.stringify(scribble)) as Scribble;
+      newScribble.attributes = {
+        ...newScribble.attributes,
+        ...attributes,
+      };
+      const changes = {
+        attributes: {
+          ...scribble.attributes,
+          ...attributes,
+        },
+        computedAttributes: recomputeAttributes(newScribble),
+      };
       scribblesAdapter.updateOne(state.scribbles, {
         id,
-        changes: {
-          attributes: {
-            ...scribble.attributes,
-            ...attributes,
-          }
-        }
+        changes,
+      });
+    },
+    removeScribbleAttributes(state, action: PayloadAction<{ id: ScribbleID, attributes: string[] }>) {
+      const { id, attributes } = action.payload;
+      const scribble = selectScribbleById({ scribbles: state }, id)!;
+      const newScribble = JSON.parse(JSON.stringify(scribble)) as Scribble;
+      for (const a of attributes) {
+        delete newScribble.attributes[a];
+      }
+      
+      const changes = {
+        attributes: newScribble.attributes,
+        computedAttributes: recomputeAttributes(newScribble),
+      };
+      scribblesAdapter.updateOne(state.scribbles, {
+        id,
+        changes,
       });
     },
     removeScribble(state, action: PayloadAction<ScribbleID>) {
@@ -180,7 +215,7 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribble, updateScribbleAttributes, removeScribble, commitDraft } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, removeScribble, commitDraft } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

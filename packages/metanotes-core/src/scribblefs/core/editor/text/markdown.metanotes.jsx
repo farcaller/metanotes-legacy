@@ -19,7 +19,7 @@
  */
 
 const { useCallback } = React;
-const { useDispatch, updateScribble, useSelector, selectScribbleById } = core;
+const { useDispatch, updateScribbleBody, useSelector, selectScribbleById } = core;
 const { MonacoEditor, Paper } = components;
 
 
@@ -40,8 +40,8 @@ function MarkdownEditor({ id }) {
   const body = useSelector(state => selectScribbleById(state, id).body);
   const dispatch = useDispatch();
 
-  const onChange = useCallback((ev, value) => {
-    dispatch(updateScribble({ id, changes: { body: value }}));
+  const onChange = useCallback((ev, body) => {
+    dispatch(updateScribbleBody({ id, body }));
   }, [id]);
 
   return (

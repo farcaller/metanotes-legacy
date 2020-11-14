@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { RootState } from '../..';
-import { Scribble } from './scribble';
+import { recomputeAttributes, Scribble } from './scribble';
 import { scribblesAdapter, updateTitleMapAdd } from './scribblesSlice';
 import { selectScribblesByTag } from './tagging';
 
@@ -34,15 +34,18 @@ function makeState(scribbles: Scribble[]): RootState {
 }
 
 function makeScribble(id: string, title: string, attrs?: any): Scribble {
-  return {
+  const s: Scribble = {
     id,
     status: 'core',
     attributes: {
       'content-type': '',
       title,
       ...attrs,
-    }
+    },
+    computedAttributes: { tags: [], list: [] },
   };
+  s.computedAttributes = recomputeAttributes(s);
+  return s;
 }
 
 function getIDs(scribbles: Scribble[]): string[] {

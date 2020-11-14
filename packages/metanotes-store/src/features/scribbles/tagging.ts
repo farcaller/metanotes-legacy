@@ -32,7 +32,7 @@ const selectScribblesTagged = createCachedSelector(
   (_: RootState, tag: string) => tag,
   (scribbles, tag) => {
     return scribbles.filter(scribble => {
-      const tags = scribble.attributes.tags;
+      const tags = scribble.computedAttributes.tags;
       if (!tags) { return false; }
       if (tags.indexOf(tag) === -1) { return false; }
       return true;
@@ -58,9 +58,9 @@ export const selectScribblesByTag = createCachedSelector(
     //    4.3. If it has a scribble reference in the `list-before`, reorder that scribble, then put this one before it
     //    4.4. If it has a scribble reference in the `list-after`, reorder that scribble, then put this one after it
     const listedScribbles = [];
-    if (tagScribble && tagScribble.attributes.list) {
+    if (tagScribble) {
       // should it match by ID too?
-      for (const title of tagScribble.attributes.list) {
+      for (const title of tagScribble.computedAttributes.list) {
         const scribbleIdx = matchingScribbles.findIndex(s => s.attributes.title === title);
         if (scribbleIdx) {
           listedScribbles.push(matchingScribbles.splice(scribbleIdx, 1)[0]);

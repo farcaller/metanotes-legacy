@@ -37,7 +37,7 @@ function App(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title!, routeScribbleElements[idx]);
     return (
-      <Route exact={scribble.attributes['exact'] === true} path={scribble.attributes['path'] as string}>
+      <Route exact={scribble.attributes['exact'] === 'true'} path={scribble.attributes['path']}>
         <Comp />
       </Route>
     );

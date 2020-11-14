@@ -25,6 +25,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import SpeedDial from '@material-ui/core/SpeedDial';
 import SpeedDialIcon from '@material-ui/core/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
@@ -42,41 +43,6 @@ import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponen
 import Markdown from './components/Markdown';
 import { CoreEventsContext } from './CoreEvents';
 
-// TODO: unknown is a lie. it's a memo
-const componentLocals: { [key: string]: unknown } = {
-  Markdown,
-  LinearProgress,
-  Alert,
-  List,
-  ListItem,
-  ListItemText,
-  Grid,
-  Paper,
-  Card,
-  CardHeader,
-  CardContent,
-  Typography,
-  SpeedDial,
-  SpeedDialIcon,
-  SpeedDialAction,
-  MonacoEditor,
-  SyntaxHighlighter,
-  TextField,
-  IconButton,
-  Autocomplete,
-
-  // TODO: does not belong here
-  useParams,
-  RouterLink,
-  useHistory,
-  icons: {
-    EditIcon,
-    CloseIcon,
-    MoreVertIcon,
-    SaveIcon,
-  },
-  useCoreEvents: () => useContext(CoreEventsContext),
-};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: Scribble): React.FunctionComponent<unknown> {
@@ -130,7 +96,6 @@ export class ErrorBoundary extends React.PureComponent<{ children: JSX.Element }
   }
 }
 
-
 const ctx = {
   resolver,
   errorBoundary: ErrorBoundary,
@@ -143,5 +108,42 @@ function ScribbleResolver({ children }: { children: JSX.Element}): JSX.Element {
     </ScribbleResolverContext.Provider>
   );
 }
+
+const componentLocals: { [key: string]: unknown } = {
+  Markdown,
+  LinearProgress,
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  Grid,
+  Paper,
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  SpeedDial,
+  SpeedDialIcon,
+  SpeedDialAction,
+  MonacoEditor,
+  SyntaxHighlighter,
+  TextField,
+  IconButton,
+  Autocomplete,
+  Button,
+
+  // TODO: does not belong here
+  useParams,
+  RouterLink,
+  useHistory,
+  icons: {
+    EditIcon,
+    CloseIcon,
+    MoreVertIcon,
+    SaveIcon,
+  },
+  useCoreEvents: () => useContext(CoreEventsContext),
+  ErrorBoundary,
+};
 
 export default React.memo(ScribbleResolver);

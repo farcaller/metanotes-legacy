@@ -18,46 +18,109 @@
  * title: $:core/ui/scribble-attributes-editor
  */
 
-const { useMemo, useContext, useCallback } = React;
-const { useDispatch, useSelector, selectScribbleById, createCachedSelector, updateScribbleAttributes } = core;
-const { Autocomplete, TextField } = components;
+const { useMemo, useState, useCallback } = React;
+const { useDispatch, useSelector, selectScribbleById, createCachedSelector, updateScribbleAttributes, removeScribbleAttributes, equals } = core;
+const { TextField, Button } = components;
 
+const NonEditableAttributes = ['title', 'content-type', 'mn-draft-of', 'tags'];
 
-const selectScribbleAttributesById = createCachedSelector(
+const filtered = (attrs, nonValidKeys) => Object.keys(attrs).filter(k => !nonValidKeys.includes(k)).reduce((obj, key) => ({ ...obj, [key]: attrs[key] }), {});
+
+const selectScribbleEditableAttributesById = createCachedSelector(
   selectScribbleById,
-  (scribble) => scribble.attributes,
+  (scribble) => filtered(scribble.attributes, NonEditableAttributes),
 )((_, id) => id);
 
-const DefaltContentTypes = [
-  'text/markdown',
-  'application/vnd.metanotes.component-jsmodule',
-];
-
-function ScribbleAttributesEditor({ id }) {
-  const attributes = useSelector(state => selectScribbleAttributesById(state, id));
-  
+function RemoveButton({ id, name }) {
   const dispatch = useDispatch();
 
-  const onChangeContentType = useCallback((_, newValue) => {
-    dispatch(updateScribbleAttributes({ id, attributes: { 'content-type': newValue } }));
+  const onRemove = useCallback(() => {
+    dispatch(removeScribbleAttributes({
+      id,
+      attributes: [name],
+    }));
+  }, [id, name]);
+
+  return <Button color="primary" onClick={onRemove}>remove</Button>;
+}
+
+function ScribbleAttributesEditor({ id }) {
+  const attributes = useSelector(state => selectScribbleEditableAttributesById(state, id), equals);
+
+  const dispatch = useDispatch();
+
+  const [newName, setNewName] = useState('');
+  const [newValue, setNewValue] = useState('');
+  const [isReservedName, setIsReservedName] = useState(false);
+
+  const onChangeNewName = useCallback((event) => {
+    setNewName(event.target.value);
+    setIsReservedName(NonEditableAttributes.includes(event.target.value));
+  });
+  const onChangeNewValue = useCallback((event) => {
+    setNewValue(event.target.value);
+  });
+  const onAddNew = useCallback((event) => {
+    if (isReservedName) { return }
+
+    dispatch(updateScribbleAttributes({
+      id,
+      attributes: {
+        [newName]: newValue,
+      },
+    }));
+    setNewName('');
+    setNewValue('');
+  }, [id, newName, newValue]);
+
+  const onChangeValue = useCallback((event) => {
+    dispatch(updateScribbleAttributes({
+      id,
+      attributes: {
+        [event.target.name]: event.target.value,
+      },
+    }));
   }, [id, attributes]);
 
-  return (
-    <div style={{ marginTop: 14 }}>
-      <Autocomplete
-        value={attributes['content-type']}
-        onInputChange={onChangeContentType}
-        options={DefaltContentTypes}
-        selectOnFocus
-        clearOnBlur
-        handleHomeEndKeys
-        freeSolo
-        renderInput={(params) => (
-          <TextField {...params} label="Content Type" variant="outlined" />
-        )}
+  const attributeKeys = Object.keys(attributes).sort();
+  const attributeElements = attributeKeys.map(k => 
+    <tr key={k} style={{ width: '100%' }}>
+      <td style={{ width: '30%' }}>
+        {k}
+      </td>
+      <td>
+        <TextField
+          fullWidth
+          size="small"
+          name={k}
+          value={attributes[k]}
+          onChange={onChangeValue}
+        />
+      </td>
+      <td style={{ width: '1%' }}>
+        <RemoveButton id={id} name={k} />
+      </td>
+    </tr>
+  );
+  attributeElements.push(<tr key="__add_new__" style={{ width: '100%' }}>
+    <td style={{ width: '30%' }}>
+      <TextField
+        fullWidth
+        size="small"
+        label="attribute name"
+        value={newName}
+        onChange={onChangeNewName}
+        error={isReservedName}
+        helperText={isReservedName ? `"${newName}" is a reserved name` : ''}
       />
-    </div>
-  )
+    </td>
+    <td><TextField fullWidth size="small" label="attribute value" value={newValue} onChange={onChangeNewValue} /></td>
+    <td style={{ width: '1%' }}><Button color="primary" onClick={onAddNew}>add</Button></td>
+  </tr>);
+
+  return (
+    <table style={{ width: '100%' }}><tbody>{attributeElements}</tbody></table>
+  );
 }
 
 export default React.memo(ScribbleAttributesEditor);

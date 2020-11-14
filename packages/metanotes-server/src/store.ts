@@ -86,7 +86,7 @@ export class Store {
 
   async setScribble(sc: pb.Scribble): Promise<void> {
     const propsObject: {[key: string]: string} = {};
-    sc.getPropsMap().forEach((k, v) => {
+    sc.getPropsMap().forEach((v, k) => {
       propsObject[k] = v;
     });
     const propsJson = JSON.stringify(propsObject);

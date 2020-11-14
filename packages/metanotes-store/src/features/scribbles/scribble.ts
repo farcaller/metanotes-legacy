@@ -64,7 +64,6 @@ export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
   s.getPropsMap().forEach((v, k) => attrs[k] = v);
   const scribble: Scribble = {
     id: s.getId(),
-    body: metadataOnly ? undefined : s.getTextBody(),
     attributes: attrs,
     computedAttributes: {
       tags: [],
@@ -73,6 +72,15 @@ export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
 
     status: metadataOnly ? 'syncedMetadataOnly' : 'synced',
   };
+  if (!metadataOnly) {
+    if (s.hasBinaryBody()) {
+      const binaryBody = s.getBinaryBody_asU8();
+      const blob = new Blob([binaryBody], { type: scribble.attributes['content-type']});
+      scribble.binaryBodyURL = window.URL.createObjectURL(blob);
+    } else {
+      scribble.body = s.getTextBody();
+    }
+  }
   scribble.computedAttributes = recomputeAttributes(scribble);
 
   return scribble;

@@ -8,8 +8,7 @@
     "build": "tsc",
     "prebuild": "yarn lint",
     "build:watch": "nodemon",
-    "test": "jest",
-    "build:grammar": "ts-node src/save_grammar.ts"
+    "test": "jest"
   },
   "dependencies": {
     "parsimmon": "^1.16.0"

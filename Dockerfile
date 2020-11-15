@@ -64,9 +64,9 @@ CMD ["nginx", "-g", "daemon off;"]
 
 FROM node:15-alpine3.12 as deploy_server
 
-COPY --from=build_server /usr/src/app/packages/metanotes-server/dist/index.js /usr/src/app/index.js
+COPY --from=build_server /usr/src/app/packages/metanotes-server/dist/* /usr/src/app/
 WORKDIR /usr/src/app
-CMD ["sh", "-c", "exec node ./index.js \"${DATA_DIR}\" \"${LISTEN_ADDRESS}\""]
+CMD ["sh", "-c", "exec node ./main.js \"${DATA_DIR}\" \"${LISTEN_ADDRESS}\""]
 
 
 ####

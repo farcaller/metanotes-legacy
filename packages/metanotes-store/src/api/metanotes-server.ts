@@ -14,8 +14,7 @@
 
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
-import pb from '@metanotes/server-api/lib/api_pb';
-import grpcPb from '@metanotes/server-api/lib/api_grpc_web_pb';
+import { pb, grpc_web_pb } from '@metanotes/server-api';
 import { Scribble, fromProto, toProto } from '../features/scribbles/scribble';
 
 
@@ -24,10 +23,10 @@ export interface MetanotesServerConfig {
 }
 
 export class MetanotesServerAPI {
-  private readonly client: grpcPb.MetanotesPromiseClient;
+  private readonly client: grpc_web_pb.MetanotesPromiseClient;
 
   constructor(config: MetanotesServerConfig) {
-    this.client = new grpcPb.MetanotesPromiseClient(config.hostname);
+    this.client = new grpc_web_pb.MetanotesPromiseClient(config.hostname);
   }
 
   async getAllMetadata(): Promise<Scribble[]> {

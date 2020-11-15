@@ -5,11 +5,12 @@
   "main": "lib/index.js",
   "scripts": {
     "build:watch": "nodemon",
-    "build": "mkdir -p ./lib && grpc_tools_node_protoc -Isrc api.proto --js_out=import_style=commonjs:lib/ --grpc_out=grpc_js:lib/ --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:lib/ && grpc_tools_node_protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:lib/ -Isrc src/api.proto"
+    "build": "mkdir -p ./lib && grpc_tools_node_protoc -Isrc api.proto --js_out=import_style=commonjs:lib/ --grpc_out=grpc_js:lib/ --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:lib/ && grpc_tools_node_protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:lib/ -Isrc src/api.proto && tsc"
   },
   "author": "",
   "license": "Apache-2.0",
-  "peerDependencies": {
+  "dependencies": {
+    "@grpc/grpc-js": "^1.2.0",
     "google-protobuf": "^3.14.0-rc.1",
     "grpc-web": "^1.2.1"
   },

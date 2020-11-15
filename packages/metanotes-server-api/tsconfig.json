@@ -20,7 +20,8 @@
     "typeRoots": ["./node_modules/@types", "./typings"],
   },
   "files": [
-    "src/index.ts"
+    "src/index.ts",
+    "src/web.ts"
   ],
   "exclude": [
     "node_modules",

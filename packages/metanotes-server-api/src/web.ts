@@ -12,5 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * as grpc_pb from '../lib/api_grpc_pb.js';
+export * as grpc_web_pb from '../lib/api_grpc_web_pb.js';
 export * as pb from '../lib/api_pb.js';

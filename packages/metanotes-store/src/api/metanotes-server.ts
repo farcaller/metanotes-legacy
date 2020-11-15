@@ -14,7 +14,7 @@
 
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
-import { pb, grpc_web_pb } from '@metanotes/server-api/lib/web';
+import { pb, grpc_web_pb } from '@metanotes/server-api-web';
 import { Scribble, fromProto, toProto } from '../features/scribbles/scribble';
 
 

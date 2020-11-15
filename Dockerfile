@@ -1,3 +1,5 @@
+#### build the metanotes-server-api package in the debian container first, as it cannot be built within alpine
+
 FROM node:15-slim as build_protoc
 
 RUN set -ex; \
@@ -8,26 +10,35 @@ RUN set -ex; \
     chmod 755 /usr/bin/protoc-gen-grpc-web
 
 WORKDIR /usr/src/app
-COPY .eslintrc.js package.json yarn.lock ./ 
+COPY .eslintrc.js package.json yarn.lock tsconfig.* ./ 
 COPY packages/metanotes-server-api/package.json ./packages/metanotes-server-api/package.json 
+COPY packages/metanotes-server-api-web/package.json ./packages/metanotes-server-api-web/package.json 
+
+WORKDIR /usr/src/app/packages
+COPY ./packages/metanotes-server-api ./metanotes-server-api
+COPY ./packages/metanotes-server-api-web ./metanotes-server-api-web
+RUN yarn install
 
 WORKDIR /usr/src/app/packages/metanotes-server-api
-RUN yarn
-COPY ./packages/metanotes-server-api ./
+RUN yarn build
+
+WORKDIR /usr/src/app/packages/metanotes-server-api-web
 RUN yarn build
 
 ####
 
 FROM node:15-alpine3.12 as build_deps
 
+RUN apk --update add python2 build-base
+
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
-RUN apk --update add python2 build-base; yarn
 COPY . ./
+RUN yarn
 
 WORKDIR /usr/src/app/packages/metanotes-server-api
-RUN yarn
 COPY --from=build_protoc /usr/src/app/packages/metanotes-server-api/lib ./lib
+WORKDIR /usr/src/app/packages/metanotes-server-api-web
+COPY --from=build_protoc /usr/src/app/packages/metanotes-server-api-web/lib ./lib
 
 ####
 
@@ -66,8 +77,7 @@ FROM node:15-alpine3.12 as deploy_server
 
 COPY --from=build_server /usr/src/app/packages/metanotes-server/dist/* /usr/src/app/
 WORKDIR /usr/src/app
-CMD ["sh", "-c", "exec node ./main.js \"${DATA_DIR}\" \"${LISTEN_ADDRESS}\""]
-
+CMD ["sh", "-c", "exec node ./main.js \"${DATA_DIR}/db.sqlite\" \"${LISTEN_ADDRESS}\""]
 
 ####
 

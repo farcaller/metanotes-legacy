@@ -25,6 +25,10 @@
       "path": "./packages/metanotes-server-api"
     },
     {
+      "name": "server-api-web",
+      "path": "./packages/metanotes-server-api-web"
+    },
+    {
       "name": "-- root --",
       "path": "."
     }

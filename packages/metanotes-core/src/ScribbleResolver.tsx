@@ -131,6 +131,7 @@ const componentLocals: { [key: string]: unknown } = {
   useParams,
   RouterLink,
   useHistory,
+  // TODO: this now takes up 37% of the runtime, split into a chunk?
   icons,
   useCoreEvents: () => useContext(CoreEventsContext),
   ErrorBoundary,

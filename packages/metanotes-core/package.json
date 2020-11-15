@@ -26,7 +26,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +63,7 @@
     "eslint-plugin-disable": "^2.0.1",
     "js-yaml": "^3.14.0",
     "react-app-rewired": "^2.1.6",
+    "source-map-explorer": "^2.5.0",
     "webpack-extended-import-glob-loader": "^1.6.6"
   }
 }

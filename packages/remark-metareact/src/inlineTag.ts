@@ -22,7 +22,7 @@ const closeTagRe = /^(\/)?}}/;
 const paramRe = /^(\w+)\s*=\s*(\w+|"(?:[^"\\]|\\.)*")\s*/;
 
 export interface InlineTagAst extends ast.Parent {
-  type: 'mjtag';
+  type: 'metanotes_inline_tag';
   tagName: string;
   params: {[key: string]: string};
   closing: boolean;
@@ -30,7 +30,7 @@ export interface InlineTagAst extends ast.Parent {
 };
 
 export function isInlineTag(node: ast.Node): node is InlineTagAst {
-  return node.type === 'mjtag';
+  return node.type === 'metanotes_inline_tag';
 }
 
 function inlineTag(eat: (subvalue: string) => (node: unknown, parent?: unknown) => InlineTagAst, value: string): InlineTagAst | undefined | boolean {
@@ -76,7 +76,7 @@ function inlineTag(eat: (subvalue: string) => (node: unknown, parent?: unknown) 
 
   // TODO: this can't actually have children
   return eat(value.slice(0, index))({
-    type: 'mjtag',
+    type: 'metanotes_inline_tag',
     tagName: openTag,
     params,
     closing,
@@ -90,9 +90,9 @@ inlineTag.locator = (value: string, fromIndex: number) => {
 
 function attachParser(parser: unified.ParserConstructor | unified.ParserFunction) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  parser.prototype.inlineTokenizers.mjtag = inlineTag;
+  parser.prototype.inlineTokenizers.metanotes_inline_tag = inlineTag;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-  parser.prototype.inlineMethods.unshift('mjtag');
+  parser.prototype.inlineMethods.unshift('metanotes_inline_tag');
 }
 
 export default function (this: unified.Processor): void {

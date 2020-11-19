@@ -25,6 +25,7 @@ import Blockquote from './Blockquote';
 import List from './List';
 import ListItem from './ListItem';
 import Link from './Link';
+import Filter from './Filter';
 
 
 const components: Components = {
@@ -50,21 +51,26 @@ const components: Components = {
   link: Link,
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mjTag: (tagname: string): React.FunctionComponent<any> => {
-    if (tagname === 'include') {
-      return Include;
+  metanotesTag: (tagname: string): React.FunctionComponent<any> => {
+    switch (tagname) {
+      case 'include':
+        return Include;
+      case 'filter':
+        return Filter;
+      default:
+        return () => <>unknown tag {tagname}</>;
     }
-    return () => <>unknown tag {tagname}</>;
   },
   wikiLink: WikiLink,
 };
 
 const memoComps = {} as Components;
 Object.keys(components).map(k => {
-  if (k !== 'mjTag') {
+  if (k !== 'metanotesTag') {
     // TODO: just memoize it before this
     (memoComps as unknown as { [x: string]: React.FunctionComponent<unknown> })[k] = React.memo((components as unknown as { [x: string]: React.FunctionComponent<unknown> })[k]);
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     memoComps[k] = components[k];
   }
 });

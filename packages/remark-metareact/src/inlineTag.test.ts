@@ -16,8 +16,11 @@
 
 import unified from 'unified';
 import markdown from 'remark-parse';
+import { Node } from 'unist';
 
 import inlineTag from './inlineTag';
+import tagTreeShaker from './tagTreeShaker';
+
 
 test('it parses a tag', () => {
   const parser = unified()
@@ -25,7 +28,7 @@ test('it parses a tag', () => {
     .use(inlineTag);
   const node = (parser.parse('{{hello}}')).children[0].children[0];
 
-  expect(node.type).toEqual('mjtag');
+  expect(node.type).toEqual('metanotes_inline_tag');
 });
 
 test('it parses the tag name', () => {
@@ -84,4 +87,31 @@ test('it parses two tags', () => {
 
   expect(node.children[0].tagName).toEqual('hello');
   expect(node.children[1].tagName).toEqual('ohai');
+});
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function stripPosition(n: Node): any {
+  if (n.position) {
+    delete n.position;
+  }
+
+  if (n.children) {
+    for (const c of n.children as Node[]) {
+      stripPosition(c);
+    }
+  }
+  return n;
+}
+
+test('it nests the tags within the inline tag', () => {
+  const parser = unified()
+    .use(markdown)
+    .use(inlineTag)
+    .use(tagTreeShaker);
+  const node = stripPosition(parser.parse('{{hello}}\n* abc\n\n{{/hello}}'));
+
+  console.log(JSON.stringify(node, null, 4));
+
+  expect(node.children).toHaveLength(1);
 });

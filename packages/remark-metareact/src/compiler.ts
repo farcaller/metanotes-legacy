@@ -162,9 +162,9 @@ function emitLink(node: ast.Link, options: Options): JSX.Element {
   }, ...emitChildren(node.children, options));
 }
 
-function emitMJTag(node: InlineTagAst, options: Options): JSX.Element {
+function emitMetaNotesTag(node: InlineTagAst, options: Options): JSX.Element {
   const { components } = options;
-  return React.createElement(components.mjTag(node.tagName), node.params, ...emitChildren(node.children, options));
+  return React.createElement(components.metanotesTag(node.tagName), node.params, ...emitChildren(node.children, options));
 }
 
 function emitWikiLink(node: WikiLinkAst, options: Options): JSX.Element {
@@ -247,14 +247,14 @@ function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenO
   }
 
   if (isInlineTag(node)) {
-    return emitMJTag(node, options);
+    return emitMetaNotesTag(node, options);
   }
   if (isWikiLink(node)) {
     return emitWikiLink(node, options);
   }
 
   console.error(`unhandled node type ${node.type}`, node);
-  return <></>;
+  return React.createElement(React.Fragment);
 }
 
 export function metaCompiler(this: unified.Processor, options: Options): void {

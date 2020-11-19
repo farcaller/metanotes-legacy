@@ -5,16 +5,16 @@
       "path": "./packages/metanotes-core"
     },
     {
+      "name": "store",
+      "path": "./packages/metanotes-store"
+    },
+    {
       "name": "remark-metareact",
       "path": "./packages/remark-metareact"
     },
     {
       "name": "filter",
       "path": "./packages/metanotes-filter"
-    },
-    {
-      "name": "store",
-      "path": "./packages/metanotes-store"
     },
     {
       "name": "server",

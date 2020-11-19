@@ -84,6 +84,6 @@ export interface Components {
 
   link: ComponentWithNoChildrenAndProps<LinkProps>;
 
-  mjTag: (tagname: string) => React.FunctionComponent<unknown>;
+  metanotesTag: (tagname: string) => React.FunctionComponent<unknown>;
   wikiLink: ComponentWithNoChildrenAndProps<WikiLinkProps>;
 }

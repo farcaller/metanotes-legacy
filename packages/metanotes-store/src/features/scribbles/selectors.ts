@@ -52,10 +52,12 @@ const selectScribbleByIDList = createCachedSelector(
       return val;
     }
     if (ids.length === 2) {
-      const first = selectScribbleById(state, ids[0]);
-      if (first?.status === 'core') {
-        const val = selectScribbleById(state, ids[1]);
-        return val;
+      const first = selectScribbleById(state, ids[0])!;
+      const second = selectScribbleById(state, ids[1])!;
+      if (first.status === 'core') {
+        return second;
+      } else if (second.status === 'core') {
+        return first;
       } else {
         return undefined;
       }

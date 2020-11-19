@@ -51,37 +51,23 @@ export const syncScribble = createAsyncThunk<Scribble, Scribble, { extra: Storag
   return payload;
 });
 
-export function updateTitleMapAdd(state: ScribblesState, scribbles: Scribble[]): void {
-  for (const sc of scribbles) {
-    const title = sc.attributes['title'];
-    const id = sc.id;
-    if (!title) {
-      continue;
+export function resyncTitleToIdMap(state: ScribblesState): void {
+  const m: { [key: string]: string[] } = {};
+  const scribbles = selectAllScribbles({ scribbles: state });
+
+  for (const scribble of scribbles) {
+    const title = scribble.attributes.title;
+    if (!title) { continue; }
+    // draft scribbles don't participate
+    if (scribble.attributes['mn-draft-of'] !== undefined || scribble.attributes['mn-draft-of'] === '') { continue; }
+
+    if (!m[title]) {
+      m[title] = [];
     }
 
-    const existingIds = state.titleToIdMap[title];
-    if (existingIds === undefined) {
-      state.titleToIdMap[title] = [id];
-      continue;
-    }
-    if (existingIds.find(i => i === id)) {
-      continue;
-    }
-    existingIds.push(id);
+    m[title].push(scribble.id);
   }
-}
-
-function updateTitleMapRemove(state: ScribblesState, scribbles: Scribble[]) {
-  for (const sc of scribbles) {
-    const title = sc.attributes['title'];
-    const id = sc.id;
-    if (!title) {
-      continue;
-    }
-
-    const existingIds = state.titleToIdMap[title];
-    state.titleToIdMap[title] = existingIds.filter(i => i !== id);
-  }
+  state.titleToIdMap = m;
 }
 
 const scribblesSlice = createSlice({
@@ -94,7 +80,7 @@ const scribblesSlice = createSlice({
         s.computedAttributes = recomputeAttributes(s);
       }
       scribblesAdapter.upsertMany(state.scribbles, action.payload);
-      updateTitleMapAdd(state, action.payload);
+      resyncTitleToIdMap(state);
     },
     createDraft(state, action: PayloadAction<{ id: ScribbleID, newId: ScribbleID }>) {
       // TODO: update title map?
@@ -104,7 +90,12 @@ const scribblesSlice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const newScribble = JSON.parse(JSON.stringify(oldScribble)) as Scribble;
       newScribble.id = newId;
-      newScribble.attributes['mn-draft-of'] = id;
+      if (oldScribble.status === 'core') {
+        // if the old scribble is core, don't set the relation and create a new draft instead
+        newScribble.attributes['mn-draft-of'] = '';
+      } else {
+        newScribble.attributes['mn-draft-of'] = id;
+      }
       newScribble.status = 'synced';
       newScribble.computedAttributes = recomputeAttributes(newScribble);
       newScribble.dirty = true;
@@ -178,6 +169,7 @@ const scribblesSlice = createSlice({
         URL.revokeObjectURL(scribble.binaryBodyURL);
       }
       scribblesAdapter.removeOne(state.scribbles, action.payload);
+      resyncTitleToIdMap(state);
     },
     commitDraft(state, action: PayloadAction<ScribbleID>) {
       // TODO: update title map
@@ -203,6 +195,7 @@ const scribblesSlice = createSlice({
         });
         scribblesAdapter.removeOne(state.scribbles, draftScribbleId);
       }
+      resyncTitleToIdMap(state);
     },
   },
   extraReducers: builder => {
@@ -213,7 +206,7 @@ const scribblesSlice = createSlice({
       state.status = 'succeeded';
       state.error = null;
       scribblesAdapter.upsertMany(state.scribbles, action.payload);
-      updateTitleMapAdd(state, action.payload);
+      resyncTitleToIdMap(state);
     });
     builder.addCase(fetchStoreMetadata.rejected, (state, action) => {
       state.status = 'failed';
@@ -235,8 +228,7 @@ const scribblesSlice = createSlice({
           error: undefined,
         },
       });
-      updateTitleMapRemove(state, [action.meta.arg]);
-      updateTitleMapAdd(state, [action.payload]);
+      resyncTitleToIdMap(state);
     });
     builder.addCase(fetchScribble.rejected, (state, action) => {
       scribblesAdapter.updateOne(state.scribbles, {

@@ -4,7 +4,7 @@
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "scripts": {
-    "lint": "eslint src/*.ts{,x}",
+    "lint": "eslint src/*.ts",
     "build": "tsc",
     "prebuild": "yarn lint",
     "build:watch": "nodemon",

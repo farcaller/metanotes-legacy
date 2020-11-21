@@ -29,7 +29,14 @@ import ScribbleResolver from './ScribbleResolver';
 import CoreEvents from './CoreEvents';
 
 
-const backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
+let backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
+
+const urlParams = new URLSearchParams(window.location.search);
+const overrideBackend = urlParams.get('overrideBackend');
+
+if (overrideBackend) {
+  backendAddress = overrideBackend;
+}
 
 const api = createBackend({
   backend: 'metanotes-server',

@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import React from 'react';
-import { Alert } from '@material-ui/lab';
+import MDX from '@mdx-js/runtime';
 
 
-import { compile } from '@metanotes/remark-metareact';
-import components from './components';
+import { ErrorBoundary } from '../../ScribbleResolver';
+import For from './widgets/For';
+import { Echo, VariablesContext } from './widgets/variables';
 
 
 export interface MarkdownProps {
@@ -25,14 +26,21 @@ export interface MarkdownProps {
   inline?: boolean;
 }
 
+const Components = {
+  For,
+  Echo,
+};
+
+const emptyVarContext = (_key: string) => undefined;
+
 const Markdown = ({ text, inline }: MarkdownProps) => {
-  const documentEl = compile(text, components, inline === true);
-
-  if (!documentEl) {
-    return <Alert severity="error">failed to parse the markdown document</Alert>;
-  }
-
-  return documentEl;
+  return (
+    <ErrorBoundary>
+      <VariablesContext.Provider value={emptyVarContext}>
+        <MDX components={Components}>{text}</MDX>
+      </VariablesContext.Provider>
+    </ErrorBoundary>
+  );
 };
 
 

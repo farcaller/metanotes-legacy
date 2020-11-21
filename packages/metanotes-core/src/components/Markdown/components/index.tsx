@@ -25,7 +25,6 @@ import Blockquote from './Blockquote';
 import List from './List';
 import ListItem from './ListItem';
 import Link from './Link';
-import Filter from './Filter';
 
 
 const components: Components = {
@@ -50,13 +49,10 @@ const components: Components = {
 
   link: Link,
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metanotesTag: (tagname: string): React.FunctionComponent<any> => {
     switch (tagname) {
       case 'include':
         return Include;
-      case 'filter':
-        return Filter;
       default:
         return () => <>unknown tag {tagname}</>;
     }

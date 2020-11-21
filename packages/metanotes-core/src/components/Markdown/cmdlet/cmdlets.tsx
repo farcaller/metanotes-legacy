@@ -12,15 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import { CmdletCall } from '@metanotes/filter';
+import { FunctionComponent } from 'react';
+
+import GetAttribute from './cmdlets/GetAttribute';
+import GetScribbles from './cmdlets/GetScribble';
 
 
-function Filter({ children }: { children: unknown }): JSX.Element {
-  return (
-    <>
-      {children}
-    </>
-  );
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface CmdletProps<P=any> {
+  args: (string|number)[];
+  flags: { [key: string]: string };
+
+  pipeline: CmdletCall[];
+  as: string;
+
+  input: P;
 };
 
-export default React.memo(Filter);
+export const Cmdlets: { [key: string]: FunctionComponent<CmdletProps> } = {
+  'Get-Scribbles': GetScribbles,
+  'Get-Attribute': GetAttribute,
+};

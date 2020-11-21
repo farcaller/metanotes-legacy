@@ -46,6 +46,13 @@ const theStore = store(undefined, api);
 
 theStore.dispatch(setCoreScribbles(scribbles));
 
+import { stopReportingRuntimeErrors } from 'react-error-overlay';
+
+if (process.env.NODE_ENV === "development") {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  stopReportingRuntimeErrors(); // disables error overlays
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>

@@ -13,4 +13,5 @@
 // limitations under the License.
 
 import Lang from './parser';
+export { CmdletCall } from './parser';
 export const Pipeline = Lang.Pipeline;

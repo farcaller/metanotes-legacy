@@ -15,7 +15,7 @@
 import { alt, any, createLanguage, noneOf, oneOf, regexp, seq, seqMap, string, succeed, whitespace } from 'parsimmon';
 
 
-type CmdletCall = { name: string, flags: { [key: string]: string }, args: (string | number)[] };
+export type CmdletCall = { name: string, flags: { [key: string]: string }, args: (string | number)[] };
 
 const Lang = createLanguage<{
   Keyword: string,

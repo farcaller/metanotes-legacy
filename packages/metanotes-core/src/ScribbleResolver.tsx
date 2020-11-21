@@ -74,18 +74,16 @@ export class ErrorBoundary extends React.PureComponent<{ children: JSX.Element }
   }
 
   static getDerivedStateFromError(error: Error): { error?: Error } {
-    console.error('getDerivedStateFromError:', error);
     return { error };
   }
 
   componentDidCatch(error: Error, errorInfo: unknown): void {
-    console.error('componentDidCatch:', error, errorInfo);
     this.setState({ error });
   }
 
   render(): JSX.Element {
     if (this.state.error !== undefined) {
-      return <Alert severity="error">rendering scribble failed: <code>{this.state.error}</code></Alert>;
+      return <Alert severity="error">rendering scribble failed</Alert>;
     }
 
     return this.props.children;

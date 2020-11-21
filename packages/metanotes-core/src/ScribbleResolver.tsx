@@ -34,6 +34,7 @@ import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
 import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Autocomplete from '@material-ui/core/Autocomplete';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
@@ -133,6 +134,7 @@ const componentLocals: { [key: string]: unknown } = {
   icons,
   useCoreEvents: () => useContext(CoreEventsContext),
   ErrorBoundary,
+  useDebouncedCallback,
 };
 
 export default React.memo(ScribbleResolver);

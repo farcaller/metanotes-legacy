@@ -20,7 +20,7 @@
 
 const { useCallback } = React;
 const { useDispatch, updateScribbleBody, useSelector, selectScribbleById } = core;
-const { MonacoEditor, Paper } = components;
+const { MonacoEditor, Paper, useDebouncedCallback } = components;
 
 
 const MonacoConfig = {
@@ -40,9 +40,14 @@ function MarkdownEditor({ id }) {
   const body = useSelector(state => selectScribbleById(state, id).body);
   const dispatch = useDispatch();
 
-  const onChange = useCallback((ev, body) => {
-    dispatch(updateScribbleBody({ id, body }));
-  }, [id]);
+  const debounced = useDebouncedCallback(
+    (body) => {
+      dispatch(updateScribbleBody({ id, body }));
+    },
+    100,
+  );
+
+  const debouncedCallback = useCallback((e, value) => debounced.callback(value), [debounced]);
 
   return (
     <Paper>
@@ -51,7 +56,7 @@ function MarkdownEditor({ id }) {
         width={'100%'}
         language="markdown"
         value={body}
-        onChange={onChange}
+        onChange={debouncedCallback}
         options={MonacoConfig}
       />
     </Paper>

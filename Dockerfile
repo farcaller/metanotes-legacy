@@ -76,6 +76,7 @@ CMD ["nginx", "-g", "daemon off;"]
 FROM node:15-alpine3.12 as deploy_server
 
 COPY --from=build_server /usr/src/app/packages/metanotes-server/dist/ /usr/src/app/
+COPY ./packages/metanotes-server/migrations /usr/src/migrations
 WORKDIR /usr/src/app
 CMD ["sh", "-c", "exec node ./main.js \"${DATA_DIR}/db.sqlite\" \"${LISTEN_ADDRESS}\""]
 

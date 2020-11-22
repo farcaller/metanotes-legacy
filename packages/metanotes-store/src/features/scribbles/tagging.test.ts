@@ -14,7 +14,7 @@
 
 import { RootState } from '../..';
 import { recomputeAttributes, Scribble } from './scribble';
-import { scribblesAdapter, updateTitleMapAdd } from './scribblesSlice';
+import { scribblesAdapter, resyncTitleToIdMap } from './scribblesSlice';
 import { selectScribblesByTag } from './tagging';
 
 
@@ -28,7 +28,7 @@ function makeState(scribbles: Scribble[]): RootState {
     }
   };
 
-  updateTitleMapAdd(state.scribbles, scribbles);
+  resyncTitleToIdMap(state.scribbles);
 
   return state;
 }

@@ -19,7 +19,6 @@ import markdown from 'remark-parse';
 import { Node } from 'unist';
 
 import inlineTag from './inlineTag';
-import tagTreeShaker from './tagTreeShaker';
 
 
 test('it parses a tag', () => {
@@ -103,15 +102,3 @@ function stripPosition(n: Node): any {
   }
   return n;
 }
-
-test('it nests the tags within the inline tag', () => {
-  const parser = unified()
-    .use(markdown)
-    .use(inlineTag)
-    .use(tagTreeShaker);
-  const node = stripPosition(parser.parse('{{hello}}\n* abc\n\n{{/hello}}'));
-
-  console.log(JSON.stringify(node, null, 4));
-
-  expect(node.children).toHaveLength(1);
-});

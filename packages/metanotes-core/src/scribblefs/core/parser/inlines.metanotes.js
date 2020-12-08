@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0AXKPQ42H5H58YVQXGB560
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Inlines
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+function Inlines(r) {
+  return r.Inline.atLeast(1).map(ii => ii.filter(i => i !== null));
+}
+
+export default Inlines;

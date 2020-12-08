@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0A4Z2NJK177SBERW2SY14X
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/NonindentSpace
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+const { alt, string } = components.Parsimmon;
+
+function NonindentSpace() {
+  return alt(string('   '), string('  '), string(' '), string(''));
+};
+
+export default NonindentSpace;

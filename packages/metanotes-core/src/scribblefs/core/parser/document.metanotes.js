@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER03HZ98QJSZBZC92YBMAJ7X
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Document
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+function Document(r) {
+  return r.Paragraph.many().map(p => ({
+    type: 'root',
+    children: p,
+  }));
+};
+
+export default Document;

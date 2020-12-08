@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0AVQC8SJCQPE5F4TZYGJ2X
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Newline
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+const { regexp } = components.Parsimmon;
+
+function Newline() {
+  return regexp(/\n|\r\n?/);
+};
+
+export default Newline;

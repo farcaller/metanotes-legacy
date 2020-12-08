@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/BlankLine
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+function BlankLine(r) {
+  return r.Sp.then(r.Newline);
+}
+
+export default BlankLine;

@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0A263ZQ42Q36X96QECXJG3
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Paragraph
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+function Paragraph(r) {
+  return r.NonindentSpace.then(r.Inlines).map(i => ({
+    type: 'paragraph',
+    children: i,
+  })).skip(r.BlankLine.atLeast(1));
+}
+
+export default Paragraph;

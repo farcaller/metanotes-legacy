@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0AST0HTV8Y2PY6VRKFY0E7
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/SpaceChar
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+const { oneOf } = components.Parsimmon;
+
+function SpaceChar() {
+  return oneOf(' \t');
+}
+
+export default SpaceChar;

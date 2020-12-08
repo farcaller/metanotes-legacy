@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './scribble';
-export * from './ScribbleResolverContext';
-export * from './scribblesSlice';
-export * from './useScribble';
-export * from './loaders';
-export * from './tagging';
-export * from './selectors';
+/* attributes *
+ * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Inline
+ */
 
-export { loadJsModule } from './loaders/jsmodLoader';
+const { regexp } = components.Parsimmon;
+
+function Inline(r) {
+  return regexp(/.+/).map(val => ({
+    type: 'text',
+    value: val,
+  }));
+}
+
+export default Inline;

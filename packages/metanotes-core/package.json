@@ -22,6 +22,7 @@
     "react-syntax-highlighter": "^15.3.0",
     "typescript": "^4.0.3",
     "ulid": "^2.3.0",
+    "unified": "^9.2.0",
     "use-debounce": "^5.1.0",
     "web-vitals": "^0.2.4"
   },
@@ -65,10 +66,16 @@
     "@types/react-syntax-highlighter": "^13.5.0",
     "@welldone-software/why-did-you-render": "^5.0.0",
     "eslint-plugin-disable": "^2.0.1",
+    "glob": "^7.1.6",
     "js-yaml": "^3.14.0",
     "react-app-rewired": "^2.1.6",
     "serve": "^11.3.2",
     "source-map-explorer": "^2.5.0",
     "webpack-extended-import-glob-loader": "^1.6.6"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/util/coredoc-jest-loader.js"
+    }
   }
 }

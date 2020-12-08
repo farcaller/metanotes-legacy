@@ -18,32 +18,6 @@
 import { Scribble } from '@metanotes/store/lib/features/scribbles';
 
 
-const scribbles: Scribble[] = [
-  require('./core/ui/single-scribble-layout.metanotes.jsx'),
-
-  require('./core/routes/root.metanotes.jsx'),
-  require('./core/routes/single-scribble.metanotes.jsx'),
-  
-  require('./core/editor/text/markdown.metanotes.jsx'),
-  require('./core/editor/application/vnd.metanotes.component-jsmodule.metanotes.jsx'),
-  require('./core/editor/image/jpeg.metanotes.jsx'),
-  require('./core/renderer/image/jpeg.metanotes.jsx'),
-  require('./core/renderer/image/png.metanotes.jsx'),
-  require('./core/renderer/text/markdown.metanotes.jsx'),
-  require('./core/renderer/application/vnd.metanotes.component-jsmodule.metanotes.jsx'),
-
-  
-  require('./core/ui/scribbles-list.metanotes.jsx'),
-  require('./core/ui/scribble-container.metanotes.jsx'),
-  require('./core/ui/scribble-card-header.metanotes.jsx'),
-  require('./core/ui/scribble-card-actions.metanotes.jsx'),
-  require('./core/ui/scribble-attributes-editor.metanotes.jsx'),
-  require('./core/ui/scribble-content-type-editor.metanotes.jsx'),
-  require('./core/ui/actions-bar.metanotes.jsx'),
-
-  require('./core/ui/actions/view/edit.metanotes.jsx'),
-  require('./core/ui/actions/edit/close.metanotes.jsx'),
-  require('./core/ui/actions/edit/save.metanotes.jsx'),
-];
+const scribbles: Scribble[] = require('__MAGIC__SCRIBBLES__');
 
 export default scribbles;

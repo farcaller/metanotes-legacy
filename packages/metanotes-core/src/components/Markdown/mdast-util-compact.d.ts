@@ -12,4 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-declare module '@mdx-js/runtime';
+declare module 'mdast-util-compact';

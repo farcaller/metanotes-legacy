@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import unified from 'unified';
+import unified, { ProcessorSettings, Settings } from 'unified';
 import markdown from 'remark-parse';
 import * as ast from 'ts-mdast';
 
@@ -22,29 +22,13 @@ import inlineTag from './inlineTag';
 import wikiLink from './wikiLink';
 export { Components, HeadingProps, ListProps, ListItemProps, TableProps, CodeProps, InlineCodeProps, ImageProps, WikiLinkProps, LinkProps } from './components';
 
-const inlineHTML = () => false;
-inlineHTML.locator = () => -1;
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
-(markdown.Parser.prototype as any).blockTokenizers.html = () => false;
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-explicit-any
-(markdown.Parser.prototype as any).inlineTokenizers.html = inlineHTML;
-
-export const compile = (doc: string, components: Components, inline: boolean): JSX.Element => {
+// TODO: fix that any type
+export const compile = (doc: string, components: Components, inline: boolean, metaParser: any, metaScribbles: unknown): JSX.Element => {
   const parser = unified()
-    .use(markdown)
-    .use(inlineTag)
-    .use(wikiLink)
+    .use(metaParser, { parserScribbles: metaScribbles })
     .use(metaCompiler, { components, inline });
 
   const f = parser.processSync({ contents: doc });
   return f.result as JSX.Element;
-};
-
-export const parse = (doc: string): ast.Node => {
-  const parser = unified()
-    .use(markdown)
-    .use(inlineTag);
-
-  return parser.parse({ contents: doc });
 };

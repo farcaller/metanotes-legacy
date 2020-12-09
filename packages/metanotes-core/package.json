@@ -8,7 +8,6 @@
     "@material-ui/core": "=5.0.0-alpha.14",
     "@material-ui/icons": "=5.0.0-alpha.14",
     "@material-ui/lab": "=5.0.0-alpha.14",
-    "@mdx-js/runtime": "^1.6.21",
     "@metanotes/remark-metareact": "0.1.0",
     "@metanotes/store": "0.1.0",
     "@monaco-editor/react": "^3.6.3",

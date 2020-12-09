@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import MDX from '@mdx-js/runtime';
+import React, { useMemo } from 'react';
+import { Alert } from '@material-ui/lab';
+import equals from 'deep-equal';
 
 
-import { ErrorBoundary } from '../../ScribbleResolver';
-import For from './widgets/For';
-import { Echo, VariablesContext } from './widgets/variables';
+import { compile } from '@metanotes/remark-metareact';
+import components from './components';
+import { useTypedSelector } from '@metanotes/store';
+import { Scribble, selectScribblesByTag } from '@metanotes/store/lib/features/scribbles';
+import makeParser from './parser';
 
 
 export interface MarkdownProps {
@@ -26,21 +29,23 @@ export interface MarkdownProps {
   inline?: boolean;
 }
 
-const Components = {
-  For,
-  Echo,
-};
-
-const emptyVarContext = (_key: string) => undefined;
-
 const Markdown = ({ text, inline }: MarkdownProps) => {
-  return (
-    <ErrorBoundary>
-      <VariablesContext.Provider value={emptyVarContext}>
-        <MDX components={Components}>{text}</MDX>
-      </VariablesContext.Provider>
-    </ErrorBoundary>
-  );
+  const parserScribbles = useTypedSelector(state => selectScribblesByTag(state, '$:core/parser'), equals);
+  const parserScribblesKeyed = useMemo(() => {
+    const scribsByName = {} as { [key: string]: Scribble };
+    for (const sc of parserScribbles) {
+      scribsByName[sc.attributes['parser']!] = sc;
+    }
+    return scribsByName;
+  }, [parserScribbles]);
+
+  const documentEl = compile(text + '\n\n', components, inline === true, makeParser, parserScribblesKeyed);
+
+  if (!documentEl) {
+    return <Alert severity="error">failed to parse the markdown document</Alert>;
+  }
+
+  return documentEl;
 };
 
 

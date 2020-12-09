@@ -16,15 +16,19 @@
  * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Inline
+ * tags: ['$:core/parser']
+ * parser: Inline
  */
 
-const { regexp } = components.Parsimmon;
+const { alt } = components.Parsimmon;
 
 function Inline(r) {
-  return regexp(/.+/).map(val => ({
-    type: 'text',
-    value: val,
-  }));
+  return alt(
+    r.Str,
+    r.Space,
+    r.Strong,
+    r.SpecialChar,
+  );
 }
 
 export default Inline;

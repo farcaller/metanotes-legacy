@@ -16,6 +16,8 @@
  * id: 01ER0AST0HTV8Y2PY6VRKFY0E7
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/SpaceChar
+ * tags: ['$:core/parser']
+ * parser: SpaceChar
  */
 
 const { oneOf } = components.Parsimmon;

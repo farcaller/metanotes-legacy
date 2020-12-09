@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectParse"] }] */
+
 import unified from 'unified';
-import { Parent } from 'unist';
+import { Parent, Node } from 'unist';
 import * as mdast from 'ts-mdast';
+import compact from 'mdast-util-compact';
 
 import makeParser from './parser';
 import scribbles from '../../scribblefs';
@@ -35,14 +38,63 @@ function loadScribbles(scribbles: Scribble[]) {
 
 const parserScribbles = loadScribbles(scribbles);
 
-test('it parses a paragraph', () => {
+function expectParse(doc: string, expected: Node[]) {
   const parser = unified()
     .use(makeParser, { parserScribbles });
-  const node = (parser.parse('hello world\n\n')) as Parent;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const node = compact((parser.parse(doc))) as Parent;
 
-  const paraNode = node.children[0] as Parent;
-  expect(paraNode.type).toEqual('paragraph');
-  const textNode = paraNode.children[0] as mdast.Text;
-  expect(textNode.type).toEqual('text');
-  expect(textNode.value).toEqual('hello world');
+  expect(node).toEqual({
+    type: 'root',
+    children: expected,
+  });
+}
+
+test('it parses a paragraph', () => {
+  expectParse('hello world\n\n',
+  [
+    {
+      type: 'paragraph',
+      children: [
+        { type: 'text', value: 'hello world' },
+      ],
+    },
+  ]);
+});
+
+test('it parses strong text', () => {
+  expectParse('hello **world**\n\n',
+  [
+    {
+      type: 'paragraph',
+      children: [
+        { type: 'text', value: 'hello ' },
+        { type: 'strong', children: [{ type: 'text', value: 'world' }] },
+      ],
+    },
+  ]);
+});
+
+test('it parses broken strong text', () => {
+  expectParse('hello **world\n\n',
+    [
+      {
+        type: 'paragraph',
+        children: [
+          { type: 'text', value: 'hello **world' },
+        ],
+      },
+    ]);
+});
+
+test('it parses broken strong text 2', () => {
+  expectParse('hello **  world  **\n\n',
+    [
+      {
+        type: 'paragraph',
+        children: [
+          { type: 'text', value: 'hello **  world  **' },
+        ],
+      },
+    ]);
 });

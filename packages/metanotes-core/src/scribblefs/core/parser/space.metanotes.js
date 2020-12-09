@@ -13,15 +13,18 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * id: 01ES1V3WA3MWFG0TJ4JZ5V3K11
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlankLine
+ * title: $:core/parser/Space
  * tags: ['$:core/parser']
- * parser: BlankLine
+ * parser: Space
  */
 
-function BlankLine(r) {
-  return r.Sp.then(r.Newline);
+function Space(r) {
+  return r.SpaceChar.atLeast(1).map((sp) => ({
+    type: 'text',
+    value: sp.join(''),
+  }));
 }
 
-export default BlankLine;
+export default Space;

@@ -16,6 +16,8 @@
  * id: 01ER0ARXA9VC7X8VGST77TJDSB
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Sp
+ * tags: ['$:core/parser']
+ * parser: Sp
  */
 
 function Sp(r) {

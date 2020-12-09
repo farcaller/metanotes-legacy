@@ -13,15 +13,22 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * id: 01ES1SE9PESSXPVTB4CHCPXAHS
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlankLine
+ * title: $:core/parser/Strong
  * tags: ['$:core/parser']
- * parser: BlankLine
+ * parser: Strong
  */
 
-function BlankLine(r) {
-  return r.Sp.then(r.Newline);
+const { string } = components.Parsimmon;
+
+
+// TODO: why doesn't `** abc **` work even without whitespace trimming?..
+function Strong(r) {
+  return string('**').notFollowedBy(string('**')).then(r.Inline).atLeast(1).map(children => ({
+    type: 'strong',
+    children,
+  })).skip(string('**'));
 }
 
-export default BlankLine;
+export default Strong;

@@ -13,15 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * id: 01ES1THWYNE4BR2393WXQ36A9Y
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlankLine
+ * title: $:core/parser/SpecialChar
  * tags: ['$:core/parser']
- * parser: BlankLine
+ * parser: SpecialChar
  */
 
-function BlankLine(r) {
-  return r.Sp.then(r.Newline);
+const { oneOf } = components.Parsimmon;
+
+function SpecialChar() {
+  return oneOf('~*_`&[]()<!#\\\'"').map(c => ({
+    type: 'text',
+    value: c,
+  }));
 }
 
-export default BlankLine;
+export default SpecialChar;

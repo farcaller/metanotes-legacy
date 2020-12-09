@@ -13,15 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * id: 01ES1T7J8SY1AM3NJG826CG3VH
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlankLine
+ * title: $:core/parser/NormalChar
  * tags: ['$:core/parser']
- * parser: BlankLine
+ * parser: NormalChar
  */
 
-function BlankLine(r) {
-  return r.Sp.then(r.Newline);
+const { notFollowedBy, alt, any } = components.Parsimmon;
+
+function NormalChar(r) {
+  return notFollowedBy(alt(r.SpecialChar, r.SpaceChar, r.Newline)).then(any);
 }
 
-export default BlankLine;
+export default NormalChar;

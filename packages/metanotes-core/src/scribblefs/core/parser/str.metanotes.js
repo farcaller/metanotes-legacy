@@ -13,15 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * id: 01ES1SNQG2Y9XP64M8F0GZ4893
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlankLine
+ * title: $:core/parser/Str
  * tags: ['$:core/parser']
- * parser: BlankLine
+ * parser: Str
  */
 
-function BlankLine(r) {
-  return r.Sp.then(r.Newline);
+const { regexp } = components.Parsimmon;
+
+function Str(r) {
+  return r.NormalChar.atLeast(1).map(val => ({
+    type: 'text',
+    value: val.join('')
+  }));
 }
 
-export default BlankLine;
+export default Str;

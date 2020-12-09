@@ -16,6 +16,8 @@
  * id: 01ER0AVQC8SJCQPE5F4TZYGJ2X
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Newline
+ * tags: ['$:core/parser']
+ * parser: Newline
  */
 
 const { regexp } = components.Parsimmon;

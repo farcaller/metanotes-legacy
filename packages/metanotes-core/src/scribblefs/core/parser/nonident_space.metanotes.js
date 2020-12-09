@@ -16,6 +16,8 @@
  * id: 01ER0A4Z2NJK177SBERW2SY14X
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/NonindentSpace
+ * tags: ['$:core/parser']
+ * parser: NonindentSpace
  */
 
 const { alt, string } = components.Parsimmon;

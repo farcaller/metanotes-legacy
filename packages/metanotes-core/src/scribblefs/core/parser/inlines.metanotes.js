@@ -16,10 +16,34 @@
  * id: 01ER0AXKPQ42H5H58YVQXGB560
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Inlines
+ * tags: ['$:core/parser']
+ * parser: Inlines
  */
 
 function Inlines(r) {
-  return r.Inline.atLeast(1).map(ii => ii.filter(i => i !== null));
+  return r.Inline.atLeast(1).map(ii => ii.reduce((out, curr) => {
+    if (typeof curr === 'string') {
+      if (out.length === 0) {
+        out.push({
+          type: 'text',
+          value: curr,
+        });
+      } else {
+        let last = out[out.length - 1];
+        if (last.type === 'text') {
+          last.value += curr;
+        } else {
+          out.push({
+            type: 'text',
+            value: curr,
+          });
+        }
+      }
+    } else {
+      out.push(curr);
+    }
+    return out;
+  }, []));
 }
 
 export default Inlines;

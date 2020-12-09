@@ -16,6 +16,8 @@
  * id: 01ER03HZ98QJSZBZC92YBMAJ7X
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Document
+ * tags: ['$:core/parser']
+ * parser: Document
  */
 
 function Document(r) {

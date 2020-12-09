@@ -16,6 +16,8 @@
  * id: 01ER0A263ZQ42Q36X96QECXJG3
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Paragraph
+ * tags: ['$:core/parser']
+ * parser: Paragraph
  */
 
 function Paragraph(r) {

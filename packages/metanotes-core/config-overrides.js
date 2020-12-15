@@ -9,7 +9,7 @@ module.exports = function override(config, env) {
     include: path.resolve('src/scribblefs'),
     loader: require.resolve('babel-loader'),
     options: {
-      plugins: ['./util/coredoc-babel-loader.js'],
+      plugins: ['./util/coredoc-babel-glob-loader.js'],
       presets: [
         [
           require.resolve('babel-preset-react-app'),
@@ -21,6 +21,11 @@ module.exports = function override(config, env) {
       babelrc: false,
       configFile: false,
     },
+  });
+  rule.oneOf.splice(0, 0, {
+    test: /\.metanotes\.jsx?$/,
+    include: path.resolve('src/scribblefs'),
+    loader: path.resolve('util/coredoc-webpack-loader.js'),
   });
 
   return config;

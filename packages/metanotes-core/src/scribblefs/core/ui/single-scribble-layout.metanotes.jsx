@@ -30,19 +30,19 @@ function SingleScribbleLayout() {
   const ActionsBar = useScribble('$:core/ui/actions-bar');
 
   return (
-    <Grid container>
-      <Grid item xs={3}>
+    <div style={{ display: 'grid', gridTemplateColumns: '300px auto' }}>
+      <div>
         <Paper>
           <ActionsBar />
         </Paper>
         <Paper>
           <ScribblesList />
         </Paper>
-      </Grid>
-      <Grid item xs style={{marginLeft: 8, marginRight: 8}}>
+      </div>
+      <div style={{marginLeft: 8, marginRight: 8}}>
         {scribbleExists ? <ScribbleContainer id={id} /> : ''}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 

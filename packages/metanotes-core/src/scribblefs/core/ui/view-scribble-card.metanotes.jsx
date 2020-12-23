@@ -20,7 +20,7 @@
 
 const { useState } = React;
 const { useScribble, useDispatch, equals, removeScribble } = core;
-const { Card, CardContent, CardHeader, useHistory, useCoreEvents } = components;
+const { Card, CardContent, CardHeader, useHistory, useCoreEvents, ErrorBoundary } = components;
 
 function ViewScribbleCard({ scribble, children }) {
   const dispatch = useDispatch();
@@ -58,7 +58,9 @@ function ViewScribbleCard({ scribble, children }) {
         title={scribble.attributes.title}
       />
       <CardContent>
-        <Renderer scribble={scribble} />
+        <ErrorBoundary>
+          <Renderer scribble={scribble} />
+        </ErrorBoundary>
       </CardContent>
     </Card>
   )

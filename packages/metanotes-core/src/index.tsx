@@ -27,7 +27,7 @@ import scribbles from './scribblefs';
 import { setCoreScribbles, UseScribbleContext } from '@metanotes/store/lib/features/scribbles';
 import ScribbleResolver from './ScribbleResolver';
 import CoreEvents from './CoreEvents';
-
+import { BUILD_SHA } from './buildinfo';
 
 let backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
 
@@ -52,6 +52,8 @@ if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   stopReportingRuntimeErrors(); // disables error overlays
 }
+
+console.log(`running build ${BUILD_SHA}`);
 
 ReactDOM.render(
   <React.StrictMode>

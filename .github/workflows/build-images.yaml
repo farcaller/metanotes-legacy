@@ -101,6 +101,8 @@ jobs:
       with:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.prep_core.outputs.tags }}
+        build-args: |
+          BUILD_SHA=master-${GITHUB_SHA::8}
         labels: |
           org.opencontainers.image.source=${{ github.event.repository.clone_url }}
           org.opencontainers.image.created=${{ steps.prep_core.outputs.created }}
@@ -128,4 +130,4 @@ jobs:
         export_default_credentials: true
 
     - name: Tag versionstore assets
-      run: bash -c "echo -n sha-${{ github.sha }} | gsutil cp - gs://versionstore/apps/metanotes/IMAGE_TAG"
+      run: bash -c "echo -n sha-${GITHUB_SHA::8} | gsutil cp - gs://versionstore/apps/metanotes/IMAGE_TAG"

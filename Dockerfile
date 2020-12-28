@@ -51,6 +51,8 @@ RUN yarn build
 
 FROM build_deps as build_core
 
+ARG BUILD_SHA=docker-dev
+
 WORKDIR /usr/src/app/packages/metanotes-filter
 RUN yarn build
 
@@ -61,6 +63,7 @@ WORKDIR /usr/src/app/packages/remark-metareact
 RUN yarn build
 
 WORKDIR /usr/src/app/packages/metanotes-core
+RUN sed -i -e "s/export const BUILD_SHA.*/export const BUILD_SHA = '${BUILD_SHA}';/" ./src/buildinfo.ts
 RUN yarn build
 
 ####

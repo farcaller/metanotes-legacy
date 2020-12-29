@@ -102,7 +102,7 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.prep_core.outputs.tags }}
         build-args: |
-          BUILD_SHA=master-${GITHUB_SHA::8}
+          BUILD_SHA=master-${{ github.sha }}
         labels: |
           org.opencontainers.image.source=${{ github.event.repository.clone_url }}
           org.opencontainers.image.created=${{ steps.prep_core.outputs.created }}

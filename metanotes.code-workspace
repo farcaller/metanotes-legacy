@@ -36,6 +36,11 @@
 
   "settings": {
     "jest.pathToJest": "yarn test",
-    "jest.disabledWorkspaceFolders": ["-- root --", "metanotes-server", "mobile"],
+    "jest.disabledWorkspaceFolders": [
+      "-- root --",
+      "server",
+      "server-api",
+      "server-api-web",
+    ],
   },
 }

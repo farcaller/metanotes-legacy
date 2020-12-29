@@ -19,8 +19,6 @@ import { VFile } from 'vfile';
 import unified from 'unified';
 
 import { Components } from './components';
-import { InlineTagAst, isInlineTag } from './inlineTag';
-import { isWikiLink, WikiLinkAst } from './wikiLink';
 
 
 export interface Options {
@@ -162,16 +160,6 @@ function emitLink(node: ast.Link, options: Options): JSX.Element {
   }, ...emitChildren(node.children, options));
 }
 
-function emitMetaNotesTag(node: InlineTagAst, options: Options): JSX.Element {
-  const { components } = options;
-  return React.createElement(components.metanotesTag(node.tagName), node.params, ...emitChildren(node.children, options));
-}
-
-function emitWikiLink(node: WikiLinkAst, options: Options): JSX.Element {
-  const { components } = options;
-  return React.createElement(components.wikiLink, { target: node.value });
-}
-
 function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenOptions?: ChildrenOptions): JSX.Element | undefined {
   if (ast.isRoot(node)) {
     return emitRoot(node, options);
@@ -244,13 +232,6 @@ function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenO
 
   if (ast.isLink(node)) {
     return emitLink(node, options);
-  }
-
-  if (isInlineTag(node)) {
-    return emitMetaNotesTag(node, options);
-  }
-  if (isWikiLink(node)) {
-    return emitWikiLink(node, options);
   }
 
   console.error(`unhandled node type ${node.type}`, node);

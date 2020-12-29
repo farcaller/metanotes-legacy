@@ -65,10 +65,12 @@
     "@types/react-router-dom": "^5.1.6",
     "@types/react-syntax-highlighter": "^13.5.0",
     "@welldone-software/why-did-you-render": "^5.0.0",
+    "commonmark-spec": "^0.29.0",
     "eslint-plugin-disable": "^2.0.1",
     "glob": "^7.1.6",
     "js-yaml": "^3.14.0",
     "react-app-rewired": "^2.1.6",
+    "remark-html": "^13.0.1",
     "serve": "^11.3.2",
     "source-map-explorer": "^2.5.0",
     "webpack-extended-import-glob-loader": "^1.6.6"

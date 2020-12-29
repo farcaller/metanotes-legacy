@@ -18,10 +18,13 @@ import unified from 'unified';
 import { Parent, Node } from 'unist';
 import * as mdast from 'ts-mdast';
 import compact from 'mdast-util-compact';
+import * as commonmarkSpec from 'commonmark-spec';
+import remarkHTML from 'remark-html';
 
 import makeParser from './parser';
 import scribbles from '../../scribblefs';
 import { Scribble } from '@metanotes/store/lib/features/scribbles';
+
 
 const ParserScribblesPrefix = '$:core/parser/';
 
@@ -49,6 +52,43 @@ function expectParse(doc: string, expected: Node[]) {
     children: expected,
   });
 }
+
+type TestSpec = {
+  markdown: string;
+  html: string;
+  section: string;
+  number: number;
+};
+
+function loadCommonmarkTests(): TestSpec[] {
+  const tests: TestSpec[] = [];
+  for (let i = 0; i < (commonmarkSpec as {tests: TestSpec[]}).tests.length; ++i) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    tests.push((commonmarkSpec as { tests: TestSpec[] }).tests.find(s => s.number === i)!);
+  }
+  return tests;
+}
+
+function testCommonmark(idx: number) {
+  test(`it passes the commonmark spec #${idx}`, () => {
+    const parser = unified()
+      .use(makeParser, { parserScribbles })
+      .use(remarkHTML);
+
+    const spec = commonmarkTests[idx];
+
+    const out = parser.processSync(spec.markdown);
+
+    console.log(JSON.stringify(parser.parse(spec.markdown), null, 2));
+
+    expect(out.contents).toEqual(spec.html);
+  });
+}
+
+const commonmarkTests = loadCommonmarkTests();
+
+testCommonmark(189);
+testCommonmark(191);
 
 test('it parses a paragraph', () => {
   expectParse('hello world\n\n',

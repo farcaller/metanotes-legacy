@@ -18,8 +18,6 @@ import * as ast from 'ts-mdast';
 
 import { metaCompiler } from './compiler';
 import { Components } from './components';
-import inlineTag from './inlineTag';
-import wikiLink from './wikiLink';
 export { Components, HeadingProps, ListProps, ListItemProps, TableProps, CodeProps, InlineCodeProps, ImageProps, WikiLinkProps, LinkProps } from './components';
 
 

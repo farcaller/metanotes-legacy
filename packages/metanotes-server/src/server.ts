@@ -94,11 +94,16 @@ export function runServer(bind: string, store: Store): void {
     removeScribble: removeScribble(store),
     getScribblesByTextSearch: getScribblesByTextSearch(store),
   });
-  server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e, _) => {
-    if (e) {
-      console.log('failed to bind:', e);
-      exit(1);
-    }
-    server.start();
-  });
+  try {
+    server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e, _) => {
+      if (e) {
+        console.log('failed to bind:', e);
+        exit(1);
+      }
+      server.start();
+    });
+  } catch (e) {
+    console.log('failed to bind:', e);
+    exit(1);
+  }
 }

@@ -19,23 +19,30 @@
  */
 
 const { selectAllScribbles, useSelector, equals } = core;
-const { List, ListItem, ListItemText, RouterLink } = components;
+const { List, ListItem, ListItemText, RouterLink, makeStyles } = components;
+
+const useStyles = makeStyles({
+  root: {
+    overflowWrap: 'anywhere',
+  },
+});
 
 function ScribblesList({ scribble }) {
+  const classes = useStyles();
   const scribbles = useSelector(state => selectAllScribbles(state).map(s => ({ id: s.id, attributes: { title: s.attributes.title } })), equals);
 
   const scribbleItems = scribbles.map(s => {
     const label = s.attributes.title ? s.attributes.title : `$$${s.id}`;
     return (
       <ListItem key={s.id} button component={RouterLink} to={`/${s.id}`}>
-        <ListItemText primary={label} />
+        <ListItemText className={classes.root} primary={label} />
       </ListItem>
     );
   });
 
-  return <List dense>
-    {scribbleItems}
-  </List>;
+  return (
+    <List dense>{scribbleItems}</List>
+  );
 }
 
 export default React.memo(ScribblesList);

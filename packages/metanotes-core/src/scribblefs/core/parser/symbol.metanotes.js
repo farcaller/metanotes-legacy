@@ -13,22 +13,15 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01ETZTQJ7QS55HZ2VK3VPRYFE3
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/Symbol
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: Symbol
  */
 
-const { alt } = components.Parsimmon;
-
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Space,
-    r.Strong,
-    r.Symbol,
-  );
+function Symbol(r) {
+  return r.SpecialChar;
 }
 
-export default Inline;
+export default Symbol;

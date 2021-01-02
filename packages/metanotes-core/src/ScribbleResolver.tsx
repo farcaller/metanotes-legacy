@@ -69,10 +69,20 @@ function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: 
   }
 }
 
-export class ErrorBoundary extends React.PureComponent<{ children: JSX.Element }, {error?: Error}> {
+export class ErrorBoundary extends React.Component<{ children: JSX.Element }, {error?: Error}> {
   constructor(props: {children: JSX.Element}) {
     super(props);
     this.state = { error: undefined };
+  }
+
+  shouldComponentUpdate(nextProps: { children: JSX.Element }, nextState: { error?: Error }): boolean {
+    return (this.state.error !== nextState.error) || (this.props.children !== nextProps.children);
+  }
+
+  componentDidUpdate(prevProps: { children: JSX.Element }): void {
+    if (this.props.children !== prevProps.children && this.state.error !== undefined) {
+      this.setState({ error: undefined });
+    }
   }
 
   static getDerivedStateFromError(error: Error): { error?: Error } {

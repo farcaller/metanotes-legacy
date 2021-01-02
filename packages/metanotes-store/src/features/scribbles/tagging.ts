@@ -61,7 +61,7 @@ export const selectScribblesByTag = createCachedSelector(
       // should it match by ID too?
       for (const title of tagScribble.computedAttributes.list) {
         const scribbleIdx = matchingScribbles.findIndex(s => s.attributes.title === title);
-        if (scribbleIdx) {
+        if (scribbleIdx !== -1) {
           listedScribbles.push(matchingScribbles.splice(scribbleIdx, 1)[0]);
         }
       }

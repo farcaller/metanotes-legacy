@@ -154,3 +154,16 @@ test('it puts the scribble after its `list-after` in the very end', () => {
 
   expect(getIDs(selection)).toEqual(['1', '4', '5', '2', '3']);
 });
+
+test('it correctly includes the first found tagged scribble', () => {
+  const state = makeState([
+    makeScribble('1', '1', { tags: '["hello"]' }),
+    makeScribble('3', '3', { tags: '["hello"]' }),
+    makeScribble('2', '2', { tags: '["hello"]' }),
+    makeScribble('4', 'hello', { list: '["1", "2", "3"]' }),
+  ]);
+
+  const selection = selectScribblesByTag(state, 'hello');
+
+  expect(getIDs(selection)).toEqual(['1', '2', '3']);
+});

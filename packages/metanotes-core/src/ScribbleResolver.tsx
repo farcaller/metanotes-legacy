@@ -40,7 +40,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
 import { CoreEventsContext } from './CoreEvents';
-
+import { parse as parseMarkdown } from '@metanotes/remark-metareact';
+import markdownComponents from './components/Markdown/components';
+import makeParser from './components/Markdown/parser';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: Scribble): React.FunctionComponent<unknown> {
@@ -95,7 +97,10 @@ export class ErrorBoundary extends React.Component<{ children: JSX.Element }, {e
 
   render(): JSX.Element {
     if (this.state.error !== undefined) {
-      return <Alert severity="error">rendering scribble failed</Alert>;
+      return <Alert severity="error">
+        <div>rendering scribble failed</div>
+        <code>{JSON.stringify(this.state.error)}</code>
+      </Alert>;
     }
 
     return this.props.children;
@@ -147,6 +152,11 @@ const componentLocals: { [key: string]: unknown } = {
   ErrorBoundary,
   useDebouncedCallback,
   makeStyles,
+
+  // TODO: test only?
+  parseMarkdown,
+  markdownComponents,
+  makeParser,
 };
 
 export default React.memo(ScribbleResolver);

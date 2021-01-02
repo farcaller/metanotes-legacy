@@ -30,3 +30,11 @@ export const compile = (doc: string, components: Components, inline: boolean, me
   const f = parser.processSync({ contents: doc });
   return f.result as JSX.Element;
 };
+
+export const parse = (doc: string, components: Components, inline: boolean, metaParser: any, options: unknown): ast.Node => {
+  const parser = unified()
+    .use(metaParser, options);
+
+  const f = parser.parse(doc);
+  return f;
+};

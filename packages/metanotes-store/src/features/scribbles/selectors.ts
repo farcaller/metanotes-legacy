@@ -79,3 +79,5 @@ export const selectScribblesByTitlePrefix = createCachedSelector(
     return ids.map(id => selectScribbleByIDList(state, id)).filter(Boolean) as Scribble[];
   },
 )((_, prefix) => prefix);
+
+export const selectLastSyncError = (state: RootState): string|null => state.scribbles.lastSyncError;

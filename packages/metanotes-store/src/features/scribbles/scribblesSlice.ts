@@ -22,6 +22,7 @@ import { Attributes, recomputeAttributes, Scribble, ScribbleID } from './scribbl
 export interface ScribblesState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  lastSyncError: string | null;
   titleToIdMap: {[key: string]: string[]};
   scribbles: EntityState<Scribble>;
 }
@@ -34,6 +35,7 @@ export const scribblesAdapter = createEntityAdapter<Scribble>({
 const initialState: ScribblesState = {
   status: 'idle',
   error: null,
+  lastSyncError: null,
   titleToIdMap: {},
   scribbles: scribblesAdapter.getInitialState(),
 };
@@ -197,6 +199,9 @@ const scribblesSlice = createSlice({
       }
       resyncTitleToIdMap(state);
     },
+    resetSyncError(state) {
+      state.lastSyncError = null;
+    }
   },
   extraReducers: builder => {
     builder.addCase(fetchStoreMetadata.pending, (state) => {
@@ -254,6 +259,7 @@ const scribblesSlice = createSlice({
       });
     });
     builder.addCase(syncScribble.rejected, (state, action) => {
+      state.lastSyncError = action.error.message || `failed to sync ${action.meta.arg.id}`;
       scribblesAdapter.updateOne(state.scribbles, {
         id: action.meta.arg.id,
         changes: {
@@ -268,7 +274,7 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, removeScribble, commitDraft, createDraftScribble } = scribblesSlice.actions;
+export const { setCoreScribbles, createDraft, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, removeScribble, commitDraft, createDraftScribble, resetSyncError } = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,

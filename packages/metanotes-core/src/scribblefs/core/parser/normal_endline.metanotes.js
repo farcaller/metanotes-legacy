@@ -13,23 +13,25 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EV2BTGF3BWGR5Q87R664Q8TT
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/NormalEndline
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: NormalEndline
  */
 
-const { alt } = components.Parsimmon;
+const { string, seq, alt } = components.Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    r.Space,
-    r.Strong,
-    r.Symbol,
-  );
+function NormalEndline(r) {
+  return r.Sp.then(r.Newline).
+    notFollowedBy(r.BlankLine).
+    notFollowedBy(string('>')).
+    notFollowedBy(r.AtxStart).
+    notFollowedBy(seq(
+      r.Line,
+      alt(string('=').atLeast(1), string('-').atLeast(1)),
+      r.Newline,
+    )).map(() => '\n');
 }
 
-export default Inline;
+export default NormalEndline;

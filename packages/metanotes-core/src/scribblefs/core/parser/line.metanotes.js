@@ -13,23 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EV2C2XYP7QZ326DJFS9NFNMZ
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/Line
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: Line
  */
 
-const { alt } = components.Parsimmon;
+const { alt, seq, regexp, eof } = components.Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    r.Space,
-    r.Strong,
-    r.Symbol,
-  );
+function Line(r) {
+  return alt(seq(regexp(/[^\r\n]*/), r.Newline), seq(regexp(/.+/), eof));
 }
 
-export default Inline;
+export default Line;

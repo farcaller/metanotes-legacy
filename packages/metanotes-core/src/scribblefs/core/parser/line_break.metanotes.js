@@ -13,23 +13,19 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EV2BNHDCN47BBZ8WS6W05Z5N
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/LineBreak
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: LineBreak
  */
 
-const { alt } = components.Parsimmon;
+const { string } = components.Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    r.Space,
-    r.Strong,
-    r.Symbol,
-  );
+function LineBreak(r) {
+  return string('  ').then(r.NormalEndline).map(() => ({
+    type: 'break',
+  }));
 }
 
-export default Inline;
+export default LineBreak;

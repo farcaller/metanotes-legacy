@@ -13,23 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EV2BE1TDCT56WBX5J8SXPD5G
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/Endline
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: Endline
  */
 
 const { alt } = components.Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    r.Space,
-    r.Strong,
-    r.Symbol,
-  );
+function Endline(r) {
+  return alt(r.LineBreak, r.TerminalEndline, r.NormalEndline);
 }
 
-export default Inline;
+export default Endline;

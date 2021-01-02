@@ -18,7 +18,7 @@
  * title: $:core/ui/scribble-container
  */
 
-const { useState, useEffect, useCallback } = React;
+const { useMemo, useEffect, useState } = React;
 const { useSelector, selectScribbleById, useScribble, useDispatch, fetchScribble, equals, removeScribble } = core;
 const { ErrorBoundary, LinearProgress, Alert, Card, CardContent, useHistory, useCoreEvents } = components;
 
@@ -44,52 +44,51 @@ function ScribbleContainer({ id }) {
   const ContentTypeEditor = useScribble(`$:core/ui/scribble-content-type-editor`);
   const AttributesEditor = useScribble(`$:core/ui/scribble-attributes-editor`);
 
-  const isEditing = scribble.attributes['mn-draft-of'] !== undefined;
+  const isEditing = useMemo(() => scribble.attributes['mn-draft-of'] !== undefined, [scribble]);
 
-  let contentEl;
-  switch (scribble.status) {
-    case 'core':
-    case 'synced':
-      if (isEditing) {
-        contentEl = <>
-          <Editor id={id} />
-          <div style={{ marginTop: 14 }}>
-            <ContentTypeEditor id={id} />
-          </div>
-          <div style={{ marginTop: 14 }}>
-            <AttributesEditor id={id} />
-          </div>
-        </>;
-      } else {
-        contentEl = <Renderer id={id} />;
-      }
-      break;
-    case 'syncedMetadataOnly':
-      contentEl = <LinearProgress />;
-      break;
-    case 'pullingBody':
-      contentEl = <LinearProgress/>;
-      break;
-    case 'failed':
-      {
-        const title = scribble.attributes.title ? '(' + scribble.attributes.title + ')' : '';
-        contentEl = <Alert severity="error">failed to fetch the scribble {scribble.id}{title}: <code>{scribble.error}</code></Alert>
-      }
-      break;
-  }
+  const contentEl = useMemo(() => {
+    switch (scribble.status) {
+      case 'core':
+      case 'synced':
+        if (isEditing) {
+          return <>
+            <Editor id={id} />
+            <div style={{ marginTop: 14 }}>
+              <ContentTypeEditor id={id} />
+            </div>
+            <div style={{ marginTop: 14 }}>
+              <AttributesEditor id={id} />
+            </div>
+          </>;
+        } else {
+          return (<Renderer id={id} />);
+        }
+      case 'syncedMetadataOnly':
+        return <LinearProgress />;
+      case 'pullingBody':
+        return <LinearProgress/>;
+      case 'failed':
+        {
+          const title = scribble.attributes.title ? '(' + scribble.attributes.title + ')' : '';
+          return <Alert severity="error">failed to fetch the scribble {id}{title}: <code>{scribble.error}</code></Alert>;
+        }
+    }
+  }, [id, isEditing, scribble]);
 
   // TODO: I don't quite understand the mechanics but having this outside useEffect causes a render loop
   useEffect(() => {
     if (scribble.status === 'syncedMetadataOnly') {
       dispatch(fetchScribble(scribble));
     }
-  });
+  }, [id, scribble]);
 
   return (
     <Card>
       <Header id={id} />
       <CardContent>
-        {contentEl}
+        <ErrorBoundary>
+          {contentEl}
+        </ErrorBoundary>
       </CardContent>
     </Card>
   )

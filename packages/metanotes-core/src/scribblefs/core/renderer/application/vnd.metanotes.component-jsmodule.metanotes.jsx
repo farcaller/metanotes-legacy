@@ -24,7 +24,16 @@ const { SyntaxHighlighter } = components;
 function SyntaxHighlighterRenderer({ id }) {
   const body = useSelector(state => selectScribbleById(state, id).body);
 
-  return <SyntaxHighlighter language="javascript">{body}</SyntaxHighlighter>;
+  return (
+    <SyntaxHighlighter
+      lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+      wrapLines={true}
+      language="javascript"
+      showLineNumbers={false}
+    >
+      {body}
+    </SyntaxHighlighter>
+  );
 }
 
 export default React.memo(SyntaxHighlighterRenderer);

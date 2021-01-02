@@ -20,26 +20,28 @@ import { Scribble, loadJsModule, SyncedScribble } from '@metanotes/store/lib/fea
 import * as P from 'parsimmon';
 
 
-function buildParser(parserScribbles: { [key: string]: Scribble }): Parsimmon.Parser<mdast.Root> {
+function buildParser(parserScribbles: { [key: string]: Scribble }, rootNode: string): Parsimmon.Parser<mdast.Root> {
   const parserFuncs = {} as { [key: string]: (r: Language) => Parser<never> };
   for (const k of Object.keys(parserScribbles)) {
     parserFuncs[k] = loadJsModule(parserScribbles[k] as SyncedScribble, { Parsimmon: P } as any) as unknown as (r: Language) => Parser<never>;
   }
   // TODO: see https://stackoverflow.com/questions/994143/javascript-getter-for-all-properties for better errors
-  return Parsimmon.createLanguage(parserFuncs)['Document'] as Parsimmon.Parser<mdast.Root>;
+  return Parsimmon.createLanguage(parserFuncs)[rootNode] as Parsimmon.Parser<mdast.Root>;
 }
 
-function parse(text: string, _file: VFile, parserScribbles: { [key: string]: Scribble }): mdast.Root {
-  const rootParser = buildParser(parserScribbles);
+function parse(text: string, _file: VFile, parserScribbles: { [key: string]: Scribble }, rootNode: string): mdast.Root {
+  const rootParser = buildParser(parserScribbles, rootNode);
   return rootParser.tryParse(text);
 }
 
 export interface ParseOptions {
   parserScribbles: { [key: string]: Scribble };
+  rootNode?: string;
 };
 
 function makeParser(this: Processor, options: ParseOptions): void {
-  this.Parser = (text, file) => parse(text, file, options.parserScribbles);
+  const rootNode = options.rootNode || 'Document';
+  this.Parser = (text, file) => parse(text, file, options.parserScribbles, rootNode);
 }
 
 makeParser.settings = {};

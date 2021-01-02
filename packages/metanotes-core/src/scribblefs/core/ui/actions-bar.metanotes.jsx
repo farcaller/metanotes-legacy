@@ -16,81 +16,28 @@
  * id: 01EQ400VFT513W65P9W14CT3N4
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/ui/actions-bar
+ * list: ['$:core/ui/actions/bar/new', '$:core/ui/actions/bar/upload-image', '$:core/ui/actions/bar/sync']
  */
 
-const { useCallback } = React;
-const { useDispatch, createDraftScribble, ulid, createSelector, selectAllScribbles, useSelector, equals, syncScribble } = core;
-const { icons, IconButton, useHistory } = components;
+const { useContext, useMemo } = React;
+const {
+  useDispatch, useSelector, selectScribblesByTag, equals, loadScribbleComponent, UseScribbleContext, ScribbleResolverContext } = core;
 
-
-const selectDirtyScribbles = createSelector(
-  selectAllScribbles,
-  (scribbles) => scribbles.filter(s => s.dirty === true),
-);
 
 function ActionsBar() {
+  const actionScribbles = useSelector(state => selectScribblesByTag(state, '$:core/ui/actions-bar'), equals);
+
+  const cache = useContext(UseScribbleContext);
+  const resolver = useContext(ScribbleResolverContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const actions = useMemo(() => actionScribbles.map(scribble => {
+    const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title, scribble);
+    return <Comp key={scribble.id} />;
+  }), [resolver, dispatch, cache]);
 
-  const onUploadImage = useCallback((evt) => {
-    const file = evt.target.files[0];
-    const blobURL = window.URL.createObjectURL(file);
-    const scribble = {
-      id: ulid(),
-      binaryBodyURL: blobURL,
-      attributes: {
-        'content-type': file.type,
-        'mn-draft-of': '',
-      },
-      status: 'synced',
-    };
-
-    dispatch(createDraftScribble(scribble));
-    history.push(`/${scribble.id}`);
-  }, [dispatch, history]);
-
-  const onCreateNew = useCallback(() => {
-    const scribble = {
-      id: ulid(),
-      body: '',
-      attributes: {
-        'content-type': 'text/markdown',
-        'mn-draft-of': '',
-      },
-      status: 'synced',
-    };
-
-    dispatch(createDraftScribble(scribble));
-    history.push(`/${scribble.id}`);
-  }, [dispatch, history]);
-
-  const dirtyScribbles = useSelector(state => selectDirtyScribbles(state), equals);
-
-  const onSync = useCallback(() => {
-    for (const s of dirtyScribbles) {
-      dispatch(syncScribble(s));
-    }
-  }, [dispatch, dirtyScribbles]);
-
-  // TODO: should use a tagged collection
   return (
-    <>
-      <IconButton color="primary" aria-label="create scribble" onClick={onCreateNew}>
-        <icons.NoteAdd />
-      </IconButton>
-
-      <input accept="image/*" style={{ display: 'none' }} id="icon-button-file" type="file" onChange={onUploadImage} />
-      <label htmlFor="icon-button-file">
-        <IconButton color="primary" aria-label="upload picture" component="span">
-            <icons.PhotoCamera />
-        </IconButton>
-      </label>
-
-      <IconButton color="primary" aria-label="sync to server" onClick={onSync}>
-        <icons.Sync />
-      </IconButton>
-    </>
-  );
+    <>{actions}</>
+  )
 }
 
 export default React.memo(ActionsBar);

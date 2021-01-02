@@ -13,18 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER03HZ98QJSZBZC92YBMAJ7X
+ * id: 01ETZSR0FPW8KQ1ZEQKNYSJ5WQ
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Document
+ * title: $:core/parser/Block
  * tags: ['$:core/parser']
- * parser: Document
+ * parser: Block
  */
 
-function Document(r) {
-  return r.Block.many().map(p => ({
-    type: 'root',
-    children: p,
-  }));
-};
+const { alt } = components.Parsimmon;
 
-export default Document;
+function Block(r) {
+  return alt(
+    r.Heading,
+    r.Paragraph,
+  );
+}
+
+export default Block;

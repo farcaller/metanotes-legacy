@@ -13,18 +13,21 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER03HZ98QJSZBZC92YBMAJ7X
+ * id: 01ETZS487WXK6Z6EJJN04STAZH
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Document
+ * title: $:core/parser/AtxHeading
  * tags: ['$:core/parser']
- * parser: Document
+ * parser: AtxHeading
  */
 
-function Document(r) {
-  return r.Block.many().map(p => ({
-    type: 'root',
-    children: p,
-  }));
-};
+const { seqMap } = components.Parsimmon;
 
-export default Document;
+function AtxHeading(r) {
+  return seqMap(r.AtxStart, r.AtxInline.atLeast(1), r.AtxMarker, r.Newline, (s, i) => ({
+    type: 'heading',
+    depth: s,
+    children: i,
+  }));
+}
+
+export default AtxHeading;

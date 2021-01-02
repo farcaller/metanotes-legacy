@@ -13,18 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER03HZ98QJSZBZC92YBMAJ7X
+ * id: 01ETZS631WFMDT263PTX7TCM3P
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Document
+ * title: $:core/parser/AtxStart
  * tags: ['$:core/parser']
- * parser: Document
+ * parser: AtxStart
  */
 
-function Document(r) {
-  return r.Block.many().map(p => ({
-    type: 'root',
-    children: p,
-  }));
-};
+const { string, alt } = components.Parsimmon;
 
-export default Document;
+function AtxStart(r) {
+  return alt(string('######'), string('#####'), string('####'), string('###'), string('##'), string('#')).map(s => s.length);
+}
+
+export default AtxStart;

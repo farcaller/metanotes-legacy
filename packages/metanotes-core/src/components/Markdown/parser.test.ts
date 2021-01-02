@@ -41,11 +41,17 @@ function loadScribbles(scribbles: Scribble[]) {
 
 const parserScribbles = loadScribbles(scribbles);
 
-function expectParse(doc: string, expected: Node[]) {
+function doParse(doc: string, rootNode?: string): mdast.Node {
   const parser = unified()
-    .use(makeParser, { parserScribbles });
+    .use(makeParser, { parserScribbles, rootNode });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const node = compact((parser.parse(doc))) as Parent;
+
+  return node;
+}
+
+function expectParse(doc: string, expected: Node[]) {
+  const node = doParse(doc);
 
   expect(node).toEqual({
     type: 'root',
@@ -134,6 +140,26 @@ test('it parses broken strong text 2', () => {
         type: 'paragraph',
         children: [
           { type: 'text', value: 'hello **  world  **' },
+        ],
+      },
+    ]);
+});
+
+test('it parses headers', () => {
+  expectParse('### hello **there** ###\nworld\n\n',
+    [
+      {
+        type: 'heading',
+        depth: 3,
+        children: [
+          { type: 'text', value: ' hello ' },
+          { type: 'strong', children: [{ type: 'text', value: 'there' }] },
+        ]
+      },
+      {
+        type: 'paragraph',
+        children: [
+          { type: 'text', value: 'world' },
         ],
       },
     ]);

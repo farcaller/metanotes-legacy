@@ -13,18 +13,16 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER03HZ98QJSZBZC92YBMAJ7X
+ * id: 01ETZS1P9AV8GPX01YVK4YMNP9
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Document
+ * title: $:core/parser/Heading
  * tags: ['$:core/parser']
- * parser: Document
+ * parser: Heading
  */
 
-function Document(r) {
-  return r.Block.many().map(p => ({
-    type: 'root',
-    children: p,
-  }));
-};
 
-export default Document;
+function Heading(r) {
+  return r.AtxHeading;
+}
+
+export default Heading;

@@ -13,18 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER03HZ98QJSZBZC92YBMAJ7X
+ * id: 01ETZSFFFGQ7A49742ST34HY17
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Document
+ * title: $:core/parser/AtxInline
  * tags: ['$:core/parser']
- * parser: Document
+ * parser: AtxInline
  */
 
-function Document(r) {
-  return r.Block.many().map(p => ({
-    type: 'root',
-    children: p,
-  }));
-};
+const { notFollowedBy, seq } = components.Parsimmon;
 
-export default Document;
+function AtxInline(r) {
+  return notFollowedBy(r.Newline).then(notFollowedBy(r.AtxMarker.then(r.Newline))).then(r.Inline);
+}
+
+export default AtxInline;

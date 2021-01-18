@@ -19,9 +19,9 @@
  */
 
 
-const { useCallback, useState, useMemo } = React;
+const { useCallback, useState, useMemo, useEffect } = React;
 const { equals, useSelector, selectScribblesByTag } = core;
-const { TextField, MonacoEditor, Paper, useDebouncedCallback, ErrorBoundary, parseMarkdown, markdownComponents, makeParser, SyntaxHighlighter } = components;
+const { TextField, MonacoEditor, Paper, useDebouncedCallback, ErrorBoundary, parseMarkdown, markdownComponents, makeParser, SyntaxHighlighter, useLocation } = components;
 
 
 const MonacoConfig = {
@@ -86,13 +86,25 @@ function Render({ text, rootNode }) {
   </SyntaxHighlighter>
 }
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function ParserTest() {
-  const [input, setInput] = useState('');
-  const [parser, setParser] = useState('Document');
+  const query = useQuery();
+  const [input, setInput] = useState(query.get('q') || '');
+  const [parser, setParser] = useState(query.get('parser') || 'Document');
 
   const handleChange = useCallback((event) => {
     setParser(event.target.value);
   }, [setParser]);
+
+  useEffect(() => {
+    query.set('parser', parser);
+    query.set('q', input);
+    const q = window.location.pathname + '?' + query.toString();
+    window.history.pushState(null, '', q);
+  }, [input, parser]);
 
   return <div style={{ width: '100%' }}>
     <div>

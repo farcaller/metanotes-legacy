@@ -30,7 +30,7 @@ import SpeedDial from '@material-ui/core/SpeedDial';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
 import TextField from '@material-ui/core/TextField';
 import * as icons from '@material-ui/icons';
-import { useParams, Link as RouterLink, useHistory } from 'react-router-dom';
+import { useParams, Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Autocomplete from '@material-ui/core/Autocomplete';
@@ -146,6 +146,7 @@ const componentLocals: { [key: string]: unknown } = {
   useParams,
   RouterLink,
   useHistory,
+  useLocation,
   // TODO: this now takes up 37% of the runtime, split into a chunk?
   icons,
   useCoreEvents: () => useContext(CoreEventsContext),

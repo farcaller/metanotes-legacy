@@ -152,7 +152,7 @@ test('it parses headers', () => {
         type: 'heading',
         depth: 3,
         children: [
-          { type: 'text', value: ' hello ' },
+          { type: 'text', value: 'hello ' },
           { type: 'strong', children: [{ type: 'text', value: 'there' }] },
         ]
       },

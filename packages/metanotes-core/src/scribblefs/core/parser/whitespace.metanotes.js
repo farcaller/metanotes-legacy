@@ -13,23 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ES1SE9PESSXPVTB4CHCPXAHS
+ * id: 01EWB5E8RFA2B1C5M0W3E9HVZ3
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Strong
+ * title: $:core/parser/Whitespace
  * tags: ['$:core/parser']
- * parser: Strong
+ * parser: Whitespace
  */
 
-const { string, seqMap, notFollowedBy } = components.Parsimmon;
+const { alt } = components.Parsimmon;
 
-
-function Strong(r) {
-  return string('**').notFollowedBy(r.Whitespace).
-    then(seqMap(notFollowedBy(string('**')), r.Inline, (_, i) => i).atLeast(1)).map(children => ({
-      type: 'strong',
-      children,
-    })).
-    skip(string('**'));
+function Whitespace(r) {
+  return alt(r.SpaceChar, r.Newline);
 }
 
-export default Strong;
+export default Whitespace;

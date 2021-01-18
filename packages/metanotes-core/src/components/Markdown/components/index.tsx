@@ -49,10 +49,11 @@ const components: Components = {
 
   link: Link,
 
-  metanotesTag: (tagname: string): React.FunctionComponent<any> => {
+  // TODO: better typing
+  metanotesTag: (tagname: string): React.FunctionComponent<unknown> => {
     switch (tagname) {
       case 'include':
-        return Include;
+        return Include as React.FunctionComponent<unknown>;
       default:
         return () => <>unknown tag {tagname}</>;
     }

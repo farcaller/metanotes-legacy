@@ -91,7 +91,7 @@ export class ErrorBoundary extends React.Component<{ children: JSX.Element }, {e
     return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: unknown): void {
+  componentDidCatch(error: Error, _errorInfo: unknown): void {
     this.setState({ error });
   }
 

@@ -87,8 +87,9 @@ test('Strong matches text in **stars**', () => {
   });
 });
 
+// eslint-disable-next-line jest/no-disabled-tests
 test.skip('Strong matches text in **stars** with nested inlines', () => {
-  const n = doParse('**hello! world~**', 'Strong');
+  doParse('**hello! world~**', 'Strong');
   // TODO: implement
 });
 

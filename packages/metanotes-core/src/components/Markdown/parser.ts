@@ -23,6 +23,7 @@ import * as P from 'parsimmon';
 function buildParser(parserScribbles: { [key: string]: Scribble }, rootNode: string): Parsimmon.Parser<mdast.Root> {
   const parserFuncs = {} as { [key: string]: (r: Language) => Parser<never> };
   for (const k of Object.keys(parserScribbles)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     parserFuncs[k] = loadJsModule(parserScribbles[k] as SyncedScribble, { Parsimmon: P } as any) as unknown as (r: Language) => Parser<never>;
   }
   // TODO: see https://stackoverflow.com/questions/994143/javascript-getter-for-all-properties for better errors

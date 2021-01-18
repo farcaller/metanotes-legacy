@@ -17,7 +17,6 @@ import { Parent, Node } from 'unist';
 import * as mdast from 'ts-mdast';
 import compact from 'mdast-util-compact';
 import * as commonmarkSpec from 'commonmark-spec';
-import remarkHTML from 'remark-html';
 
 import makeParser from './parser';
 import scribbles from '../../scribblefs';

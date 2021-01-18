@@ -22,12 +22,25 @@
 
 const { alt } = components.Parsimmon;
 
+
 function Inline(r) {
   return alt(
     r.Str,
     r.Endline,
+    // | UlOrStarLine
     r.Space,
     r.Strong,
+    // | Emph
+    // | Strike
+    // | Image
+    // | Link
+    // | NoteReference
+    // | InlineNote
+    // | Code
+    // | RawHtml
+    // | Entity
+    // | EscapedChar
+    // | Smart
     r.Symbol,
   );
 }

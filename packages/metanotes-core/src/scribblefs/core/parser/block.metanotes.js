@@ -24,8 +24,18 @@ const { alt } = components.Parsimmon;
 
 function Block(r) {
   return r.BlankLine.many().then(alt(
+    // | BlockQuote
+    // | Verbatim
+    // | Note
+    // | Reference
+    // | HorizontalRule
     r.Heading,
+    // | OrderedList
+    // | BulletList
+    // | HtmlBlock
+    // | StyleBlock
     r.Paragraph,
+    // | Plain
   ));
 }
 

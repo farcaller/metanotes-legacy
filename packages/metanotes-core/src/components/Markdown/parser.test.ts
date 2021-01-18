@@ -15,65 +15,11 @@
 /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectParse"] }] */
 
 import unified from 'unified';
-import { Parent, Node } from 'unist';
-import * as mdast from 'ts-mdast';
-import compact from 'mdast-util-compact';
-import * as commonmarkSpec from 'commonmark-spec';
 import remarkHTML from 'remark-html';
 
 import makeParser from './parser';
-import scribbles from '../../scribblefs';
-import { Scribble } from '@metanotes/store/lib/features/scribbles';
+import { commonmarkTests, parserScribbles, expectParse } from './test-helpers'; 
 
-
-const ParserScribblesPrefix = '$:core/parser/';
-
-function loadScribbles(scribbles: Scribble[]) {
-  const scribsByName = {} as { [key: string]: Scribble };
-  for (const sc of scribbles) {
-    if (sc.attributes.title?.startsWith(ParserScribblesPrefix)) {
-      const title = sc.attributes.title.slice(ParserScribblesPrefix.length);
-      scribsByName[title] = sc;
-    }
-  }
-  return scribsByName;
-}
-
-const parserScribbles = loadScribbles(scribbles);
-
-function doParse(doc: string, rootNode?: string): mdast.Node {
-  const parser = unified()
-    .use(makeParser, { parserScribbles, rootNode });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const node = compact((parser.parse(doc))) as Parent;
-
-  return node;
-}
-
-function expectParse(doc: string, expected: Node[]) {
-  const node = doParse(doc);
-
-  expect(node).toEqual({
-    type: 'root',
-    children: expected,
-  });
-}
-
-type TestSpec = {
-  markdown: string;
-  html: string;
-  section: string;
-  number: number;
-};
-
-function loadCommonmarkTests(): TestSpec[] {
-  const tests: TestSpec[] = [];
-  for (let i = 0; i < (commonmarkSpec as {tests: TestSpec[]}).tests.length; ++i) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    tests.push((commonmarkSpec as { tests: TestSpec[] }).tests.find(s => s.number === i)!);
-  }
-  return tests;
-}
 
 function testCommonmark(idx: number) {
   test(`it passes the commonmark spec #${idx}`, () => {
@@ -83,15 +29,13 @@ function testCommonmark(idx: number) {
 
     const spec = commonmarkTests[idx];
 
-    const out = parser.processSync(spec.markdown);
+    const out = parser.processSync(spec.markdown + '\n\n');
 
-    console.log(JSON.stringify(parser.parse(spec.markdown), null, 2));
+    console.log(JSON.stringify(parser.parse(spec.markdown + '\n\n'), null, 2));
 
     expect(out.contents).toEqual(spec.html);
   });
 }
-
-const commonmarkTests = loadCommonmarkTests();
 
 testCommonmark(189);
 testCommonmark(191);

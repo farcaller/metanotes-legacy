@@ -14,7 +14,7 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import React, { ReactElement, useDebugValue, useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Pipeline } from '@metanotes/filter';
 import PipelineStep from '../cmdlet/PipelineStep';
 

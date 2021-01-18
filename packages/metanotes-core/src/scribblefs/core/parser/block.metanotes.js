@@ -23,10 +23,10 @@
 const { alt } = components.Parsimmon;
 
 function Block(r) {
-  return alt(
+  return r.BlankLine.many().then(alt(
     r.Heading,
     r.Paragraph,
-  );
+  ));
 }
 
 export default Block;

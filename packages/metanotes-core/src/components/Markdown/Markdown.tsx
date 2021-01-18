@@ -34,7 +34,10 @@ const Markdown = ({ text, inline }: MarkdownProps) => {
   const parserScribblesKeyed = useMemo(() => {
     const scribsByName = {} as { [key: string]: Scribble };
     for (const sc of parserScribbles) {
-      scribsByName[sc.attributes['parser']!] = sc;
+      const parser = sc.attributes['parser'];
+      if (parser !== undefined) {
+        scribsByName[parser] = sc;
+      }
     }
     return scribsByName;
   }, [parserScribbles]);

@@ -13,36 +13,23 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EWDAS3K2A65337P64XMB3Z3X
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/Emphasis
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: Emphasis
  */
 
-const { alt } = components.Parsimmon;
+const { string, seqMap, notFollowedBy } = components.Parsimmon;
 
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    // | UlOrStarLine
-    r.Space,
-    r.Strong,
-    r.Emphasis,
-    // | Strike
-    // | Image
-    // | Link
-    // | NoteReference
-    // | InlineNote
-    // | Code
-    // | RawHtml
-    // | Entity
-    // | EscapedChar
-    // | Smart
-    r.Symbol,
-  );
+function Emphasis(r) {
+  return string('*').notFollowedBy(r.Whitespace).
+    then(seqMap(notFollowedBy(string('*')), r.Inline, (_, i) => i).or(r.Strong).atLeast(1)).map(children => ({
+      type: 'emphasis',
+      children,
+    })).
+    skip(string('*'));
 }
 
-export default Inline;
+export default Emphasis;

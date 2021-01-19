@@ -12,8 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { doParse } from './test-helpers'; 
+import unified from 'unified';
+import remarkHTML from 'remark-html';
 
+import makeParser from './parser';
+import { commonmarkTests, doParse, parserScribbles } from './test-helpers'; 
+
+// TODO: dedup
+function testCommonmark(idx: number) {
+  test(`it passes the commonmark spec #${idx}`, () => {
+    const parser = unified()
+      .use(makeParser, { parserScribbles })
+      .use(remarkHTML);
+
+    const spec = commonmarkTests[idx];
+    const out = parser.processSync(spec.markdown + '\n\n');
+    expect(out.contents).toEqual(spec.html);
+  });
+}
 
 test('Str matches at least one normal character', () => {
   const n = doParse('hello', 'Str');
@@ -87,12 +103,44 @@ test('Strong matches text in **stars**', () => {
   });
 });
 
-// eslint-disable-next-line jest/no-disabled-tests
-test.skip('Strong matches text in **stars** with nested inlines', () => {
-  doParse('**hello! world~**', 'Strong');
-  // TODO: implement
+test('Strong matches text in **stars** with nested inlines', () => {
+  const n = doParse('**hello *the* world**', 'Strong');
+  expect(n).toEqual({
+    type: 'strong',
+    children: [{
+      type: 'text',
+      value: 'hello ',
+    }, {
+      type: 'emphasis',
+      children: [{
+        type: 'text',
+        value: 'the',
+      }]
+    }, {
+      type: 'text',
+      value: ' world',
+    }]
+  });
 });
 
+
+test('Emphasis matches text in *stars*', () => {
+  const n = doParse('*hello*', 'Emphasis');
+  expect(n).toEqual({
+    type: 'emphasis',
+    children: [{
+      type: 'text',
+      value: 'hello',
+    }]
+  });
+});
+
+testCommonmark(350);
+testCommonmark(351);
+// TODO: testCommonmark(352);
+// TODO: testCommonmark(353);
+testCommonmark(354);
+testCommonmark(355);
 
 test('Symbol matches special characters', () => {
   const n = doParse('*', 'Symbol');

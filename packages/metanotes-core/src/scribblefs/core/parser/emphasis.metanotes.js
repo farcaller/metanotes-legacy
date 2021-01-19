@@ -20,16 +20,18 @@
  * parser: Emphasis
  */
 
-const { string, seqMap, notFollowedBy } = components.Parsimmon;
+const { oneOf, string, seqMap, notFollowedBy } = components.Parsimmon;
 
 
 function Emphasis(r) {
-  return string('*').notFollowedBy(r.Whitespace).
-    then(seqMap(notFollowedBy(string('*')), r.Inline, (_, i) => i).or(r.Strong).atLeast(1)).map(children => ({
-      type: 'emphasis',
-      children,
-    })).
-    skip(string('*'));
+  return oneOf('*_').chain((delimeter) => {
+    return notFollowedBy(r.Whitespace).
+      then(seqMap(notFollowedBy(string(delimeter)), r.Inline, (_, i) => i).or(r.Strong).atLeast(1)).map(children => ({
+        type: 'emphasis',
+        children,
+      })).
+      skip(string(delimeter));
+  });
 }
 
 export default Emphasis;

@@ -135,12 +135,36 @@ test('Emphasis matches text in *stars*', () => {
   });
 });
 
+test('Emphasis matches text in _underscores_', () => {
+  const n = doParse('_hello_', 'Emphasis');
+  expect(n).toEqual({
+    type: 'emphasis',
+    children: [{
+      type: 'text',
+      value: 'hello',
+    }]
+  });
+});
+
 testCommonmark(350);
 testCommonmark(351);
 // TODO: testCommonmark(352);
 // TODO: testCommonmark(353);
 testCommonmark(354);
 testCommonmark(355);
+testCommonmark(356);
+testCommonmark(357);
+// TODO: testCommonmark(358);
+// TODO: testCommonmark(359);
+// TODO: testCommonmark(360);
+// TODO: testCommonmark(361);
+// TODO: testCommonmark(362);
+testCommonmark(363);
+testCommonmark(364);
+// TODO: testCommonmark(365);
+// TODO: testCommonmark(366);
+// TODO: testCommonmark(367);
+testCommonmark(368);
 
 test('Symbol matches special characters', () => {
   const n = doParse('*', 'Symbol');

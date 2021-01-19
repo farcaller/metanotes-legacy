@@ -21,7 +21,7 @@
  */
 
 function Sp(r) {
-  return r.SpaceChar.many().map((sp) => sp.join());
+  return r.SpaceChar.many().tie();
 }
 
 export default Sp;

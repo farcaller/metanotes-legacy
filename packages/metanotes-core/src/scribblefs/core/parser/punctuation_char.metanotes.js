@@ -13,18 +13,18 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EWDAS3K2A65337P64XMB3Z3X
+ * id: 01EWDEVY931KWPV2GQ08GDJTNK
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Emphasis
+ * title: $:core/parser/PunctuationChar
  * tags: ['$:core/parser']
- * parser: Emphasis
+ * parser: PunctuationChar
  */
 
-const { alt } = components.Parsimmon;
+const { oneOf } = components.Parsimmon;
 
-
-function Emphasis(r) {
-  return alt(r.EmphasisStar, r.EmphasisUnderline)
+function PunctuationChar() {
+  // TODO: A punctuation character is an ASCII punctuation character or anything in the general Unicode categories Pc, Pd, Pe, Pf, Pi, Po, or Ps.
+  return oneOf('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~');
 }
 
-export default Emphasis;
+export default PunctuationChar;

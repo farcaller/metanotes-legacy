@@ -20,15 +20,36 @@ import { commonmarkTests, doParse, parserScribbles } from './test-helpers';
 
 // TODO: dedup
 function testCommonmark(idx: number) {
-  test(`it passes the commonmark spec #${idx}`, () => {
+  const spec = commonmarkTests[idx];
+
+  test(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
     const parser = unified()
       .use(makeParser, { parserScribbles })
       .use(remarkHTML);
 
-    const spec = commonmarkTests[idx];
     const out = parser.processSync(spec.markdown + '\n\n');
-    expect(out.contents).toEqual(spec.html);
+    const outString = (out.contents as string).split('"').join('&quot;');
+    expect(outString).toEqual(spec.html);
   });
+}
+
+function testCommonmarkSection(section: string) {
+  for (let i = 1; i < commonmarkTests.length; ++i) {
+    const spec = commonmarkTests[i];
+    if (spec.section !== section) {
+      continue;
+    }
+
+    test(`it passes the commonmark spec #${spec.number}: ${JSON.stringify(spec.markdown)}`, () => {
+      const parser = unified()
+        .use(makeParser, { parserScribbles })
+        .use(remarkHTML);
+
+      const out = parser.processSync(spec.markdown + '\n\n');
+      const outString = (out.contents as string).split('"').join('&quot;');
+      expect(outString).toEqual(spec.html);
+    });
+  }
 }
 
 test('Str matches at least one normal character', () => {
@@ -146,25 +167,36 @@ test('Emphasis matches text in _underscores_', () => {
   });
 });
 
+// testCommonmarkSection('Emphasis and strong emphasis');
 testCommonmark(350);
 testCommonmark(351);
-// TODO: testCommonmark(352);
-// TODO: testCommonmark(353);
+testCommonmark(352);
+testCommonmark(353);
 testCommonmark(354);
 testCommonmark(355);
 testCommonmark(356);
 testCommonmark(357);
-// TODO: testCommonmark(358);
-// TODO: testCommonmark(359);
-// TODO: testCommonmark(360);
-// TODO: testCommonmark(361);
-// TODO: testCommonmark(362);
+testCommonmark(358);
+testCommonmark(359);
+testCommonmark(360);
+testCommonmark(361);
+testCommonmark(362);
 testCommonmark(363);
 testCommonmark(364);
-// TODO: testCommonmark(365);
-// TODO: testCommonmark(366);
-// TODO: testCommonmark(367);
+testCommonmark(365);
+testCommonmark(366);
+testCommonmark(367);
 testCommonmark(368);
+testCommonmark(369);
+testCommonmark(370);
+testCommonmark(371);
+testCommonmark(372);
+testCommonmark(373);
+testCommonmark(374);
+testCommonmark(375);
+testCommonmark(376);
+testCommonmark(377);
+testCommonmark(378);
 
 test('Symbol matches special characters', () => {
   const n = doParse('*', 'Symbol');

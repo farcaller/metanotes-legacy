@@ -1,4 +1,4 @@
-```
+```js
 const tap = (message) => (x) => {
   console.log(`${message} '${x}'`);
   return components.Parsimmon.succeed(x);
@@ -18,7 +18,7 @@ const wrap = (d, p) => {
 
 a better debug inline:
 
-```
+```js
 function debuginline(n,p) {
   return components.Parsimmon((s, i) => {
     console.group(`${n} [${JSON.stringify(s.slice(i))}]`);

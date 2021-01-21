@@ -41,6 +41,7 @@ const Markdown = ({ text, inline }: MarkdownProps) => {
     }
     return scribsByName;
   }, [parserScribbles]);
+  // TODO: these scribbles might not be loaded?
 
   const documentEl = compile(text + '\n\n', components, inline === true, makeParser, parserScribblesKeyed);
 

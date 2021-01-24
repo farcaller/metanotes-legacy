@@ -20,16 +20,8 @@
  * parser: Strong
  */
 
-const { string, seqMap, notFollowedBy } = components.Parsimmon;
-
-
 function Strong(r) {
-  return string('**').notFollowedBy(r.Whitespace).
-    then(seqMap(notFollowedBy(string('**')), r.Inline, (_, i) => i).atLeast(1)).map(children => ({
-      type: 'strong',
-      children,
-    })).
-    skip(string('**'));
+  return r.StrongStar;
 }
 
 export default Strong;

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EWDEKMNCQGJ11JFC71RV9DPG
+ * id: 01EWFH4M532C96SPJCYJVRPYE4
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/EmphasisStar
+ * title: $:core/parser/StrongStar
  * tags: ['$:core/parser']
- * parser: EmphasisStar
+ * parser: StrongStar
  */
 
 const { notFollowedBy, Parser, makeSuccess, makeFailure } = components.Parsimmon;
@@ -34,7 +34,7 @@ const canFlank = (input, i) => {
   if (charBefore === '') {
     charBefore = '\n';
   }
-  let charAfter = input.charAt(i + 1);
+  let charAfter = input.charAt(i + 2);
   if (charAfter === '') {
     charAfter = '\n';
   }
@@ -52,42 +52,44 @@ const canFlank = (input, i) => {
 
 const opening = Parser((input, i) => {
   const curr = input.charAt(i);
-  if (curr !== '*') {
-    return makeFailure(i, 'expected *');
+  const next = input.charAt(i + 1);
+  if (curr !== '*' || next !== '*') {
+    return makeFailure(i, 'expected **');
   }
 
   const [leftFlanking, _] = canFlank(input, i);
   if (leftFlanking) {
-    return makeSuccess(i + 1, curr);
+    return makeSuccess(i + 2, '**');
   } else {
-    return makeFailure(i, 'not opening *');
+    return makeFailure(i, 'not opening **');
   }
 });
 
 const closing = Parser((input, i) => {
   const curr = input.charAt(i);
-  if (curr !== '*') {
-    return makeFailure(i, 'expected *');
+  const next = input.charAt(i + 1);
+  if (curr !== '*' || next !== '*') {
+    return makeFailure(i, 'expected **');
   }
 
   const [_, rightFlanking] = canFlank(input, i);
   if (rightFlanking) {
-    return makeSuccess(i + 1, curr);
+    return makeSuccess(i + 2, '**');
   } else {
     return makeFailure(i, 'not closing *');
   }
 });
 
-function EmphasisStar(r) {
+function StrongStar(r) {
   return (
     opening
       .then(notFollowedBy(closing).then(r.Inline).atLeast(1))
       .map(children => ({
-        type: 'emphasis',
+        type: 'strong',
         children,
       }))
       .skip(closing)
   );
 }
 
-export default EmphasisStar;
+export default StrongStar;

@@ -47,6 +47,8 @@ const canFlank = (input, i) => {
   const leftFlanking = !afterIsWS && (!afterIsPunct || beforeIsWS || beforeIsPunct);
   const rightFlanking = !beforeIsWS && (!beforeIsPunct || afterIsWS || afterIsPunct);
 
+  // console.log(`input: ${JSON.stringify(input)} afterIsWS: ${afterIsWS} afterIsPunct: ${afterIsPunct} beforeIsWS: ${beforeIsWS} beforeIsPunct: ${beforeIsPunct} leftFlanking: ${leftFlanking} rightFlanking: ${rightFlanking}`)
+
   return [leftFlanking, rightFlanking];
 }
 

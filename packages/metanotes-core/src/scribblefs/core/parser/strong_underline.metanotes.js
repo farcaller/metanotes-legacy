@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EWDEKMNCQGJ11JFC71RV9DPG
+ * id: 01EWSXGAPZ4KS0881V4AYKK1WE
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/EmphasisStar
+ * title: $:core/parser/StrongUnderline
  * tags: ['$:core/parser']
- * parser: EmphasisStar
+ * parser: StrongUnderline
  */
 
 const { notFollowedBy, Parser, makeSuccess, makeFailure } = components.Parsimmon;
@@ -29,13 +29,12 @@ const PunctuationRegex = new RegExp(
 );
 const WhitespaceRegex = /^\s/;
 
-// https://spec.commonmark.org/0.29/#delimiter-run
-const canFlank = (input, i) => {
+const canOpenClose = (input, i) => {
   let charBefore = input.charAt(i - 1);
   if (charBefore === '') {
     charBefore = '\n';
   }
-  let charAfter = input.charAt(i + 1);
+  let charAfter = input.charAt(i + 2);
   if (charAfter === '') {
     charAfter = '\n';
   }
@@ -48,54 +47,52 @@ const canFlank = (input, i) => {
   const leftFlanking = !afterIsWS && (!afterIsPunct || beforeIsWS || beforeIsPunct);
   const rightFlanking = !beforeIsWS && (!beforeIsPunct || afterIsWS || afterIsPunct);
 
-  return [leftFlanking, rightFlanking];
+  const canOpen = leftFlanking && (!rightFlanking || beforeIsPunct);
+  const canClose = rightFlanking && (!leftFlanking || afterIsPunct);
+
+  return [canOpen, canClose];
 }
 
 const opening = Parser((input, i) => {
   const curr = input.charAt(i);
-  if (curr !== '*') {
-    return makeFailure(i, 'expected *');
+  const next = input.charAt(i + 1);
+  if (curr !== '_' || next !== '_') {
+    return makeFailure(i, 'expected __');
   }
 
-  // this is a workaround for a `a**"foo"**` case
-  const prev = input.charAt(i - 1);
-  const pprev = input.charAt(i - 2);
-  if (prev === '*' && pprev !== '*') {
-    return makeFailure(i, 'part of an existing * run');
-  }
-
-  const [leftFlanking, _] = canFlank(input, i);
-  if (leftFlanking) {
-    return makeSuccess(i + 1, curr);
+  const [canOpen, _] = canOpenClose(input, i);
+  if (canOpen) {
+    return makeSuccess(i + 2, '__');
   } else {
-    return makeFailure(i, 'not opening *');
+    return makeFailure(i, 'not opening __');
   }
 });
 
 const closing = Parser((input, i) => {
   const curr = input.charAt(i);
-  if (curr !== '*') {
-    return makeFailure(i, 'expected *');
+  const next = input.charAt(i + 1);
+  if (curr !== '_' || next !== '_') {
+    return makeFailure(i, 'expected __');
   }
 
-  const [_, rightFlanking] = canFlank(input, i);
-  if (rightFlanking) {
-    return makeSuccess(i + 1, curr);
+  const [_, canClose] = canOpenClose(input, i);
+  if (canClose) {
+    return makeSuccess(i + 2, curr);
   } else {
-    return makeFailure(i, 'not closing *');
+    return makeFailure(i, 'not closing __');
   }
 });
 
-function EmphasisStar(r) {
+function StrongUnderline(r) {
   return (
     opening
       .then(notFollowedBy(closing).then(r.Inline).atLeast(1))
       .map(children => ({
-        type: 'emphasis',
+        type: 'strong',
         children,
       }))
       .skip(closing)
   );
 }
 
-export default EmphasisStar;
+export default StrongUnderline;

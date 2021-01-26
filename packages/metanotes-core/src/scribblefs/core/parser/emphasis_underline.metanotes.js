@@ -59,6 +59,13 @@ const opening = Parser((input, i) => {
     return makeFailure(i, 'expected _');
   }
 
+  // this is a workaround for a `a__"foo"__` case
+  const prev = input.charAt(i - 1);
+  const pprev = input.charAt(i - 2);
+  if (prev === '_' && pprev !== '_') {
+    return makeFailure(i, 'part of an existing _ run');
+  }
+
   const [canOpen, _] = canOpenClose(input, i);
   if (canOpen) {
     return makeSuccess(i + 1, curr);

@@ -31,7 +31,7 @@ function testCommonmark(idx: number) {
 
     const out = parser.processSync(spec.markdown + '\n\n');
 
-    console.log(JSON.stringify(parser.parse(spec.markdown + '\n\n'), null, 2));
+    // console.log(JSON.stringify(parser.parse(spec.markdown + '\n\n'), null, 2));
 
     expect(out.contents).toEqual(spec.html);
   });

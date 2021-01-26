@@ -20,8 +20,11 @@
  * parser: Strong
  */
 
+const { alt } = components.Parsimmon;
+
+
 function Strong(r) {
-  return r.StrongStar;
+  return alt(r.StrongStar, r.StrongUnderline)
 }
 
 export default Strong;

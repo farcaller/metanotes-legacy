@@ -200,6 +200,23 @@ testCommonmark(378);
 testCommonmark(379);
 testCommonmark(380);
 testCommonmark(381);
+testCommonmark(382);
+testCommonmark(383);
+testCommonmark(384);
+testCommonmark(385);
+testCommonmark(386);
+testCommonmark(387);
+testCommonmark(388);
+testCommonmark(389);
+testCommonmark(390);
+testCommonmark(391);
+testCommonmark(392);
+testCommonmark(393);
+testCommonmark(394);
+testCommonmark(395);
+testCommonmark(396);
+testCommonmark(397);
+testCommonmark(398);
 
 test('Symbol matches special characters', () => {
   const n = doParse('*', 'Symbol');

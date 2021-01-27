@@ -1,0 +1,45 @@
+load("@build_bazel_rules_nodejs//internal/js_library:js_library.bzl", "js_library")
+# load("@npm//grpc_tools_node_protoc_ts:index.bzl", "protoc_gen_ts")
+
+package(default_visibility=["//visibility:public"])
+
+# protoc_gen_ts(
+#   name = "api_grpc",
+# outs = [
+#   "api_grpc_pb.js",
+#   "api_pb.js"
+# ],
+#   args = [
+#     "-I$(RULEDIR)",
+#     "$(execpath :api.proto)",
+#     "--js_out=import_style=commonjs:$(RULEDIR)"
+#   ],
+# )
+
+# genrule(
+#     name = "api_grpc",
+#     srcs = ["api.proto"],
+#     outs = [
+#       "api_grpc_pb.js",
+#       "api_pb.js",
+#       "api_grpc_pb.d.js",
+#       "api_pb.d.js",
+#     ],
+#     cmd = "./$(execpath @npm//grpc-tools/bin:grpc_tools_node_protoc) " +
+#       "-I`dirname $(<)` $(<) " +
+#       "--plugin=protoc-gen-ts=$(execpath @npm//ts-protoc-gen/bin:protoc-gen-ts) " +
+#       "--js_out=import_style=commonjs:`dirname $$(echo \"$(OUTS)\" | cut -f 1 -d ' ')`/ " +
+#       "--grpc_out=grpc_js:`dirname $$(echo \"$(OUTS)\" | cut -f 1 -d ' ')`/ " +
+#       "--ts_out=`dirname $$(echo \"$(OUTS)\" | cut -f 1 -d ' ')`/ ",
+#     tools = [
+#       "@npm//grpc-tools/bin:grpc_tools_node_protoc",
+#       "@npm//ts-protoc-gen/bin:protoc-gen-ts",
+#     ],
+# )
+
+# TODO: https://github.com/bazelbuild/rules_nodejs/issues/149
+js_library(
+    name = "api_grpc",
+    # package_name = "@myco/mypkg",
+    srcs = glob(['*.js', '*.d.ts']),
+)

@@ -1,0 +1,24 @@
+{
+    "name": "metanotes",
+    "version": "0.1.0",
+    "private": true,
+    "devDependencies": {
+        "@bazel/bazelisk": "latest",
+        "@bazel/buildifier": "latest",
+        "@bazel/ibazel": "latest",
+        "@bazel/rollup": "^3.0.0",
+        "@bazel/typescript": "^3.0.0",
+        "@types/node": "^14.14.22",
+        "grpc-tools": "^1.10.0",
+        "rollup": "^2.38.0",
+        "ts-protoc-gen": "^0.14.0",
+        "typescript": "3.x"
+    },
+    "scripts": {
+        "build": "bazel build //...",
+        "test": "bazel test //..."
+    },
+    "dependencies": {
+        "grpc_tools_node_protoc_ts": "^5.1.1"
+    }
+}

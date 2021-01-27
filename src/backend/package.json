@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@grpc/grpc-js": "^1.2.5",
+    "google-protobuf": "^3.14.0",
+    "node-gyp": "^7.1.2",
+    "sql-template-strings": "^2.2.2",
+    "sqlite": "^4.0.19",
+    "sqlite3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@bazel/typescript": "^3.0.0",
+    "@types/google-protobuf": "^3.7.4",
+    "@types/node": "^14.14.22",
+    "monopack": "^0.2.6",
+    "ts-loader": "^8.0.14",
+    "typescript": "3.x"
+  }
+}

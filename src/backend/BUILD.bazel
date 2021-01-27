@@ -1,0 +1,85 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_library")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_library(
+    name = "store_lib",
+    srcs = [
+        "store.ts",
+    ],
+    deps = [
+        "//src/common/api:api_grpc",
+        "@npm_backend//@grpc/grpc-js",
+        "@npm_backend//@types/google-protobuf",
+        "@npm_backend//@types/node",
+        "@npm_backend//google-protobuf",
+        "@npm_backend//sqlite",
+        "@npm_backend//sqlite3",
+        "@npm_backend//typescript",
+    ],
+)
+
+ts_library(
+    name = "server_lib",
+    srcs = [
+        "server.ts",
+    ],
+    deps = [
+        ":store_lib",
+        "//src/common/api:api_grpc",
+        "@npm_backend//@grpc/grpc-js",
+        "@npm_backend//@types/google-protobuf",
+        "@npm_backend//@types/node",
+        "@npm_backend//google-protobuf",
+        "@npm_backend//typescript",
+    ],
+)
+
+ts_library(
+    name = "index_lib",
+    srcs = [
+        "index.ts",
+    ],
+    deps = [
+        ":server_lib",
+        ":store_lib",
+        "@npm_backend//@types/node",
+        "@npm_backend//typescript",
+    ],
+)
+
+nodejs_binary(
+    name = "backend",
+    data = [
+        ":index_lib",
+        ":server_lib",
+        ":store_lib",
+    ],
+    entry_point = ":index.ts",
+)
+
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+
+rollup_bundle(
+    name = "bundle",
+    deps = [
+        ":index_lib",
+    ],
+    entry_point = ":index.ts",
+    config_file = "rollup.config.js",
+)
+
+# genrule(
+#     name = "backend_pack"
+#     srcs = [
+#     ],
+#     outs = [
+#         "api_grpc_pb.js",
+#         "api_pb.js",
+#         "api_grpc_pb.d.js",
+#         "api_pb.d.js",
+#     ],
+#     cmd = "logger  " +
+#         "build -d ./dist `dirname $$(echo \"$(SRCS)\" | cut -f 1 -d ' ')`",
+# )

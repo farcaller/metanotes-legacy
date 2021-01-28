@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import { HeadingProps } from '@metanotes/remark-metareact';
+import { HeadingProps } from '../../../markdown/ast/components';
 
 
 function Heading({ depth, children }: React.PropsWithChildren<HeadingProps>): JSX.Element {

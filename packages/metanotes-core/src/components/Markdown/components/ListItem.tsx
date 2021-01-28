@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import { ListItemProps } from '@metanotes/remark-metareact';
+import { ListItemProps } from '../../../markdown/ast/components';
 
 
 function ListItem({ children }: React.PropsWithChildren<ListItemProps>): JSX.Element {

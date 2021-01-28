@@ -17,11 +17,11 @@ import { Alert } from '@material-ui/lab';
 import equals from 'deep-equal';
 
 
-import { compile } from '@metanotes/remark-metareact';
+import { compile } from '../../markdown/ast';
 import components from './components';
 import { useTypedSelector } from '@metanotes/store';
 import { Scribble, selectScribblesByTag } from '@metanotes/store/lib/features/scribbles';
-import makeParser from './parser';
+import makeParser from '../../markdown/parser/parser';
 
 
 export interface MarkdownProps {
@@ -51,6 +51,5 @@ const Markdown = ({ text, inline }: MarkdownProps) => {
 
   return documentEl;
 };
-
 
 export default React.memo(Markdown);

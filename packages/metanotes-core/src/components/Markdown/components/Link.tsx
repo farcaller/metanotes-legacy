@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import { LinkProps } from '@metanotes/remark-metareact';
+import { LinkProps } from '../../../markdown/ast/components';
 
 
 function Link({ url, title, children }: React.PropsWithChildren<LinkProps>): JSX.Element {

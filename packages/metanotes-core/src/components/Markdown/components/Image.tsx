@@ -15,7 +15,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
 
-import { ImageProps } from '@metanotes/remark-metareact';
+import { ImageProps } from '../../../markdown/ast/components';
 
 
 const useStyles = makeStyles({

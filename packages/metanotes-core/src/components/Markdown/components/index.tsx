@@ -14,7 +14,7 @@
 
 import React  from 'react';
 
-import { Components } from '@metanotes/remark-metareact';
+import { Components } from '../../../markdown/ast/components';
 import Include from './Include';
 import Image from './Image';
 import WikiLink from './WikiLink';
@@ -61,15 +61,4 @@ const components: Components = {
   wikiLink: WikiLink,
 };
 
-const memoComps = {} as Components;
-Object.keys(components).map(k => {
-  if (k !== 'metanotesTag') {
-    // TODO: just memoize it before this
-    (memoComps as unknown as { [x: string]: React.FunctionComponent<unknown> })[k] = React.memo((components as unknown as { [x: string]: React.FunctionComponent<unknown> })[k]);
-  } else {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    memoComps[k] = components[k];
-  }
-});
-
-export default memoComps;
+export default components;

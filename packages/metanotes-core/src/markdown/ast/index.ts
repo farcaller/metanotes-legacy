@@ -13,12 +13,10 @@
 // limitations under the License.
 
 import unified, { ProcessorSettings, Settings } from 'unified';
-import markdown from 'remark-parse';
 import * as ast from 'ts-mdast';
 
 import { metaCompiler } from './compiler';
 import { Components } from './components';
-export { Components, HeadingProps, ListProps, ListItemProps, TableProps, CodeProps, InlineCodeProps, ImageProps, WikiLinkProps, LinkProps } from './components';
 
 
 // TODO: fix that any type

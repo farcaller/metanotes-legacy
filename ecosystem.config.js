@@ -2,10 +2,6 @@ module.exports = {
   apps : [
     // build only
     {
-      name: 'remark-metareact',
-      script: 'yarn workspace @metanotes/remark-metareact build:watch',
-    },
-    {
       name: 'filter',
       script: 'yarn workspace @metanotes/filter build:watch',
     },

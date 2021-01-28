@@ -41,10 +41,10 @@ import Parsimmon from 'parsimmon';
 import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '@metanotes/store/lib/features/scribbles';
 import Markdown from './components/Markdown';
 import { CoreEventsContext } from './CoreEvents';
-import { parse as parseMarkdown } from '@metanotes/remark-metareact';
+import { parse as parseMarkdown } from './markdown/ast';
 import markdownComponents from './components/Markdown/components';
-import makeParser from './components/Markdown/parser';
-import { buildLanguage } from './components/Markdown/parser';
+import makeParser from './markdown/parser/parser';
+import { buildLanguage } from './markdown/parser/parser';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: Scribble): React.FunctionComponent<unknown> {

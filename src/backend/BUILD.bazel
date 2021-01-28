@@ -11,12 +11,13 @@ ts_project(
     deps = [
         "//src/common/api:api_grpc",
         
-        "@npm//@types",
-        "@npm//@grpc/grpc-js",
-        "@npm//google-protobuf",
-        "@npm//sqlite",
-        "@npm//sqlite3",
+        "@npm_backend//@types",
+        "@npm_backend//@grpc/grpc-js",
+        "@npm_backend//google-protobuf",
+        "@npm_backend//sqlite",
+        "@npm_backend//sqlite3",
     ],
+    tsc = "@npm_backend//typescript/bin:tsc",
 )
 
 nodejs_binary(
@@ -31,11 +32,11 @@ rollup_bundle(
     name = "rollup",
     deps = [
         ":backend_lib",
-        "@npm//@rollup/plugin-commonjs",
-        "@npm//@rollup/plugin-node-resolve",
-        "@npm//@rollup/plugin-json",
+        "@npm_backend//@rollup/plugin-commonjs",
+        "@npm_backend//@rollup/plugin-node-resolve",
     ],
     entry_point = ":index.ts",
-    format = "cjs",
+    format = "esm",
     config_file = "rollup.config.js",
+    rollup_bin = "@npm_backend//rollup/bin:rollup",
 )

@@ -19,7 +19,7 @@ import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty
 
 import * as pb from '../common/api/api_pb';
 import * as grpc_pb from '../common/api/api_grpc_pb';
-import { Store } from 'metanotes/src/backend/store';
+import { Store } from './store';
 
 
 function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, pb.GetScribbleReply> {

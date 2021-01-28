@@ -33,4 +33,5 @@ npm_package_bin(
 js_library(
     name = "api_grpc",
     srcs = [":api_grpc_gen"],
+    package_name = "@metanotes/api",
 )

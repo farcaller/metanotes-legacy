@@ -20,7 +20,7 @@ import SQL from 'sql-template-strings';
 import { status } from '@grpc/grpc-js';
 import { Map as PbMap } from 'google-protobuf';
 
-import * as pb from '../common/api/api_pb';
+import * as pb from '@metanotes/api/api_pb';
 
 
 function setScribblePropsFromJSON(s: string, m: PbMap<string, string>) {

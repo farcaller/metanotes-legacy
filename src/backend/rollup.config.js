@@ -8,5 +8,8 @@ export default {
     nodeResolve({
       resolveOnly: [/^@metanotes/],
     }),
-  ]
+  ],
+  output: {
+    exports: 'auto',
+  },
 };

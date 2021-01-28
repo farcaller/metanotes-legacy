@@ -1,6 +1,7 @@
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+load("@npm//@bazel/terser:index.bzl", "terser_minified")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -36,7 +37,14 @@ rollup_bundle(
         "@npm_backend//@rollup/plugin-node-resolve",
     ],
     entry_point = ":index.ts",
-    format = "esm",
+    format = "cjs",
     config_file = "rollup.config.js",
     rollup_bin = "@npm_backend//rollup/bin:rollup",
+)
+
+
+terser_minified(
+    name = "rollup.minified",
+    src = ":rollup",
+    sourcemap = False,
 )

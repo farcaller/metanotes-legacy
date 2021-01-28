@@ -22,9 +22,7 @@ ts_project(
 nodejs_binary(
     name = "backend",
     data = [
-        ":index_lib",
-        ":server_lib",
-        ":store_lib",
+        ":backend_lib",
     ],
     entry_point = ":index.ts",
 )
@@ -32,7 +30,7 @@ nodejs_binary(
 rollup_bundle(
     name = "rollup",
     deps = [
-        ":index_lib",
+        ":backend_lib",
         "@npm//@rollup/plugin-commonjs",
         "@npm//@rollup/plugin-node-resolve",
         "@npm//@rollup/plugin-json",

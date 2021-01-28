@@ -17,8 +17,8 @@ import { exit } from 'process';
 import * as grpc from '@grpc/grpc-js';
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
 
-import * as pb from 'metanotes/src/common/api/api_pb';
-import * as grpc_pb from 'metanotes/src/common/api/api_grpc_pb';
+import * as pb from '../common/api/api_pb';
+import * as grpc_pb from '../common/api/api_grpc_pb';
 import { Store } from 'metanotes/src/backend/store';
 
 

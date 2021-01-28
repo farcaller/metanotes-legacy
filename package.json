@@ -6,19 +6,35 @@
         "@bazel/bazelisk": "latest",
         "@bazel/buildifier": "latest",
         "@bazel/ibazel": "latest",
+        "@bazel/labs": "^3.0.0",
         "@bazel/rollup": "^3.0.0",
         "@bazel/typescript": "^3.0.0",
+        "@rollup/plugin-commonjs": "^17.0.0",
+        "@rollup/plugin-json": "^4.1.0",
+        "@rollup/plugin-node-resolve": "^11.1.0",
+        "@types/google-protobuf": "^3.7.4",
         "@types/node": "^14.14.22",
         "grpc-tools": "^1.10.0",
+        "grpc_tools_node_protoc_ts": "^5.1.1",
+        "monopack": "^0.2.6",
+        "monopack-cli": "^0.2.6",
+        "requirejs": "^2.3.6",
         "rollup": "^2.38.0",
+        "ts-loader": "^8.0.14",
         "ts-protoc-gen": "^0.14.0",
-        "typescript": "3.x"
+        "typescript": "3.x",
+        "webpack-merge": "^5.7.3"
     },
     "scripts": {
         "build": "bazel build //...",
         "test": "bazel test //..."
     },
     "dependencies": {
-        "grpc_tools_node_protoc_ts": "^5.1.1"
+        "@grpc/grpc-js": "^1.2.5",
+        "google-protobuf": "^3.14.0",
+        "node-gyp": "^7.1.2",
+        "sql-template-strings": "^2.2.2",
+        "sqlite": "^4.0.19",
+        "sqlite3": "^5.0.1"
     }
 }

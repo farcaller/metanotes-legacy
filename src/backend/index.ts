@@ -14,9 +14,8 @@
 
 import process, { exit } from 'process';
 
-import { runServer } from 'metanotes/src/backend/server';
-import { Store } from 'metanotes/src/backend/store';
-
+import { runServer } from './server';
+import { Store } from './store';
 
 const args = process.argv.slice(2);
 

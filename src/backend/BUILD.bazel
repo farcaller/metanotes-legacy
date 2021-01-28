@@ -1,53 +1,81 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_library")
+load("@npm//@bazel/typescript:index.bzl", "ts_library", "ts_project")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
 
 package(default_visibility = ["//visibility:public"])
 
-ts_library(
-    name = "store_lib",
-    srcs = [
-        "store.ts",
-    ],
+ts_project(
+    name = "backend_lib",
+    srcs = glob(["*.ts"]),
+    tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/api:api_grpc",
-        "@npm_backend//@grpc/grpc-js",
-        "@npm_backend//@types/google-protobuf",
-        "@npm_backend//@types/node",
-        "@npm_backend//google-protobuf",
-        "@npm_backend//sqlite",
-        "@npm_backend//sqlite3",
-        "@npm_backend//typescript",
+        
+        "@npm//@types",
+        "@npm//@grpc/grpc-js",
+        "@npm//google-protobuf",
+        "@npm//sqlite",
+        "@npm//sqlite3",
     ],
 )
 
-ts_library(
-    name = "server_lib",
-    srcs = [
-        "server.ts",
-    ],
-    deps = [
-        ":store_lib",
-        "//src/common/api:api_grpc",
-        "@npm_backend//@grpc/grpc-js",
-        "@npm_backend//@types/google-protobuf",
-        "@npm_backend//@types/node",
-        "@npm_backend//google-protobuf",
-        "@npm_backend//typescript",
-    ],
-)
+# ts_library(
+#     name = "store_lib",
+#     srcs = ["store.ts"],
+#     # module_name = "@backend/store",
+#     deps = [
+#         "//src/common/api:api_grpc",
+#         "@npm//@grpc/grpc-js",
+#         "@npm//@types",
+#         "@npm//google-protobuf",
+#         "@npm//sqlite",
+#         "@npm//sqlite3",
+#         "@npm//typescript",
+#     ],
+# )
 
-ts_library(
-    name = "index_lib",
-    srcs = [
-        "index.ts",
-    ],
-    deps = [
-        ":server_lib",
-        ":store_lib",
-        "@npm_backend//@types/node",
-        "@npm_backend//typescript",
-    ],
-)
+# ts_library(
+#     name = "server_lib",
+#     srcs = [ "server.ts" ],
+#     # module_name = "@backend/server",
+#     deps = [
+#         ":store_lib",
+#         "//src/common/api:api_grpc",
+#         "@npm//@grpc/grpc-js",
+#         "@npm//@types",
+#         "@npm//google-protobuf",
+#         "@npm//typescript",
+#     ],
+# )
+
+# ts_library(
+#     name = "index_lib",
+#     srcs = [
+#         "index.ts",
+#     ],
+#     deps = [
+#         ":server_lib",
+#         ":store_lib",
+#         "@npm//@types",
+#         "@npm//typescript",
+#     ],
+# )
+
+# filegroup(
+#     name = "es5_src",
+#     srcs = [
+#         ":index_lib",
+#         ":server_lib",
+#         ":store_lib",
+#     ],
+#     output_group = "es6_sources",
+# )
+
+# copy_to_bin(
+#     name = "copy_es5_src",
+#     srcs = [":es5_src"],
+# )
 
 nodejs_binary(
     name = "backend",
@@ -55,31 +83,76 @@ nodejs_binary(
         ":index_lib",
         ":server_lib",
         ":store_lib",
+        # ":node_requirejs",
+        # "@npm//requirejs",
     ],
+    link_workspace_root = True,
     entry_point = ":index.ts",
+    # templated_args = ["--node_options=--require=$$(rlocation $(rootpath :node_requirejs))"],
 )
+
+
+# copy_to_bin(
+#     name = "copy_monopack_config",
+#     srcs = ["monopack.config.js", "package.json"],
+# )
+
+# write_file(
+#     name = "write_chdir_script",
+#     out = "chdir.js",
+#     content = ["process.chdir(__dirname)"],
+# )
+
+# copy_to_bin(
+#     name = "node_requirejs",
+#     srcs = ["node_requirejs.js"],
+# )
+
+
+# load("@npm//monopack-cli:index.bzl", "monopack")
+
+# monopack(
+#     name = "dist",
+#     args = ["--node_options=--require=./$(execpath chdir.js)", "build", "-d", "./dist", "index.js"],
+#     data = [
+#         ":copy_monopack_config",
+#         ":chdir.js",
+
+#         ":index_lib",
+#         ":server_lib",
+#         ":store_lib",
+        
+#         "@npm//webpack-merge",
+#     ],
+#     output_dir = True,
+# )
+
+# genrule(
+#     name = "backend_pack",
+#     srcs = [
+#         ":index_lib",
+#         ":server_lib",
+#         ":store_lib",
+#         "monopack.config.js",
+#     ],
+#     outs = [
+#         "api_grpc_pb.js",
+#     ],
+#     cmd = "logger  " +
+#         "$(location monopack.config.js) `dirname $$(echo \"$(SRCS)\" | cut -f 1 -d ' ')`",
+# )
 
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 
 rollup_bundle(
-    name = "bundle",
+    name = "rollup",
     deps = [
         ":index_lib",
+        "@npm//@rollup/plugin-commonjs",
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//@rollup/plugin-json",
     ],
     entry_point = ":index.ts",
+    format = "cjs",
     config_file = "rollup.config.js",
 )
-
-# genrule(
-#     name = "backend_pack"
-#     srcs = [
-#     ],
-#     outs = [
-#         "api_grpc_pb.js",
-#         "api_pb.js",
-#         "api_grpc_pb.d.js",
-#         "api_pb.d.js",
-#     ],
-#     cmd = "logger  " +
-#         "build -d ./dist `dirname $$(echo \"$(SRCS)\" | cut -f 1 -d ' ')`",
-# )

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble as ScribbleProto } from '@metanotes/api-web/api_pb';
+import { Scribble as ScribbleProto } from '../../../../common/api/api_pb';
 import Ajv, { JSONSchemaType } from 'ajv';
 import yaml from 'js-yaml';
 

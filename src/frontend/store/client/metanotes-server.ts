@@ -14,8 +14,8 @@
 
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
-import * as pb from '@metanotes/api-web/api_pb';
-import * as grpc_web_pb from '@metanotes/api-web/api_grpc_web_pb';
+import * as pb from '../../../common/api/api_pb';
+import * as grpc_web_pb from '../../../common/api/api_grpc_web_pb';
 import { Scribble, fromProto, toProto } from '../features/scribbles/scribble';
 
 export interface MetanotesServerConfig {

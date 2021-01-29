@@ -96,7 +96,6 @@ js_library(
         ":api_pb",
         ":api_grpc",
     ],
-    package_name = "@metanotes/api",
 )
 
 js_library(
@@ -105,5 +104,4 @@ js_library(
         ":api_pb",
         ":api_grpc_web",
     ],
-    package_name = "@metanotes/api-web",
 )

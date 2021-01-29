@@ -8,17 +8,17 @@ package(default_visibility = ["//visibility:public"])
 ts_project(
     name = "backend_lib",
     srcs = glob(["*.ts"]),
+    declaration = True,
+    tsc = "@npm_backend//typescript/bin:tsc",
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/api:api_grpc_lib",
-        
-        "@npm_backend//@types",
         "@npm_backend//@grpc/grpc-js",
+        "@npm_backend//@types",
         "@npm_backend//google-protobuf",
         "@npm_backend//sqlite",
         "@npm_backend//sqlite3",
     ],
-    tsc = "@npm_backend//typescript/bin:tsc",
 )
 
 nodejs_binary(
@@ -31,17 +31,16 @@ nodejs_binary(
 
 rollup_bundle(
     name = "rollup",
+    config_file = "rollup.config.js",
+    entry_point = ":index.ts",
+    format = "cjs",
+    rollup_bin = "@npm_backend//rollup/bin:rollup",
     deps = [
         ":backend_lib",
         "@npm_backend//@rollup/plugin-commonjs",
         "@npm_backend//@rollup/plugin-node-resolve",
     ],
-    entry_point = ":index.ts",
-    format = "cjs",
-    config_file = "rollup.config.js",
-    rollup_bin = "@npm_backend//rollup/bin:rollup",
 )
-
 
 terser_minified(
     name = "rollup.minified",

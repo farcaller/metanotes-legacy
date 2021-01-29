@@ -4,7 +4,7 @@ load("//bazel:typescript.bzl", "ts_frontend_project")
 package(default_visibility = ["//visibility:public"])
 
 ts_frontend_project(
-    name = "store_lib",
+    name = "store",
     srcs = glob(
         [
             "*.ts",
@@ -15,8 +15,12 @@ ts_frontend_project(
     ),
     deps = [
         "//src/common/api:api_grpc_web_lib",
-        "@npm_frontend//:node_modules",
-        "@npm_frontend//@types",
+        "@npm_frontend//@reduxjs/toolkit",
+        "@npm_frontend//ajv",
+        "@npm_frontend//deep-equal",
+        "@npm_frontend//google-protobuf",
+        "@npm_frontend//re-reselect",
+        "@npm_frontend//ulid",
     ],
 )
 
@@ -25,6 +29,6 @@ ts_jest_test(
     srcs = glob(["**/*.test.ts"]),
     tsc = "@npm_frontend//typescript/bin:tsc",
     deps = [
-        ":store_lib",
+        ":store",
     ],
 )

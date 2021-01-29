@@ -1,0 +1,24 @@
+load("//bazel:jest.bzl", "ts_jest_test")
+load("//bazel:typescript.bzl", "ts_frontend_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_frontend_project(
+    name = "filter",
+    srcs = glob(
+        ["*.ts"],
+        exclude = ["**/*.test.ts"],
+    ),
+    deps = [
+        "@npm_frontend//parsimmon",
+    ],
+)
+
+ts_jest_test(
+    name = "filter_test",
+    srcs = glob(["**/*.test.ts"]),
+    tsc = "@npm_frontend//typescript/bin:tsc",
+    deps = [
+        ":filter",
+    ],
+)

@@ -1,0 +1,49 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@npm_frontend//jest-cli:index.bzl", "jest_test")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "store_lib",
+    srcs = glob(
+        [
+            "*.ts",
+            "client/*.ts",
+            "features/**/*.ts",
+        ],
+        exclude = ["**/*.test.ts"],
+    ),
+    tsc = "@npm_frontend//typescript/bin:tsc",
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/common/api:api_grpc_web_lib",
+        "@npm_frontend//:node_modules",
+        "@npm_frontend//@types",
+    ],
+)
+
+ts_project(
+    name = "store_test_lib",
+    srcs = glob(["**/*.test.ts"]),
+    tsc = "@npm_frontend//typescript/bin:tsc",
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":store_lib",
+        "//src/common/api:api_grpc_web_lib",
+        "@npm_frontend//:node_modules",
+        "@npm_frontend//@types",
+    ],
+)
+
+jest_test(
+    name = "store_test",
+    args = [
+        "--no-cache",
+        "--no-watchman",
+        "--ci",
+    ],
+    data = [
+        ":store_lib",
+        ":store_test_lib",
+    ],
+)

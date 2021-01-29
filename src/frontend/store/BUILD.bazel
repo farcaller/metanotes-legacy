@@ -1,5 +1,5 @@
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
-load("@npm_frontend//jest-cli:index.bzl", _jest_test = "jest_test")
+load("//bazel:jest.bzl", "ts_jest_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -23,20 +23,6 @@ ts_project(
     ],
 )
 
-# ts_project(
-#     name = "store_test_lib",
-#     srcs = glob(["**/*.test.ts"]),
-#     declaration = True,
-#     tsc = "@npm_frontend//typescript/bin:tsc",
-#     tsconfig = "//:tsconfig.json",
-#     deps = [
-#         ":store_lib",
-#         "@npm_frontend//@types",
-#     ],
-# )
-
-
-load("jest.bzl", "ts_jest_test")
 
 ts_jest_test(
     name = "store_test",
@@ -44,29 +30,5 @@ ts_jest_test(
     deps = [
         ":store_lib",
     ],
-    jest_config = "//:jest.ts.config.js",
+    tsc = "@npm_frontend//typescript/bin:tsc",
 )
-
-# ts_jest_test(
-#     name = "store_test",
-#     args = [
-#         "--no-cache",
-#         "--no-watchman",
-#         "--ci",
-#         "--colors",
-#         "--config",
-#         "jest.ts.config.js",
-#     ],
-#     data = [
-#         ":store_test_lib",
-#         "//:jest.ts.config.js",
-#     ],
-#     tags = [
-#         # Need to set the pwd to avoid jest needing a runfiles helper
-#         # Windows users with permissions can use --enable_runfiles
-#         # to make this test work
-#         "no-bazelci-windows",
-#         # TODO: why does this fail almost all the time, but pass on local Mac?
-#         "no-bazelci-mac",
-#     ],
-# )

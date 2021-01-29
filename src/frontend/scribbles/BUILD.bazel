@@ -24,7 +24,7 @@ ts_library(
 
 js_library(
     name = "scribbles",
-    srcs = [
+    deps = [
         ":scribbles_lib_ts",
     ],
 )

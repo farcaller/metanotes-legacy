@@ -1,0 +1,40 @@
+load("//bazel:jest.bzl", "ts_jest_test")
+load("//bazel:typescript.bzl", "ts_frontend_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_frontend_project(
+    name = "parser",
+    srcs = glob(
+        ["*.ts"],
+        exclude = [
+            "**/*.test.ts",
+            "test-helpers.ts",
+        ],
+    ),
+    deps = [
+        "//src/frontend/store",
+        "@npm_frontend//parsimmon",
+        "@npm_frontend//ts-mdast",
+        "@npm_frontend//unified",
+        "@npm_frontend//vfile",
+    ],
+)
+
+ts_jest_test(
+    name = "parser_test",
+    srcs = glob(["**/*.test.ts"]) + [
+        "mdast-util-compact.d.ts",
+        "commonmark-spec.d.ts",
+        "test-helpers.ts",
+    ],
+    tsc = "@npm_frontend//typescript/bin:tsc",
+    deps = [
+        ":parser",
+        "//src/frontend/scribbles",
+        "@npm_frontend//commonmark-spec",
+        "@npm_frontend//mdast-util-compact",
+        "@npm_frontend//remark-html",
+    ],
+    link_workspace_root = True,
+)

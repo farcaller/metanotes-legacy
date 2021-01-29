@@ -16,10 +16,10 @@ def ts_jest_test(name, srcs, tsc, deps = [], **kwargs):
         "--no-watchman",
         "--ci",
         "--colors",
+        # "--runInBand",  # TODO: makes shit faster?
     ]
     args.extend(["--config", "$(location %s)" % jest_config])
-    for src in srcs:
-        args.extend(["--runTestsByPath", "$(locations :%s_ts)" % name])
+    args.extend(["--runTestsByPath", "$(locations :%s_ts)" % name])
     _jest_test(
         name = name,
         data = [jest_config, ":%s_ts" % name] + deps,

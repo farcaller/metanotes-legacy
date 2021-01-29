@@ -10,6 +10,7 @@
         "@bazel/terser": "^3.0.0",
         "@bazel/typescript": "^3.0.0",
         "@types/jest": "^26.0.20",
+        "@types/node": "^14.14.22",
         "grpc-tools": "^1.10.0",
         "grpc_tools_node_protoc_ts": "^5.1.1",
         "rollup": "^2.38.0",

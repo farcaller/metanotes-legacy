@@ -62,7 +62,7 @@ export function isSyncedScribble(scribble: Scribble): scribble is SyncedScribble
 export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
   const attrs = {} as Attributes;
 
-  s.getPropsMap().forEach((v, k) => attrs[k] = v);
+  s.getPropsMap().forEach((v: string, k: string) => attrs[k] = v);
   const scribble: Scribble = {
     id: s.getId(),
     attributes: attrs,

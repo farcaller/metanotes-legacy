@@ -10,6 +10,9 @@
     "paths": {
       "metanotes/*": ["*", "dist/bin/*"],
     },
+    // "moduleResolution": "node",
+    // "types": [],
+    "declaration": true,
     "rootDirs": [
         ".",
         "./bazel-out/darwin-fastbuild/bin",

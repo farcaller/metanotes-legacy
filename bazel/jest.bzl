@@ -7,7 +7,6 @@ def ts_jest_test(name, srcs, tsc, deps = [], **kwargs):
         name = "%s_ts" % name,
         srcs = srcs,
         deps = deps + ["@npm_frontend//@types/jest"],
-
         declaration = True,
         tsc = tsc,
         tsconfig = "//:tsconfig.json",

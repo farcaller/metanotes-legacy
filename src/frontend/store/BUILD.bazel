@@ -23,12 +23,11 @@ ts_project(
     ],
 )
 
-
 ts_jest_test(
     name = "store_test",
     srcs = glob(["**/*.test.ts"]),
+    tsc = "@npm_frontend//typescript/bin:tsc",
     deps = [
         ":store_lib",
     ],
-    tsc = "@npm_frontend//typescript/bin:tsc",
 )

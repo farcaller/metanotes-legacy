@@ -1,0 +1,22 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "scribblegen_lib",
+    srcs = ["scribblegen.ts"],
+    tsconfig = "//:tsconfig.json",
+    declaration = True,
+    deps = [
+        "@npm//@types",
+    ]
+)
+
+nodejs_binary(
+    name = "scribblegen",
+    data = [
+        ":scribblegen_lib",
+    ],
+    entry_point = ":scribblegen.ts",
+)

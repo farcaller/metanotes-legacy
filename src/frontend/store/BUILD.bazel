@@ -1,9 +1,9 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
 load("//bazel:jest.bzl", "ts_jest_test")
+load("//bazel:typescript.bzl", "ts_frontend_project")
 
 package(default_visibility = ["//visibility:public"])
 
-ts_project(
+ts_frontend_project(
     name = "store_lib",
     srcs = glob(
         [
@@ -13,9 +13,6 @@ ts_project(
         ],
         exclude = ["**/*.test.ts"],
     ),
-    declaration = True,
-    tsc = "@npm_frontend//typescript/bin:tsc",
-    tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/api:api_grpc_web_lib",
         "@npm_frontend//:node_modules",

@@ -10,7 +10,7 @@ ts_project(
     srcs = glob(["*.ts"]),
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/common/api:api_grpc",
+        "//src/common/api:api_grpc_lib",
         
         "@npm_backend//@types",
         "@npm_backend//@grpc/grpc-js",

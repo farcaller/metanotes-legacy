@@ -1,8 +1,12 @@
+load("//bazel:typescript.bzl", "ts_frontend_project")
+
 def _scribble_gen_ts(ctx):
     outputs = []
     for f in ctx.files.srcs:
-        sfile = f.basename.rsplit(".", 1)[0]
-        dfile = sfile + ".ts"
+        if not (f.basename.endswith('.metanotes.js') or f.basename.endswith('.metanotes.jsx')):
+            fail("'%s' is not a scribble" % f)
+        sfile = f.basename.rsplit(".", 2)[0]
+        dfile = sfile + ".generated.ts"
         out_file = ctx.actions.declare_file(dfile, sibling = f)
         outputs.append(out_file)
 
@@ -53,3 +57,26 @@ scribble_gen_index = rule(
     },
     outputs = {"index_file": "%{name}.ts"},
 )
+
+def build_scribbles(name, srcs):
+    ts_srcs = [s.rsplit('.', 2)[0] + '.generated.ts' for s in srcs]
+    for js, ts in zip(srcs, ts_srcs):
+        native.genrule(
+            name = ts + "_gen",
+            outs = [ts],
+            srcs = [js],
+            cmd = """$(location //tools:scribblegen) $< $@""",
+            tools = [
+                "//tools:scribblegen",
+            ]
+        )
+    
+    scribble_gen_index(
+        name = "index",
+        deps = ts_srcs,
+    )
+    
+    ts_frontend_project(
+        name = name,
+        srcs = ts_srcs + ["index.ts"],
+    )

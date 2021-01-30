@@ -1,33 +1,11 @@
-load("@build_bazel_rules_nodejs//internal/js_library:js_library.bzl", "js_library")
-load("//bazel:scribbles.bzl", "scribble_gen_index", "scribble_gen_ts")
-load("@npm//@bazel/typescript:index.bzl", "ts_library")
+load("//bazel:scribbles.bzl", "build_scribbles")
 
 package(default_visibility = ["//visibility:public"])
 
-scribble_gen_ts(
-    name = "scribbles_ts",
+build_scribbles(
+    name = "scribbles",
     srcs = glob([
         "**/*.metanotes.js",
         "**/*.metanotes.jsx",
     ]),
-)
-
-scribble_gen_index(
-    name = "index",
-    deps = [":scribbles_ts"],
-)
-
-ts_library(
-    name = "scribbles_lib_ts",
-    srcs = [
-        ":index",
-        ":scribbles_ts",
-    ],
-)
-
-js_library(
-    name = "scribbles",
-    deps = [
-        ":scribbles_lib_ts",
-    ],
 )

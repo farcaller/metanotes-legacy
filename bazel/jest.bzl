@@ -15,7 +15,7 @@ def ts_jest_test(name, srcs, tsc, deps = [], **kwargs):
         "--no-cache",
         "--no-watchman",
         "--ci",
-        "--colors",
+        # "--colors",
         # "--runInBand",  # TODO: makes shit faster?
     ]
     args.extend(["--config", "$(location %s)" % jest_config])

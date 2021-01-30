@@ -1,5 +1,4 @@
 load("//bazel:typescript.bzl", "ts_frontend_project")
-load("@npm//@bazel/concatjs:index.bzl", "concatjs_devserver")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
@@ -33,14 +32,6 @@ ts_frontend_project(
         "@npm_frontend//use-debounce",
         "@npm_frontend//web-vitals",
     ],
-)
-
-concatjs_devserver(
-    name = "devserver",
-    deps = [":rollup"],
-    serving_path = "/bundle.js",
-    entry_module = "metanotes/src/frontend/web/rollup",
-    # static_files = ["index.html"],
 )
 
 nodejs_binary(

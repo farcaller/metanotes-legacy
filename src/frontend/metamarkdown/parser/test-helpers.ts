@@ -39,10 +39,19 @@ function loadScribbles(scribbles: Scribble[]) {
 
 // TODO: forced typecast
 export const parserScribbles = loadScribbles(scribbles as Scribble[]);
+const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 
 export function doParse(doc: string, rootNode?: string): mdast.Node {
-  const parser = unified()
-    .use(makeParser, { parserScribbles, rootNode });
+  if (rootNode === undefined) {
+    rootNode = 'Document';
+  }
+  if (rootParsers[rootNode] === undefined) {
+    const parser = unified()
+      .use(makeParser, { parserScribbles, rootNode });
+    rootParsers[rootNode] = parser;
+  }
+  const parser = rootParsers[rootNode];
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const node = compact((parser.parse(doc))) as Parent;
 

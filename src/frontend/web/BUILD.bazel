@@ -2,6 +2,7 @@ load("//bazel:typescript.bzl", "ts_frontend_project")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("@npm//@bazel/terser:index.bzl", "terser_minified")
+load("@npm_frontend//source-map-explorer:index.bzl", "source_map_explorer")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -65,9 +66,8 @@ rollup_bundle(
         "@npm_frontend//@rollup/plugin-node-resolve",
         "@npm_frontend//@rollup/plugin-json",
         "@npm_frontend//rollup-plugin-replace",
-        "@npm_frontend//rollup-plugin-node-globals",
-        "@npm_frontend//rollup-plugin-node-builtins",
         "@npm_frontend//rollup-plugin-node-polyfills",
+        "@npm_frontend//rollup-plugin-sourcemaps",
         "@npm_frontend//util",
         "@npm_frontend//path-browserify",
     ],
@@ -78,4 +78,11 @@ terser_minified(
     name = "rollup.minified",
     src = ":rollup",
     sourcemap = False,
+)
+
+source_map_explorer(
+    name = "sourcemap_explorer",
+    outs = ["sourcemap_explorer.html"],
+    data = [":rollup"],
+    args = ["$(location :rollup)", "--no-border-checks", "--html", "$@"],
 )

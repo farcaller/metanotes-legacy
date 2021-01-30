@@ -25,6 +25,7 @@ ts_frontend_project(
         "@npm_frontend//react-dom",  # TODO: really?
         "@npm_frontend//react-redux",  # TODO: really?
         "@npm_frontend//ulid",
+        "@npm_frontend//grpc-web",
     ],
 )
 

@@ -1,4 +1,7 @@
 load("//bazel:typescript.bzl", "ts_frontend_project")
+load("@npm//@bazel/concatjs:index.bzl", "concatjs_devserver")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -30,4 +33,51 @@ ts_frontend_project(
         "@npm_frontend//use-debounce",
         "@npm_frontend//web-vitals",
     ],
+)
+
+concatjs_devserver(
+    name = "devserver",
+    deps = [":rollup"],
+    serving_path = "/bundle.js",
+    entry_module = "metanotes/src/frontend/web/rollup",
+    # static_files = ["index.html"],
+)
+
+nodejs_binary(
+    name = "rollup_bin",
+    data = ["@npm_frontend//rollup:rollup"],
+    entry_point = "@npm_frontend//:node_modules/rollup/dist/bin/rollup",
+    templated_args = [
+        "--node_options=--max-old-space-size=7168",
+    ],
+)
+
+rollup_bundle(
+    name = "rollup",
+    config_file = "rollup.config.js",
+    entry_point = ":index.ts",
+    format = "iife",
+    # rollup_bin = "@npm_frontend//rollup/bin:rollup",
+    rollup_bin = ":rollup_bin",
+    deps = [
+        ":web",
+
+        "@npm_frontend//@welldone-software/why-did-you-render",
+        "@npm_frontend//react-error-overlay",
+        "@npm_frontend//js-yaml",
+        "@npm_frontend//@emotion/core",
+        "@npm_frontend//@emotion/styled",
+        "@npm_frontend//@emotion/react",
+
+        "@npm_frontend//@rollup/plugin-commonjs",
+        "@npm_frontend//@rollup/plugin-node-resolve",
+        "@npm_frontend//@rollup/plugin-json",
+        "@npm_frontend//rollup-plugin-replace",
+        "@npm_frontend//rollup-plugin-node-globals",
+        "@npm_frontend//rollup-plugin-node-builtins",
+        "@npm_frontend//rollup-plugin-node-polyfills",
+        "@npm_frontend//util",
+        "@npm_frontend//path-browserify",
+    ],
+    link_workspace_root = True,
 )

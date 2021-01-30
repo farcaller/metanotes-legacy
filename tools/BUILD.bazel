@@ -6,11 +6,11 @@ package(default_visibility = ["//visibility:public"])
 ts_project(
     name = "scribblegen_lib",
     srcs = ["scribblegen.ts"],
-    tsconfig = "//:tsconfig.json",
     declaration = True,
+    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@types",
-    ]
+    ],
 )
 
 nodejs_binary(

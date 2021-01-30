@@ -1,11 +1,11 @@
 def _scribble_gen_ts(ctx):
     outputs = []
     for f in ctx.files.srcs:
-        sfile = f.basename.rsplit('.', 1)[0]
-        dfile = sfile + '.ts'
+        sfile = f.basename.rsplit(".", 1)[0]
+        dfile = sfile + ".ts"
         out_file = ctx.actions.declare_file(dfile, sibling = f)
         outputs.append(out_file)
-    
+
     for i, o in zip(ctx.files.srcs, outputs):
         ctx.actions.run(
             inputs = [i],
@@ -34,12 +34,12 @@ def _scribble_gen_index(ctx):
     base_dir = ctx.outputs.index_file.dirname
     idx = 0
     for f in ctx.files.deps:
-        name = 'imp$' + str(idx)
+        name = "imp$" + str(idx)
         idx += 1
 
         if not f.path.startswith(base_dir):
             fail("source file '%s' not in the scope of '%s'" % (f, ctx.outputs.index_file))
-        rel_path = f.path[len(base_dir):].rsplit('.', 1)[0]
+        rel_path = f.path[len(base_dir):].rsplit(".", 1)[0]
 
         tpl_imports.append("import %s from '.%s';" % (name, rel_path))
         tpl_exports.append("  %s," % name)

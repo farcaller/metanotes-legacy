@@ -5,9 +5,9 @@ def ts_frontend_project(name, *args, **kwargs):
         kwargs["deps"] = []
     kwargs["deps"].append("@npm_frontend//@types")
 
-    if not 'tsconfig' in kwargs:
-        kwargs['tsconfig'] = "//:tsconfig.json"
-    
+    if not "tsconfig" in kwargs:
+        kwargs["tsconfig"] = "//:tsconfig.json"
+
     ts_project(
         name,
         declaration = True,

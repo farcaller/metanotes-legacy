@@ -15,16 +15,16 @@ ts_frontend_project(
     ),
     deps = [
         "//src/common/api:api_grpc_web_lib",
+        "@npm_frontend//@babel/standalone",  # TODO: really?
         "@npm_frontend//@reduxjs/toolkit",
         "@npm_frontend//ajv",
         "@npm_frontend//deep-equal",
         "@npm_frontend//google-protobuf",
         "@npm_frontend//re-reselect",
-        "@npm_frontend//ulid",
         "@npm_frontend//react",  # TODO: really?
         "@npm_frontend//react-dom",  # TODO: really?
         "@npm_frontend//react-redux",  # TODO: really?
-        "@npm_frontend//@babel/standalone",  # TODO: really?
+        "@npm_frontend//ulid",
     ],
 )
 

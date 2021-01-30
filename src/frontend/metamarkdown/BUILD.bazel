@@ -4,12 +4,12 @@ load("//bazel:typescript.bzl", "ts_frontend_project")
 package(default_visibility = ["//visibility:public"])
 
 ts_frontend_project(
-    name = "parser",
+    name = "metamarkdown",
     srcs = glob(
-        ["*.ts"],
+        ["**/*.ts"],
         exclude = [
             "**/*.test.ts",
-            "test-helpers.ts",
+            "parser/test-helpers.ts",
         ],
     ),
     deps = [
@@ -22,19 +22,19 @@ ts_frontend_project(
 )
 
 ts_jest_test(
-    name = "parser_test",
+    name = "metamarkdown_test",
     srcs = glob(["**/*.test.ts"]) + [
         "mdast-util-compact.d.ts",
         "commonmark-spec.d.ts",
         "test-helpers.ts",
     ],
+    link_workspace_root = True,
     tsc = "@npm_frontend//typescript/bin:tsc",
     deps = [
-        ":parser",
+        ":metamarkdown",
         "//src/frontend/scribbles",
         "@npm_frontend//commonmark-spec",
         "@npm_frontend//mdast-util-compact",
         "@npm_frontend//remark-html",
     ],
-    link_workspace_root = True,
 )

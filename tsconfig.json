@@ -13,6 +13,7 @@
     // "moduleResolution": "node",
     // "types": [],
     "declaration": true,
+    "jsx": "react",
     "rootDirs": [
         ".",
         "./bazel-out/darwin-fastbuild/bin",

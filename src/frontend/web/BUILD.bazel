@@ -1,0 +1,33 @@
+load("//bazel:typescript.bzl", "ts_frontend_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_frontend_project(
+    name = "web",
+    srcs = glob(
+        [
+            "**/*.ts",
+            "**/*.tsx",
+        ],
+        exclude = [
+            "**/*.test.ts",
+            "**/*.test.tsx",
+        ],
+    ),
+    deps = [
+        "//src/frontend/filter",
+        "//src/frontend/metamarkdown",
+        "//src/frontend/scribbles",
+        "//src/frontend/store",
+        "@npm_frontend//@material-ui/core",
+        "@npm_frontend//@material-ui/icons",
+        "@npm_frontend//@material-ui/lab",
+        "@npm_frontend//@monaco-editor/react",
+        "@npm_frontend//react",
+        "@npm_frontend//react-dom",
+        "@npm_frontend//react-router-dom",
+        "@npm_frontend//react-syntax-highlighter",
+        "@npm_frontend//use-debounce",
+        "@npm_frontend//web-vitals",
+    ],
+)

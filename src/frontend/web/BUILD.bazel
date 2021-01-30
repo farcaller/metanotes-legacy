@@ -1,6 +1,7 @@
 load("//bazel:typescript.bzl", "ts_frontend_project")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@npm//@bazel/terser:index.bzl", "terser_minified")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -71,4 +72,10 @@ rollup_bundle(
         "@npm_frontend//path-browserify",
     ],
     link_workspace_root = True,
+)
+
+terser_minified(
+    name = "rollup.minified",
+    src = ":rollup",
+    sourcemap = False,
 )

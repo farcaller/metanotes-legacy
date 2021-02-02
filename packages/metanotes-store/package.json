@@ -40,7 +40,6 @@
     "deep-equal": "^2.0.4",
     "google-protobuf": "^3.13.0",
     "grpc-web": "^1.2.1",
-    "htm": "^3.0.4",
     "js-yaml": "^3.14.0",
     "markdown-yaml-metadata-parser": "^2.1.1",
     "re-reselect": "^4.0.0",

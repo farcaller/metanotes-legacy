@@ -3,8 +3,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
-
-const prod = true;
+const buildInfo = require('./buildinfo');
 
 export default {
   context: '(undefined)',
@@ -13,7 +12,7 @@ export default {
       preferBuiltins: false,
     }),
     replace({
-      'process.env.NODE_ENV': JSON.stringify(prod ? 'production' : 'development'),
+      'process.env.NODE_ENV': JSON.stringify(buildInfo.STABLE_NODE_ENV),
     }),
     commonjs(),
     json(),

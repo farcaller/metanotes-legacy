@@ -5,10 +5,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BUILD_NODE_ENV: production
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Mount bazel cache
+      uses: actions/checkout@v2.3.4
+    - name: Mount Bazel Cache
       uses: actions/cache@v2
       with: 
         path: |
@@ -16,15 +18,24 @@ jobs:
           dist
           node_modules
         key: bazel
-    - name: Setup node
+    - name: Setup Node
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - name: Setup yarn
-      run: npm i -g yarn
-    - name: Setup node dependencies
-      run: yarn --frozen-lockfile
-    - name: Run tests
+    - name: Setup Dependencies
+      run: yarn --production=false --frozen-lockfile
+    - name: Run Tests
       run: yarn test
-    - name: Build container images
+    - name: Build Container Images
       run: yarn run bazel build //:container_images
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.CR_PAT }}
+    - name: Publish Container Images
+      run: |
+        yarn run bazel run //:publish_web &&
+        yarn run bazel run //:publish_envoy &&
+        yarn run bazel run //:publish_backend

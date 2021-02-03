@@ -1,3 +1,6 @@
+load("@io_bazel_rules_docker//container:bundle.bzl", "container_bundle")
+load("@io_bazel_rules_docker//container:push.bzl", "container_push")
+
 exports_files(
     [
         "jest.ts.config.js",
@@ -13,4 +16,40 @@ filegroup(
         "//src/envoy:envoy_image.tar",
         "//src/frontend/web:web_image.tar",
     ],
+)
+
+container_bundle(
+    name = "containers_bundle",
+    images = {
+        "ghcr.io/farcaller/metanotes-server:sha-{STABLE_GIT_COMMIT}": "//src/backend:backend_image",
+        "ghcr.io/farcaller/metanotes-envoy:sha-{STABLE_GIT_COMMIT}": "//src/envoy:envoy_image",
+        "ghcr.io/farcaller/metanotes-core:sha-{STABLE_GIT_COMMIT}": "//src/frontend/web:web_image",
+    },
+)
+
+container_push(
+    name = "publish_envoy",
+    format = "Docker",
+    image = "//src/envoy:envoy_image",
+    registry = "ghcr.io",
+    repository = "farcaller/envoy",
+    tag = "sha-{STABLE_GIT_COMMIT}",
+)
+
+container_push(
+    name = "publish_backend",
+    format = "Docker",
+    image = "//src/backend:backend_image",
+    registry = "ghcr.io",
+    repository = "farcaller/metanotes-server",
+    tag = "sha-{STABLE_GIT_COMMIT}",
+)
+
+container_push(
+    name = "publish_web",
+    format = "Docker",
+    image = "//src/frontend/web:web_image",
+    registry = "ghcr.io",
+    repository = "farcaller/metanotes-core",
+    tag = "sha-{STABLE_GIT_COMMIT}",
 )

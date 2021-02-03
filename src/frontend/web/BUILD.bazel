@@ -7,6 +7,21 @@ load("@io_bazel_rules_docker//container:image.bzl", "container_image")
 
 package(default_visibility = ["//visibility:public"])
 
+genrule(
+    name = "buildinfo_ts",
+    outs = ["buildinfo.ts"],
+    cmd = "cat bazel-out/stable-status.txt | " +
+          "awk '{print \"export const \" $$1 \" = \\\"\" $$2 \"\\\";\"}' > $@",
+    stamp = 1,
+)
+
+ts_project(
+    name = "buildinfo_lib",
+    srcs = ["buildinfo.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+)
+
 ts_project(
     name = "web",
     srcs = glob(
@@ -22,6 +37,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        ":buildinfo_lib",
         "//src/frontend/filter",
         "//src/frontend/metamarkdown",
         "//src/frontend/scribbles",
@@ -69,6 +85,7 @@ rollup_bundle(
     rollup_bin = ":rollup_bin",
     sourcemap = "false",
     deps = [
+        ":buildinfo_lib",
         ":web",
         "@npm//@rollup/plugin-commonjs",
         "@npm//@rollup/plugin-json",

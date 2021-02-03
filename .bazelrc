@@ -84,3 +84,5 @@ coverage --instrument_test_targets
 try-import %workspace%/.bazelrc.user
 
 build --worker_sandboxing
+
+build --workspace_status_command ./tools/status.sh

@@ -27,7 +27,7 @@ import scribbles from '../scribbles';
 import { setCoreScribbles, UseScribbleContext } from '../store/features/scribbles';
 import ScribbleResolver from './ScribbleResolver';
 import CoreEvents from './CoreEvents';
-import { BUILD_SHA } from './buildinfo';
+import { STABLE_GIT_COMMIT, STABLE_NODE_ENV } from './buildinfo';
 
 // let backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
 let backendAddress = 'http://127.0.0.1:55080';
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === "development") {
   stopReportingRuntimeErrors(); // disables error overlays
 }
 
-console.log(`running build ${BUILD_SHA}`);
+console.log(`running from sha ${STABLE_GIT_COMMIT} env ${STABLE_NODE_ENV}`);
 
 ReactDOM.render(
   <React.StrictMode>

@@ -47,7 +47,7 @@ function MarkdownEditor({ id }) {
     100,
   );
 
-  const debouncedCallback = useCallback((e, value) => debounced.callback(value), [debounced]);
+  const debouncedCallback = useCallback(debounced.callback, [debounced]);
 
   return (
     <Paper>

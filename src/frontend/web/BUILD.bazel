@@ -106,7 +106,12 @@ live_server(
         "index.html",
         ":bundle",
     ],
-    templated_args = ["./src/frontend/web"],
+    templated_args = [
+        "./src/frontend/web",
+        "--no-browser",
+        "--wait=1000",
+        "--entry-file=index.html",
+    ],
 )
 
 container_image(

@@ -1,6 +1,6 @@
-# dependencies
-/node_modules
-/packages/*/node_modules
+dist
+bazel-out
+node_modules
 
 # misc
 .DS_Store

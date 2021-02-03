@@ -1,0 +1,48 @@
+load("//bazel:jest.bzl", "ts_jest_test")
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "store",
+    srcs = glob(
+        [
+            "*.ts",
+            "client/*.ts",
+            "features/**/*.ts",
+        ],
+        exclude = ["**/*.test.ts"],
+    ),
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/common/api:api_grpc_web_lib",
+        "@npm//@babel/standalone",
+        "@npm//@reduxjs/toolkit",
+        "@npm//@types/babel__standalone",
+        "@npm//@types/deep-equal",
+        "@npm//@types/google-protobuf",
+        "@npm//@types/js-yaml",
+        "@npm//@types/react",
+        "@npm//@types/react-redux",
+        "@npm//@types/redux-logger",
+        "@npm//ajv",
+        "@npm//deep-equal",
+        "@npm//google-protobuf",
+        "@npm//grpc-web",
+        "@npm//js-yaml",
+        "@npm//re-reselect",
+        "@npm//react",
+        "@npm//react-dom",
+        "@npm//react-redux",
+        "@npm//ulid",
+    ],
+)
+
+ts_jest_test(
+    name = "store_test",
+    srcs = glob(["**/*.test.ts"]),
+    deps = [
+        ":store",
+    ],
+)

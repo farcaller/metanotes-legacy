@@ -1,0 +1,16 @@
+exports_files(
+    [
+        "jest.ts.config.js",
+        "tsconfig.json",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "container_images",
+    srcs = [
+        "//src/backend:backend_image.tar",
+        "//src/envoy:envoy_image.tar",
+        "//src/frontend/web:web_image.tar",
+    ],
+)

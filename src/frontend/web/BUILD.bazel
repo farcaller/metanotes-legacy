@@ -1,0 +1,104 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@npm//@bazel/terser:index.bzl", "terser_minified")
+load("@npm//live-server:index.bzl", "live_server")
+load("@io_bazel_rules_docker//container:image.bzl", "container_image")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "web",
+    srcs = glob(
+        [
+            "**/*.ts",
+            "**/*.tsx",
+        ],
+        exclude = [
+            "**/*.test.ts",
+            "**/*.test.tsx",
+        ],
+    ),
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/frontend/filter",
+        "//src/frontend/metamarkdown",
+        "//src/frontend/scribbles",
+        "//src/frontend/store",
+        "@npm//@emotion/core",
+        "@npm//@emotion/react",
+        "@npm//@emotion/styled",
+        "@npm//@material-ui/core",
+        "@npm//@material-ui/icons",
+        "@npm//@material-ui/lab",
+        "@npm//@monaco-editor/react",
+        "@npm//@types/node",
+        "@npm//@types/react",
+        "@npm//@types/react-dom",
+        "@npm//@types/react-router-dom",
+        "@npm//@types/react-syntax-highlighter",
+        "@npm//@welldone-software/why-did-you-render",
+        "@npm//js-yaml",
+        "@npm//path-browserify",
+        "@npm//react",
+        "@npm//react-dom",
+        "@npm//react-error-overlay",
+        "@npm//react-router-dom",
+        "@npm//react-syntax-highlighter",
+        "@npm//use-debounce",
+        "@npm//util",
+        "@npm//web-vitals",
+    ],
+)
+
+nodejs_binary(
+    name = "rollup_bin",
+    data = ["@npm//rollup"],
+    entry_point = "@npm//:node_modules/rollup/dist/bin/rollup",
+    templated_args = [
+        "--node_options=--max-old-space-size=7168",
+    ],
+)
+
+rollup_bundle(
+    name = "bundle",
+    config_file = "rollup.config.js",
+    entry_point = "index.js",
+    format = "iife",
+    rollup_bin = ":rollup_bin",
+    sourcemap = "false",
+    deps = [
+        ":web",
+        "@npm//@rollup/plugin-commonjs",
+        "@npm//@rollup/plugin-json",
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//@rollup/plugin-replace",
+        "@npm//rollup-plugin-node-polyfills",
+    ],
+)
+
+terser_minified(
+    name = "bundle.minified",
+    src = ":bundle",
+    sourcemap = False,
+)
+
+live_server(
+    name = "server",
+    data = [
+        "index.html",
+        ":bundle",
+    ],
+    templated_args = ["./src/frontend/web"],
+)
+
+container_image(
+    name = "web_image",
+    base = "@nginx//image",
+    directory = "/usr/share/nginx/html",
+    files = [
+        "index.html",
+        ":bundle",
+    ],
+)

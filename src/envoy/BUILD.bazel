@@ -1,0 +1,21 @@
+load("@io_bazel_rules_docker//container:image.bzl", "container_image")
+load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_commit_layer")
+
+# TODO: this is broken under osx devcontainers
+container_run_and_commit_layer(
+    name = "ca_certificates",
+    commands = ["apk --no-cache add ca-certificates"],
+    image = "@envoy//image",
+)
+
+container_image(
+    name = "envoy_image",
+    base = "@envoy//image",
+    cmd = [
+        "/usr/local/bin/envoy",
+        "-c",
+        "/config.yaml",
+    ],
+    files = ["config.yaml"],
+    layers = [":ca_certificates"],
+)

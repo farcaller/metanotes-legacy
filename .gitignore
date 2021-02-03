@@ -1,3 +1,4 @@
+/data
 dist
 bazel-out
 node_modules

@@ -22,23 +22,8 @@
 
 function Inlines(r) {
   return r.Inline.atLeast(1).map(ii => ii.reduce((out, curr) => {
-    if (typeof curr === 'string') {
-      if (out.length === 0) {
-        out.push({
-          type: 'text',
-          value: curr,
-        });
-      } else {
-        let last = out[out.length - 1];
-        if (last.type === 'text') {
-          last.value += curr;
-        } else {
-          out.push({
-            type: 'text',
-            value: curr,
-          });
-        }
-      }
+    if (curr.type === 'text' && out.length > 0 && out[out.length - 1].type === 'text') {
+      out[out.length - 1].value += curr.value;
     } else {
       out.push(curr);
     }

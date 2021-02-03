@@ -42,7 +42,17 @@ function Inline(r) {
     // | EscapedChar
     // | Smart
     r.Symbol,
-  );
+  ).map((el) => {
+    // TODO: should all the inlines be forced elements?
+    if (typeof el === 'string') {
+      return {
+        type: 'text',
+        value: el,
+      };
+    } else {
+      return el;
+    }
+  });
 }
 
 export default Inline;

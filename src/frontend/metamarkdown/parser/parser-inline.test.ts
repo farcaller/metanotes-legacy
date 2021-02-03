@@ -225,3 +225,23 @@ test('Symbol matches special characters', () => {
     value: '*',
   });
 });
+
+test('Inline strings get concatenated', () => {
+  const n = doParse('hello - world', 'Inlines');
+  expect(n).toEqual([{
+    type: 'text',
+    value: 'hello - world',
+  }]);
+})
+
+// TODO: this is broken because emphasis uses its own inline concatenator
+test.skip('Inline newlines get concatenated', () => {
+  const n = doParse('_a\n:_', 'Inlines');
+  expect(n).toEqual([{
+    type: 'emphasis',
+    children: [{
+      type: 'text',
+      value: 'a\n:',
+    },]
+  }]);
+})

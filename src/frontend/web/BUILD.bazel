@@ -59,7 +59,6 @@ ts_project(
         "@npm//path-browserify",
         "@npm//react",
         "@npm//react-dom",
-        "@npm//react-error-overlay",
         "@npm//react-router-dom",
         "@npm//react-syntax-highlighter",
         "@npm//use-debounce",

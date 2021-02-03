@@ -47,13 +47,6 @@ const theStore = store(undefined, api);
 // TODO: stricter typing
 theStore.dispatch(setCoreScribbles(scribbles as any));
 
-import { stopReportingRuntimeErrors } from 'react-error-overlay';
-
-if (process.env.NODE_ENV === "development") {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  stopReportingRuntimeErrors(); // disables error overlays
-}
-
 console.log(`running from sha ${STABLE_GIT_COMMIT} env ${STABLE_NODE_ENV}`);
 
 ReactDOM.render(

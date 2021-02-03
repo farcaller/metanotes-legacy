@@ -1,13 +1,13 @@
 admin:
   access_log_path: /dev/stderr
   address:
-    socket_address: { address: 127.0.0.1, port_value: 9901 }
+    socket_address: { address: 0.0.0.0, port_value: 9901 }
 
 static_resources:
   listeners:
   - name: listener_grpc
     address:
-      socket_address: { address: 0.0.0.0, port_value: 8000 }
+      socket_address: { address: 0.0.0.0, port_value: 55080 }
     filter_chains:
     - filters:
       - name: envoy.http_connection_manager
@@ -20,13 +20,10 @@ static_resources:
             - name: local_service
               domains: ["*"]
               routes:
-              - match: { prefix: "/metanotes.api" }
+              - match: { prefix: "/" }
                 route:
                   cluster: metanotes_service
                   max_grpc_timeout: 0s
-              - match: { prefix: "/" }
-                route:
-                  cluster: metanotes_web
               cors:
                 allow_origin_string_match:
                 - exact: "*"
@@ -57,16 +54,3 @@ static_resources:
               socket_address:
                 address: server
                 port_value: 55001
-  - name: metanotes_web
-    connect_timeout: 0.25s
-    type: logical_dns
-    lb_policy: round_robin
-    load_assignment:
-      cluster_name: metanotes_web
-      endpoints:
-      - lb_endpoints:
-        - endpoint:
-            address:
-              socket_address:
-                address: core
-                port_value: 80

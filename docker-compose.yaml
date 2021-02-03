@@ -1,15 +1,15 @@
 version: "3.8"
 services:
-  core:
-    image: ghcr.io/farcaller/metanotes-core:master
+  # core:
+  #   image: ghcr.io/farcaller/metanotes-core:master
   server:
-    image: ghcr.io/farcaller/metanotes-server:master
-    environment:
-    - "DATA_DIR=/data"
-    - "LISTEN_ADDRESS=0.0.0.0:55001"
+    image: bazel/src/backend:backend_image
+    command: ["/data/db.sqlite", "0.0.0.0:55001"]
     volumes:
     - "./data:/data"
   envoy:
-    image: ghcr.io/farcaller/metanotes-envoy:master
+    image: bazel/src/envoy:envoy_image
+    volumes:
+    - "./src/envoy/config-dev.yaml:/config.yaml:ro"
     ports:
-    - "4000:8000"
+    - "55080:55080"

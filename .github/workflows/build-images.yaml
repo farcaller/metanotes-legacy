@@ -39,3 +39,10 @@ jobs:
         yarn run bazel run //:publish_web &&
         yarn run bazel run //:publish_envoy &&
         yarn run bazel run //:publish_backend
+    - name: Set Up GCloud Cloud SDK Environment
+      uses: google-github-actions/setup-gcloud@v0.2.0
+      with:
+        service_account_key: ${{ secrets.VERSIONSTORE_SA }}
+        export_default_credentials: true
+    - name: Tag the Versionstore Assets
+      run: bash -c "echo -n sha-${GITHUB_SHA::8} | gsutil cp - gs://versionstore/apps/metanotes/IMAGE_TAG"

@@ -53,7 +53,7 @@ function MarkdownEditor({ id }) {
     <Paper>
       <MonacoEditor
         height="400px"
-        width={'100%'}
+        width="100%"
         language="markdown"
         value={body}
         onChange={debouncedCallback}

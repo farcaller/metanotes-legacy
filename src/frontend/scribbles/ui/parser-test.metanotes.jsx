@@ -45,13 +45,13 @@ function Editor({ input, setInput }) {
     100,
   );
 
-  const debouncedCallback = useCallback((e, value) => debounced.callback(value), [debounced]);
+  const debouncedCallback = useCallback((value) => debounced.callback(value), [debounced]);
 
   return (
     <Paper>
       <MonacoEditor
         height="400px"
-        width={'100%'}
+        width="100%"
         language="markdown"
         value={input}
         onChange={debouncedCallback}

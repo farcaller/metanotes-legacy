@@ -32,7 +32,7 @@ container_push(
     format = "Docker",
     image = "//src/envoy:envoy_image",
     registry = "ghcr.io",
-    repository = "farcaller/envoy",
+    repository = "farcaller/metanotes-envoy",
     tag = "sha-{STABLE_GIT_COMMIT}",
 )
 

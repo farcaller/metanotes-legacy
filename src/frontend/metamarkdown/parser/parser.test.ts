@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expect", "expectParse"] }] */
-
 import unified from 'unified';
 import remarkHTML from 'remark-html';
 
 import makeParser from './parser';
-import { commonmarkTests, parserScribbles, expectParse } from './test-helpers'; 
-
+import { commonmarkTests, parserScribbles, expectParse } from './test-helpers';
 
 function testCommonmark(idx: number) {
   test(`it passes the commonmark spec #${idx}`, () => {
@@ -29,7 +26,7 @@ function testCommonmark(idx: number) {
 
     const spec = commonmarkTests[idx];
 
-    const out = parser.processSync(spec.markdown + '\n\n');
+    const out = parser.processSync(`${spec.markdown}\n\n`);
 
     // console.log(JSON.stringify(parser.parse(spec.markdown + '\n\n'), null, 2));
 
@@ -42,27 +39,27 @@ testCommonmark(191);
 
 test('it parses a paragraph', () => {
   expectParse('hello world\n\n',
-  [
-    {
-      type: 'paragraph',
-      children: [
-        { type: 'text', value: 'hello world' },
-      ],
-    },
-  ]);
+    [
+      {
+        type: 'paragraph',
+        children: [
+          { type: 'text', value: 'hello world' },
+        ],
+      },
+    ]);
 });
 
 test('it parses strong text', () => {
   expectParse('hello **world**\n\n',
-  [
-    {
-      type: 'paragraph',
-      children: [
-        { type: 'text', value: 'hello ' },
-        { type: 'strong', children: [{ type: 'text', value: 'world' }] },
-      ],
-    },
-  ]);
+    [
+      {
+        type: 'paragraph',
+        children: [
+          { type: 'text', value: 'hello ' },
+          { type: 'strong', children: [{ type: 'text', value: 'world' }] },
+        ],
+      },
+    ]);
 });
 
 test('it parses broken strong text', () => {
@@ -98,7 +95,7 @@ test('it parses headers', () => {
         children: [
           { type: 'text', value: 'hello ' },
           { type: 'strong', children: [{ type: 'text', value: 'there' }] },
-        ]
+        ],
       },
       {
         type: 'paragraph',

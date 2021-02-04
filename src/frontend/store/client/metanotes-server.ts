@@ -15,7 +15,7 @@
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
 import * as pb from '../../../common/api/api_pb';
-import * as grpc_web_pb from '../../../common/api/api_grpc_web_pb';
+import * as grpcWebPb from '../../../common/api/api_grpc_web_pb';
 import { Scribble, fromProto, toProto } from '../features/scribbles/scribble';
 
 export interface MetanotesServerConfig {
@@ -23,15 +23,15 @@ export interface MetanotesServerConfig {
 }
 
 export class MetanotesServerAPI {
-  private readonly client: grpc_web_pb.MetanotesPromiseClient;
+  private readonly client: grpcWebPb.MetanotesPromiseClient;
 
   constructor(config: MetanotesServerConfig) {
-    this.client = new grpc_web_pb.MetanotesPromiseClient(config.hostname);
+    this.client = new grpcWebPb.MetanotesPromiseClient(config.hostname);
   }
 
   async getAllMetadata(): Promise<Scribble[]> {
     const rep = await this.client.getAllMetadata(new emptyPb.Empty());
-    return rep.getScribbleList().map(spb => {
+    return rep.getScribbleList().map((spb) => {
       const s = fromProto(spb, true);
       s.status = 'syncedMetadataOnly';
       return s;
@@ -59,7 +59,8 @@ export class MetanotesServerAPI {
     await this.client.setScribble(req);
   }
 
-  removeScribble(id: string): Promise<void> {
+  // eslint-disable-next-line class-methods-use-this
+  removeScribble(_id: string): Promise<void> {
     throw Error('unimplemented');
   }
 }

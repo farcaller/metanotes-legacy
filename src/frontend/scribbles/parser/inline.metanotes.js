@@ -22,7 +22,6 @@
 
 const { alt } = components.Parsimmon;
 
-
 function Inline(r) {
   return alt(
     r.Str,
@@ -49,9 +48,8 @@ function Inline(r) {
         type: 'text',
         value: el,
       };
-    } else {
-      return el;
     }
+    return el;
   });
 }
 

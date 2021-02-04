@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * @license
  * Copyright 2020 The Bazel Authors. All rights reserved.

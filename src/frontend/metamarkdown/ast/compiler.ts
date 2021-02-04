@@ -20,7 +20,6 @@ import unified from 'unified';
 
 import { Components } from './components';
 
-
 export interface Options {
   components: Components;
   inline?: boolean;
@@ -33,12 +32,17 @@ export interface ChildrenOptions {
   loose?: boolean;
 }
 
-function emitChildren(nodes: ast.Content[], options: Options, parent?: ast.Node, childrenOptions?: ChildrenOptions): JSX.Element[] {
+function emitChildren(
+  nodes: ast.Content[],
+  options: Options,
+  parent?: ast.Node,
+  childrenOptions?: ChildrenOptions,
+): JSX.Element[] {
   if (!nodes) {
     return [];
   }
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return nodes.map(n => emitNode(n, options, parent, childrenOptions) as JSX.Element);
+  return nodes.map((n) => emitNode(n, options, parent, childrenOptions) as JSX.Element);
 }
 
 function emitRoot(node: ast.Root, options: Options): JSX.Element|undefined {
@@ -55,11 +59,18 @@ function emitRoot(node: ast.Root, options: Options): JSX.Element|undefined {
   return React.createElement(React.Fragment, null, ...emitChildren(node.children, options));
 }
 
-function emitSimpleComponent(node: ast.Parent, component: React.FunctionComponent<React.PropsWithChildren<unknown>>, options: Options): JSX.Element {
+function emitSimpleComponent(
+  node: ast.Parent,
+  component: React.FunctionComponent<React.PropsWithChildren<unknown>>,
+  options: Options,
+): JSX.Element {
   return React.createElement(component, null, ...emitChildren(node.children, options));
 }
 
-function emitSimpleComponentNoChildren(_node: ast.Node, component: React.FunctionComponent<React.PropsWithChildren<unknown>>): JSX.Element {
+function emitSimpleComponentNoChildren(
+  _node: ast.Node,
+  component: React.FunctionComponent<React.PropsWithChildren<unknown>>,
+): JSX.Element {
   return React.createElement(component, null);
 }
 
@@ -72,7 +83,7 @@ function emitList(node: ast.List, options: Options): JSX.Element {
   const { components } = options;
 
   // a list is loose if it's not spread and no child is spread
-  const spread = node.spread || node.children.find(c => c.spread === true) !== undefined;
+  const spread = node.spread || node.children.find((c) => c.spread === true) !== undefined;
 
   return React.createElement(components.list, {
     ordered: node.ordered,
@@ -81,17 +92,22 @@ function emitList(node: ast.List, options: Options): JSX.Element {
   }, ...emitChildren(node.children, options, node, { loose: !spread }));
 }
 
-function emitListItem(node: ast.ListItem, options: Options, _parent: ast.List, childrenOptions?: ChildrenOptions): JSX.Element {
+function emitListItem(
+  node: ast.ListItem,
+  options: Options,
+  _parent: ast.List,
+  childrenOptions?: ChildrenOptions,
+): JSX.Element {
   const { components } = options;
 
-  const { loose } = childrenOptions ? childrenOptions : { loose: false };
+  const { loose } = childrenOptions || { loose: false };
 
   let shakenChildren: ast.Content[] = [];
   let child: ast.Node;
   const totalChildren = node.children.length;
 
   // TODO: figure out wtf and document this
-  for(let i = 0; i < totalChildren; i++) {
+  for (let i = 0; i < totalChildren; ++i) {
     child = node.children[i];
     if (loose || i !== 0 || !ast.isParagraph(child)) {
       shakenChildren.push(ast.createText('\n'));
@@ -160,7 +176,12 @@ function emitLink(node: ast.Link, options: Options): JSX.Element {
   }, ...emitChildren(node.children, options));
 }
 
-function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenOptions?: ChildrenOptions): JSX.Element | undefined {
+function emitNode(
+  node: ast.Node,
+  options: Options,
+  parent?: ast.Node,
+  childrenOptions?: ChildrenOptions,
+): JSX.Element | undefined {
   if (ast.isRoot(node)) {
     return emitRoot(node, options);
   }
@@ -234,12 +255,11 @@ function emitNode(node: ast.Node, options: Options, parent?: ast.Node, childrenO
     return emitLink(node, options);
   }
 
+  // eslint-disable-next-line no-console
   console.error(`unhandled node type ${node.type}`, node);
   return React.createElement(React.Fragment);
 }
 
 export function metaCompiler(this: unified.Processor, options: Options): void {
-  this.Compiler = (root: ast.Node, _file: VFile) => {
-    return emitNode(root, options) as unknown as string;
-  };
+  this.Compiler = (root: ast.Node, _file: VFile) => emitNode(root, options) as unknown as string;
 }

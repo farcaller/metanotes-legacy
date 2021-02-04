@@ -21,28 +21,26 @@ import { Scribble } from './scribble';
 import { selectAllScribbles } from './scribblesSlice';
 import { selectScribbleByTitle } from './selectors';
 
-
 const createDeepEqualSelector = createSelectorCreator(
   defaultMemoize,
-  (a, b) =>  equals(a, b),
+  (a, b) => equals(a, b),
 );
 
 const selectScribblesTagged = createCachedSelector(
   selectAllScribbles,
   (_: RootState, tag: string) => tag,
-  (scribbles, tag) => {
-    return scribbles.filter(scribble => {
-      const tags = scribble.computedAttributes.tags;
-      if (!tags) { return false; }
-      if (tags.indexOf(tag) === -1) { return false; }
-      return true;
-    });
-  }
+  (scribbles, tag) => scribbles.filter((scribble) => {
+    const { tags } = scribble.computedAttributes;
+    if (!tags) { return false; }
+    if (tags.indexOf(tag) === -1) { return false; }
+    return true;
+  }),
 )({
   keySelector: (_, tag) => tag,
   selectorCreator: createDeepEqualSelector,
 });
 
+// eslint-disable-next-line import/prefer-default-export
 export const selectScribblesByTag = createCachedSelector(
   selectScribblesTagged,
   selectScribbleByTitle,
@@ -60,13 +58,13 @@ export const selectScribblesByTag = createCachedSelector(
     if (tagScribble) {
       // should it match by ID too?
       for (const title of tagScribble.computedAttributes.list) {
-        const scribbleIdx = matchingScribbles.findIndex(s => s.attributes.title === title);
+        const scribbleIdx = matchingScribbles.findIndex((s) => s.attributes.title === title);
         if (scribbleIdx !== -1) {
           listedScribbles.push(matchingScribbles.splice(scribbleIdx, 1)[0]);
         }
       }
     }
-    const {titledScribbles, restScribbles} = matchingScribbles.reduce((acc, scribble) => {
+    const { titledScribbles, restScribbles } = matchingScribbles.reduce((acc, scribble) => {
       if (scribble.attributes.title) {
         acc.titledScribbles.push(scribble);
       } else {
@@ -96,25 +94,25 @@ export const selectScribblesByTag = createCachedSelector(
       } else if (after === '') {
         idx = result.length;
       } else if (before !== undefined) {
-        const beforeScribble = result.find(s => s.attributes.title === before);
+        const beforeScribble = result.find((s) => s.attributes.title === before);
         if (beforeScribble !== undefined) {
           reorder(beforeScribble);
           idx = result.indexOf(beforeScribble);
         }
       } else if (after !== undefined) {
-        const afterScribble = result.find(s => s.attributes.title === after);
+        const afterScribble = result.find((s) => s.attributes.title === after);
         if (afterScribble !== undefined) {
           reorder(afterScribble);
           idx = result.indexOf(afterScribble) + 1;
-        }        
+        }
       }
-      
+
       if (idx !== undefined) {
         const currentIdx = result.indexOf(scribble);
         if (currentIdx !== idx) {
           result.splice(currentIdx, 1);
           if (currentIdx < idx) {
-            --idx;
+            idx -= 1;
           }
           result.splice(idx, 0, scribble);
         }

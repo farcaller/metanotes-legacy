@@ -14,6 +14,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
     """
 
     jest_config = "//:jest.ts.config.js"
+
     ts_project(
         name = "%s_ts" % name,
         srcs = srcs,
@@ -32,7 +33,15 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
     args.extend(["--runTestsByPath", "$(locations :%s_ts)" % name])
     _jest_test(
         name = name,
-        data = [jest_config, ":%s_ts" % name] + deps,
+        data = [
+            ":%s_ts" % name,
+            jest_config,
+            "//:babel.config.json",
+            "@npm//babel-jest",
+            "@npm//@babel/core",
+            "@npm//@babel/preset-env",
+            "@npm//core-js",
+        ] + deps,
         args = args,
         **kwargs
     )

@@ -20,12 +20,10 @@
  * parser: Str
  */
 
-const { regexp } = components.Parsimmon;
-
 function Str(r) {
-  return r.NormalChar.atLeast(1).map(val => ({
+  return r.NormalChar.atLeast(1).map((val) => ({
     type: 'text',
-    value: val.join('')
+    value: val.join(''),
   }));
 }
 

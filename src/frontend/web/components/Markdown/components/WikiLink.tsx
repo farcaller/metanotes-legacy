@@ -14,7 +14,6 @@
 
 import React from 'react';
 
-
 function WikiLink(): JSX.Element {
   return <b>TODO</b>;
 }

@@ -12,15 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import unified, { ProcessorSettings, Settings } from 'unified';
+import unified, { Attacher, Settings } from 'unified';
 import * as ast from 'ts-mdast';
 
 import { metaCompiler } from './compiler';
 import { Components } from './components';
-
+import { ParserOptions } from '../parser/types';
+import { Scribble } from '../../store/features/scribbles';
 
 // TODO: fix that any type
-export const compile = (doc: string, components: Components, inline: boolean, metaParser: any, metaScribbles: unknown): JSX.Element => {
+export const compile = (
+  doc: string,
+  components: Components,
+  inline: boolean,
+  metaParser: Attacher<[ParserOptions], Settings>,
+  metaScribbles: { [key: string]: Scribble },
+): JSX.Element => {
   const parser = unified()
     .use(metaParser, { parserScribbles: metaScribbles })
     .use(metaCompiler, { components, inline });
@@ -29,7 +36,13 @@ export const compile = (doc: string, components: Components, inline: boolean, me
   return f.result as JSX.Element;
 };
 
-export const parse = (doc: string, components: Components, inline: boolean, metaParser: any, options: unknown): ast.Node => {
+export const parse = (
+  doc: string,
+  components: Components,
+  inline: boolean,
+  metaParser: Attacher<[ParserOptions], Settings>,
+  options: ParserOptions,
+): ast.Node => {
   const parser = unified()
     .use(metaParser, options);
 

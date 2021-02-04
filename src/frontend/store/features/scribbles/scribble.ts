@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble as ScribbleProto } from '../../../../common/api/api_pb';
 import Ajv, { JSONSchemaType } from 'ajv';
 import yaml from 'js-yaml';
+import { Scribble as ScribbleProto } from '../../../../common/api/api_pb';
 
 export type ScribbleID = string;
 
@@ -26,7 +26,7 @@ export interface Attributes {
   list?: string;
   'list-before'?: ScribbleID;
   'list-after'?: ScribbleID;
-  
+
   'mn-draft-of'?: ScribbleID;
 
   [x: string]: string | undefined;
@@ -59,16 +59,71 @@ export function isSyncedScribble(scribble: Scribble): scribble is SyncedScribble
   return scribble.status === 'core' || scribble.status === 'synced';
 }
 
+const ajv = new Ajv();
+const TagSchemaDefinition: JSONSchemaType<string[]> = {
+  // "$schema": "https://json-schema.org/draft/2019-09/schema",
+  // "$id": "https://metanotes.org/schemas/v1/tag.schema.json",
+  // "title": "Metanotes tag attribute",
+  type: 'array',
+  items: {
+    type: 'string',
+  },
+};
+const TagSchema = ajv.compile(TagSchemaDefinition);
+
+const ListSchemaDefinition: JSONSchemaType<string[]> = {
+  // "$schema": "https://json-schema.org/draft/2019-09/schema",
+  // "$id": "https://metanotes.org/schemas/v1/tag.schema.json",
+  // "title": "Metanotes list attribute",
+  type: 'array',
+  items: {
+    type: 'string',
+  },
+};
+const ListSchema = ajv.compile(ListSchemaDefinition);
+
+export function recomputeAttributes(scribble: Scribble): ComputedAttributes {
+  let tags = [] as string[];
+  let list = [] as string[];
+
+  const scribbleTags = scribble.attributes.tags;
+  if (scribbleTags) {
+    const tagsData = yaml.load(scribbleTags) as unknown;
+    if (TagSchema(tagsData)) {
+      tags = tagsData;
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(`scribble ${scribble.id} has incorrectly formatted tags field:`, tagsData);
+    }
+  }
+
+  const scribbleList = scribble.attributes.list;
+  if (scribbleList) {
+    const listData = yaml.load(scribbleList) as unknown;
+    if (ListSchema(listData)) {
+      list = listData;
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(`scribble ${scribble.id} has incorrectly formatted list field:`, listData);
+    }
+  }
+
+  return {
+    tags,
+    list,
+  };
+}
+
 export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
   const attrs = {} as Attributes;
 
-  s.getPropsMap().forEach((v: string, k: string) => attrs[k] = v);
+  s.getPropsMap().forEach((v: string, k: string) => { attrs[k] = v; });
   const scribble: Scribble = {
     id: s.getId(),
     attributes: attrs,
     computedAttributes: {
       tags: [],
-      list: []
+      list: [],
     },
 
     status: metadataOnly ? 'syncedMetadataOnly' : 'synced',
@@ -76,7 +131,7 @@ export function fromProto(s: ScribbleProto, metadataOnly: boolean): Scribble {
   if (!metadataOnly) {
     if (s.hasBinaryBody()) {
       const binaryBody = s.getBinaryBody_asU8();
-      const blob = new Blob([binaryBody], { type: scribble.attributes['content-type']});
+      const blob = new Blob([binaryBody], { type: scribble.attributes['content-type'] });
       scribble.binaryBodyURL = window.URL.createObjectURL(blob);
     } else {
       scribble.body = s.getTextBody();
@@ -101,62 +156,9 @@ export async function toProto(s: Scribble): Promise<ScribbleProto> {
     const uint8 = new Uint8Array(await res.arrayBuffer());
     spb.setBinaryBody(uint8);
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     spb.setTextBody(s.body!);
   }
 
   return spb;
-}
-
-const ajv = new Ajv();
-const TagSchemaDefinition: JSONSchemaType<string[]> = {
-  // "$schema": "https://json-schema.org/draft/2019-09/schema",
-  // "$id": "https://metanotes.org/schemas/v1/tag.schema.json",
-  // "title": "Metanotes tag attribute",
-  "type": "array",
-  "items": {
-    "type": "string",
-  }
-};
-const TagSchema = ajv.compile(TagSchemaDefinition);
-
-const ListSchemaDefinition: JSONSchemaType<string[]> = {
-  // "$schema": "https://json-schema.org/draft/2019-09/schema",
-  // "$id": "https://metanotes.org/schemas/v1/tag.schema.json",
-  // "title": "Metanotes list attribute",
-  "type": "array",
-  "items": {
-    "type": "string",
-  }
-};
-const ListSchema = ajv.compile(ListSchemaDefinition);
-
-
-export function recomputeAttributes(scribble: Scribble): ComputedAttributes {
-  let tags = [] as string[];
-  let list = [] as string[];
-
-  const scribbleTags = scribble.attributes.tags;
-  if (scribbleTags) {
-    const tagsData = yaml.load(scribbleTags) as unknown;
-    if (TagSchema(tagsData)) {
-      tags = tagsData;
-    } else {
-      console.error(`scribble ${scribble.id} has incorrectly formatted tags field:`, tagsData);
-    }
-  }
-
-  const scribbleList = scribble.attributes.list;
-  if (scribbleList) {
-    const listData = yaml.load(scribbleList) as unknown;
-    if (ListSchema(listData)) {
-      list = listData;
-    } else {
-      console.error(`scribble ${scribble.id} has incorrectly formatted list field:`, listData);
-    }
-  }
-
-  return {
-    tags,
-    list,
-  };
 }

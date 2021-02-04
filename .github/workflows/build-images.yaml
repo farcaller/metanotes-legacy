@@ -26,6 +26,8 @@ jobs:
       run: yarn --production=false --frozen-lockfile
     - name: Run Tests
       run: yarn test
+    - name: Run Lint
+      run: yarn lint
     - name: Build Container Images
       run: yarn run bazel build //:container_images
     - name: Login to GitHub Container Registry

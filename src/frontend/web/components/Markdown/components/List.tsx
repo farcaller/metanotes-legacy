@@ -16,15 +16,13 @@ import React from 'react';
 
 import { ListProps } from '../../../../metamarkdown/ast/components';
 
-
 function List({ ordered, start, children }: React.PropsWithChildren<ListProps>): JSX.Element {
   if (ordered) {
     // TODO: what's the bother with this lint?
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     return <ol start={start}>{children}</ol>;
-  } else {
-    return <ul>{children}</ul>;
   }
+  return <ul>{children}</ul>;
 }
 
 export default React.memo(List);

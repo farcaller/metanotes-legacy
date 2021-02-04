@@ -15,17 +15,20 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 
 import { useTypedSelector } from '../../../../../store';
-import { Scribble, selectAllScribbles } from '../../../../../store/features/scribbles';
+import { selectAllScribbles } from '../../../../../store/features/scribbles';
+// eslint-disable-next-line import/no-cycle
 import PipelineStep from '../PipelineStep';
+// eslint-disable-next-line import/no-cycle
 import { CmdletProps } from '../cmdlets';
 
-
-function GetScribbles({ flags, pipeline, as, children }: PropsWithChildren<CmdletProps>): JSX.Element {
-  const output = useTypedSelector(state => {
+function GetScribbles({
+  flags, pipeline, as, children,
+}: PropsWithChildren<CmdletProps>): JSX.Element {
+  const output = useTypedSelector((state) => {
     let sc = selectAllScribbles(state);
-    
+
     if (flags.Core !== 'true') {
-      sc = sc.filter(s => s.status !== 'core');
+      sc = sc.filter((s) => s.status !== 'core');
     }
 
     return sc;

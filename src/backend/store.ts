@@ -21,7 +21,7 @@ import { status } from '@grpc/grpc-js';
 import { Map as PbMap } from 'google-protobuf';
 
 import * as pb from '../common/api/api_pb';
-
+import MakeStatus from './error';
 
 function setScribblePropsFromJSON(s: string, m: PbMap<string, string>) {
   const propsJson = JSON.parse(s) as { [key: string]: string };
@@ -30,7 +30,15 @@ function setScribblePropsFromJSON(s: string, m: PbMap<string, string>) {
   }
 }
 
-export class Store {
+type ScribbleRow = {
+  id: string,
+  body: string | Uint8Array,
+  // eslint-disable-next-line camelcase
+  typeof_body: 'text' | 'blob',
+  props: string,
+};
+
+export default class Store {
   private db?: Database<sqlite3.Database, sqlite3.Statement>;
 
   constructor(private readonly basePath: string) {}
@@ -38,7 +46,7 @@ export class Store {
   async init(): Promise<void> {
     this.db = await open({
       filename: this.basePath,
-      driver: sqlite3.Database
+      driver: sqlite3.Database,
     });
     await this.db.migrate({
       migrationsPath: path.resolve(__dirname, 'migrations'),
@@ -47,14 +55,12 @@ export class Store {
   }
 
   async getScribble(id: string): Promise<pb.Scribble> {
-    const scribbleRow = await this.db!.get<{ id: string, body: string|Uint8Array, typeof_body: 'text'|'blob', props: string }>(
-      SQL`SELECT id, body, typeof(body) AS typeof_body, props FROM Scribbles WHERE id = ${id}`);
+    const scribbleRow = await this.db?.get<ScribbleRow>(
+      SQL`SELECT id, body, typeof(body) AS typeof_body, props FROM Scribbles WHERE id = ${id}`,
+    );
 
     if (!scribbleRow) {
-      throw {
-        code: status.NOT_FOUND,
-        message: `scribble '${id}' was not found`,
-      };
+      throw MakeStatus(status.NOT_FOUND, `scribble '${id}' was not found`);
     }
 
     const sc = new pb.Scribble();
@@ -70,18 +76,19 @@ export class Store {
 
   async getAllMetadata(): Promise<pb.Scribble[]> {
     const scribbles: pb.Scribble[] = [];
-    await this.db!.each(
+    await this.db?.each(
       SQL`SELECT id, props FROM Scribbles`,
       (err: Error, row: { id: string, props: string }) => {
         if (err) {
           throw err;
         }
-        
+
         const sc = new pb.Scribble();
         sc.setId(row.id);
         setScribblePropsFromJSON(row.props, sc.getPropsMap());
         scribbles.push(sc);
-      });
+      },
+    );
 
     return scribbles;
   }
@@ -94,20 +101,28 @@ export class Store {
     const propsJson = JSON.stringify(propsObject);
     const body = sc.hasBinaryBody() ? sc.getBinaryBody_asU8() : sc.getTextBody();
 
-    await this.db!.run(
+    await this.db?.run(
       SQL`INSERT INTO Scribbles(id, body, props) VALUES (${sc.getId()}, ${body}, ${propsJson}) 
           ON CONFLICT (id) DO UPDATE
-          SET body = excluded.body, props = excluded.props`);
+          SET body = excluded.body, props = excluded.props`,
+    );
   }
 
   async removeScribble(id: string): Promise<void> {
-    await this.db!.exec(SQL`DELETE FROM Scribble WHERE id = ${id}`);
+    await this.db?.exec(SQL`DELETE FROM Scribble WHERE id = ${id}`);
   }
 
   async getScribblesByTextSearch(query: string): Promise<pb.GetScribblesByTextSearchReply.SearchResult[]> {
     const results: pb.GetScribblesByTextSearchReply.SearchResult[] = [];
-    await this.db!.each(
-      SQL`SELECT id, snippet(ScribblesFTS, 0, "\001\002", "\002\001", "...", 10) AS snippet FROM ScribblesFTS WHERE body MATCH ${query} AND typeof(body) = "text"`,
+    await this.db?.each(
+      SQL`
+        SELECT
+          id, snippet(ScribblesFTS, 0, "\001\002", "\002\001", "...", 10) AS snippet
+        FROM
+          ScribblesFTS
+        WHERE
+          body MATCH ${query}
+          AND typeof(body) = "text"`,
       (err: Error, row: { id: string, snippet: string }) => {
         if (err) {
           throw err;
@@ -117,7 +132,8 @@ export class Store {
         r.setId(row.id);
         r.setSnippet(row.snippet);
         results.push(r);
-      });
+      },
+    );
 
     return results;
   }

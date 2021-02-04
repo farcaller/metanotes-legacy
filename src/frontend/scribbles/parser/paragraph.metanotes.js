@@ -21,7 +21,7 @@
  */
 
 function Paragraph(r) {
-  return r.NonindentSpace.then(r.Inlines).map(i => ({
+  return r.NonindentSpace.then(r.Inlines).map((i) => ({
     type: 'paragraph',
     children: i,
   })).skip(r.BlankLine.atLeast(1));

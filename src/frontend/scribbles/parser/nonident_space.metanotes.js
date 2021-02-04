@@ -24,6 +24,6 @@ const { alt, string } = components.Parsimmon;
 
 function NonindentSpace() {
   return alt(string('   '), string('  '), string(' '), string(''));
-};
+}
 
 export default NonindentSpace;

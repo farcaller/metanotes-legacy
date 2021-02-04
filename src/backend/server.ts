@@ -12,18 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* eslint-disable no-console */
+
 import { exit } from 'process';
 
 import * as grpc from '@grpc/grpc-js';
-import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
+import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
 import * as pb from '../common/api/api_pb';
-import * as grpc_pb from '../common/api/api_grpc_pb';
-import { Store } from './store';
-
+import * as grpcPb from '../common/api/api_grpc_pb';
+import Store from './store';
 
 function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, pb.GetScribbleReply> {
-  return async function(call, callback) {
+  return async (call, callback) => {
     try {
       const s = await store.getScribble(call.request.getId());
       const rep = new pb.GetScribbleReply();
@@ -35,8 +36,8 @@ function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, 
   };
 }
 
-function getAllMetadata(store: Store): grpc.handleUnaryCall<google_protobuf_empty_pb.Empty, pb.GetAllMetadataReply> {
-  return async function (_, callback) {
+function getAllMetadata(store: Store): grpc.handleUnaryCall<emptyPb.Empty, pb.GetAllMetadataReply> {
+  return async (_, callback) => {
     try {
       const scribbles = await store.getAllMetadata();
       const rep = new pb.GetAllMetadataReply();
@@ -48,31 +49,33 @@ function getAllMetadata(store: Store): grpc.handleUnaryCall<google_protobuf_empt
   };
 }
 
-function setScribble(store: Store): grpc.handleUnaryCall<pb.SetScribbleRequest, google_protobuf_empty_pb.Empty> {
-  return async function (call, callback) {
+function setScribble(store: Store): grpc.handleUnaryCall<pb.SetScribbleRequest, emptyPb.Empty> {
+  return async (call, callback) => {
     try {
-      // TODO: ts(2345)
+      // eslint-rationale: will fail the try{} block
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await store.setScribble(call.request.getScribble()!);
-      callback(null, new google_protobuf_empty_pb.Empty());
+      callback(null, new emptyPb.Empty());
     } catch (e) {
       callback(e, null);
     }
   };
 }
 
-function removeScribble(store: Store): grpc.handleUnaryCall<pb.RemoveScribbleRequest, google_protobuf_empty_pb.Empty> {
-  return async function (call, callback) {
+function removeScribble(store: Store): grpc.handleUnaryCall<pb.RemoveScribbleRequest, emptyPb.Empty> {
+  return async (call, callback) => {
     try {
       await store.removeScribble(call.request.getId());
-      callback(null, new google_protobuf_empty_pb.Empty());
+      callback(null, new emptyPb.Empty());
     } catch (e) {
       callback(e, null);
     }
   };
 }
 
-function getScribblesByTextSearch(store: Store): grpc.handleUnaryCall<pb.GetScribblesByTextSearchRequest, pb.GetScribblesByTextSearchReply> {
-  return async function (call, callback) {
+function getScribblesByTextSearch(store: Store):
+    grpc.handleUnaryCall<pb.GetScribblesByTextSearchRequest, pb.GetScribblesByTextSearchReply> {
+  return async (call, callback) => {
     try {
       const result = await store.getScribblesByTextSearch(call.request.getQuery());
       const rep = new pb.GetScribblesByTextSearchReply();
@@ -84,13 +87,13 @@ function getScribblesByTextSearch(store: Store): grpc.handleUnaryCall<pb.GetScri
   };
 }
 
-export function runServer(bind: string, store: Store): void {
+export default function runServer(bind: string, store: Store): void {
   const server = new grpc.Server({
     'grpc.max_send_message_length': -1,
     'grpc.max_receive_message_length': -1,
     'grpc.initial_reconnect_backoff_ms': 5000,
   });
-  server.addService(grpc_pb.MetanotesService as never, {
+  server.addService(grpcPb.MetanotesService as never, {
     getScribble: getScribble(store),
     getAllMetadata: getAllMetadata(store),
     setScribble: setScribble(store),
@@ -98,7 +101,7 @@ export function runServer(bind: string, store: Store): void {
     getScribblesByTextSearch: getScribblesByTextSearch(store),
   });
   try {
-    server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e, _) => {
+    server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e) => {
       if (e) {
         console.log('failed to bind:', e);
         exit(1);

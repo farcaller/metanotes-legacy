@@ -9,7 +9,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "@npm//@types",
+        "@npm//@types/node",
     ],
 )
 

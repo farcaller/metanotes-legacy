@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CmdletCall } from '../../../../filter';
 import { FunctionComponent } from 'react';
+import { CmdletCall } from '../../../../filter';
 
+// eslint-disable-next-line import/no-cycle
 import GetAttribute from './cmdlets/GetAttribute';
+// eslint-disable-next-line import/no-cycle
 import GetScribbles from './cmdlets/GetScribble';
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface CmdletProps<P=any> {
@@ -28,7 +29,7 @@ export interface CmdletProps<P=any> {
   as: string;
 
   input: P;
-};
+}
 
 export const Cmdlets: { [key: string]: FunctionComponent<CmdletProps> } = {
   'Get-Scribbles': GetScribbles,

@@ -16,7 +16,7 @@ import unified from 'unified';
 import remarkHTML from 'remark-html';
 
 import makeParser from './parser';
-import { commonmarkTests, doParse, parserScribbles } from './test-helpers'; 
+import { commonmarkTests, doParse, parserScribbles } from './test-helpers';
 
 // TODO: dedup
 function testCommonmark(idx: number) {
@@ -27,25 +27,28 @@ function testCommonmark(idx: number) {
       .use(makeParser, { parserScribbles })
       .use(remarkHTML);
 
-    const out = parser.processSync(spec.markdown + '\n\n');
+    const out = parser.processSync(`${spec.markdown}\n\n`);
     const outString = (out.contents as string).split('"').join('&quot;');
     expect(outString).toEqual(spec.html);
   });
 }
 
-function testCommonmarkSection(section: string) {
+// eslint-disable-next-line no-underscore-dangle
+function _testCommonmarkSection(section: string) {
   for (let i = 1; i < commonmarkTests.length; ++i) {
     const spec = commonmarkTests[i];
     if (spec.section !== section) {
+      // eslint-disable-next-line no-continue
       continue;
     }
 
+    // eslint-disable-next-line no-loop-func
     test(`it passes the commonmark spec #${spec.number}: ${JSON.stringify(spec.markdown)}`, () => {
       const parser = unified()
         .use(makeParser, { parserScribbles })
         .use(remarkHTML);
 
-      const out = parser.processSync(spec.markdown + '\n\n');
+      const out = parser.processSync(`${spec.markdown}\n\n`);
       const outString = (out.contents as string).split('"').join('&quot;');
       expect(outString).toEqual(spec.html);
     });
@@ -71,7 +74,6 @@ test('Str doesn\'t match spaces', () => {
 test('Str doesn\'t match special chars', () => {
   expect(() => doParse('*', 'Str')).toThrow();
 });
-
 
 test('Endline matches line breaks', () => {
   const n = doParse('  \n', 'Endline');
@@ -103,7 +105,6 @@ test('NormalEndline matches normal endlines unless they are followed by block st
   expect(() => doParse('\nheader\n======', 'NormalEndline')).toThrow();
 });
 
-
 test('Space matches all the spaces/tabs', () => {
   const n = doParse('\t \t ', 'Space');
   expect(n).toEqual({
@@ -112,7 +113,6 @@ test('Space matches all the spaces/tabs', () => {
   });
 });
 
-
 test('Strong matches text in **stars**', () => {
   const n = doParse('**hello**', 'Strong');
   expect(n).toEqual({
@@ -120,7 +120,7 @@ test('Strong matches text in **stars**', () => {
     children: [{
       type: 'text',
       value: 'hello',
-    }]
+    }],
   });
 });
 
@@ -136,14 +136,13 @@ test('Strong matches text in **stars** with nested inlines', () => {
       children: [{
         type: 'text',
         value: 'the',
-      }]
+      }],
     }, {
       type: 'text',
       value: ' world',
-    }]
+    }],
   });
 });
-
 
 test('Emphasis matches text in *stars*', () => {
   const n = doParse('*hello*', 'Emphasis');
@@ -152,7 +151,7 @@ test('Emphasis matches text in *stars*', () => {
     children: [{
       type: 'text',
       value: 'hello',
-    }]
+    }],
   });
 });
 
@@ -163,7 +162,7 @@ test('Emphasis matches text in _underscores_', () => {
     children: [{
       type: 'text',
       value: 'hello',
-    }]
+    }],
   });
 });
 
@@ -232,7 +231,7 @@ test('Inline strings get concatenated', () => {
     type: 'text',
     value: 'hello - world',
   }]);
-})
+});
 
 // TODO: this is broken because emphasis uses its own inline concatenator
 test.skip('Inline newlines get concatenated', () => {
@@ -242,6 +241,6 @@ test.skip('Inline newlines get concatenated', () => {
     children: [{
       type: 'text',
       value: 'a\n:',
-    },]
+    }],
   }]);
-})
+});

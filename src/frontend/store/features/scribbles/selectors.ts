@@ -18,7 +18,6 @@ import { RootState } from '../..';
 import { Scribble } from './scribble';
 import { ScribblesState, selectScribbleById } from './scribblesSlice';
 
-
 export const selectScribbles = (state: RootState): ScribblesState => state.scribbles;
 
 const selectIDsByTitle = createCachedSelector(
@@ -37,8 +36,8 @@ const selectTitlesByPrefix = createCachedSelector(
   selectScribbles,
   (_: RootState, prefix: string) => prefix,
   (scribbles, titlePrefix) => {
-    const matchingTitles = Object.keys(scribbles.titleToIdMap).filter(t => t.startsWith(titlePrefix));
-    const ids = matchingTitles.map(title => scribbles.titleToIdMap[title]);
+    const matchingTitles = Object.keys(scribbles.titleToIdMap).filter((t) => t.startsWith(titlePrefix));
+    const ids = matchingTitles.map((title) => scribbles.titleToIdMap[title]);
     return ids;
   },
 )((_, prefix) => prefix);
@@ -56,11 +55,10 @@ const selectScribbleByIDList = createCachedSelector(
       const second = selectScribbleById(state, ids[1])!;
       if (first.status === 'core') {
         return second;
-      } else if (second.status === 'core') {
+      } if (second.status === 'core') {
         return first;
-      } else {
-        return undefined;
       }
+      return undefined;
     }
     return undefined;
   },
@@ -75,9 +73,9 @@ export const selectScribbleByTitle = createCachedSelector(
 export const selectScribblesByTitlePrefix = createCachedSelector(
   (state) => state,
   selectTitlesByPrefix,
-  (state: RootState, ids: string[][]) => {
-    return ids.map(id => selectScribbleByIDList(state, id)).filter(Boolean) as Scribble[];
-  },
+  (state: RootState, ids: string[][]) => ids.map(
+    (id) => selectScribbleByIDList(state, id),
+  ).filter(Boolean) as Scribble[],
 )((_, prefix) => prefix);
 
 export const selectLastSyncError = (state: RootState): string|null => state.scribbles.lastSyncError;

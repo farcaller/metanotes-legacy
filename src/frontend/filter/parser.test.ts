@@ -16,9 +16,8 @@
 
 import Lang from './parser';
 
-
 test('it parses a cmdlet call', () => {
-  const a = Lang.CmdletCall.tryParse(`Get-Scribbles`);
+  const a = Lang.CmdletCall.tryParse('Get-Scribbles');
 
   expect(a).toEqual({
     name: 'Get-Scribbles',
@@ -28,7 +27,7 @@ test('it parses a cmdlet call', () => {
 });
 
 test('it parses a cmdlet call with a named arg', () => {
-  const a = Lang.CmdletCall.tryParse(`Get-Scribble -Name hello`);
+  const a = Lang.CmdletCall.tryParse('Get-Scribble -Name hello');
 
   expect(a).toEqual({
     name: 'Get-Scribble',
@@ -40,7 +39,7 @@ test('it parses a cmdlet call with a named arg', () => {
 });
 
 test('it parses a cmdlet call with several named args', () => {
-  const a = Lang.CmdletCall.tryParse(`Get-Scribble -Name hello -Core true`);
+  const a = Lang.CmdletCall.tryParse('Get-Scribble -Name hello -Core true');
 
   expect(a).toEqual({
     name: 'Get-Scribble',
@@ -53,11 +52,11 @@ test('it parses a cmdlet call with several named args', () => {
 });
 
 test('it fails to parse a cmdlet call with repeated named arg', () => {
-  expect(() => Lang.CmdletCall.tryParse(`Get-Scribble -Name hello -Name true`)).toThrow(`repeated argument 'Name'`);
+  expect(() => Lang.CmdletCall.tryParse('Get-Scribble -Name hello -Name true')).toThrow('repeated argument \'Name\'');
 });
 
 test('it parses a cmdlet call with a positional arg', () => {
-  const a = Lang.CmdletCall.tryParse(`Get-Attribute 'content-type'`);
+  const a = Lang.CmdletCall.tryParse('Get-Attribute \'content-type\'');
 
   expect(a).toEqual({
     name: 'Get-Attribute',
@@ -67,7 +66,7 @@ test('it parses a cmdlet call with a positional arg', () => {
 });
 
 test('it parses a pipeline', () => {
-  const a = Lang.CmdletCall.tryParse(`Get-Attribute 'content-type'`);
+  const a = Lang.CmdletCall.tryParse('Get-Attribute \'content-type\'');
 
   expect(a).toEqual({
     name: 'Get-Attribute',
@@ -77,7 +76,7 @@ test('it parses a pipeline', () => {
 });
 
 test('it parses several pipelined cmdlets', () => {
-  const a = Lang.Pipeline.tryParse(`Get-Scribble -Name hello | Get-Attribute "content-type"`);
+  const a = Lang.Pipeline.tryParse('Get-Scribble -Name hello | Get-Attribute "content-type"');
 
   expect(a).toEqual([
     {

@@ -17,11 +17,17 @@ import React from 'react';
 import { SyncedScribble } from '../scribble';
 import { loadJsModule } from './jsmodLoader';
 
-export function loadScribbleComponentModule(scribble: SyncedScribble, components: { [key: string]: React.FunctionComponent<unknown> }): React.FunctionComponent<unknown> {
+// eslint-disable-next-line import/prefer-default-export
+export function loadScribbleComponentModule(
+  scribble: SyncedScribble,
+  components: { [key: string]: React.ComponentType },
+): React.ComponentType {
   switch (scribble.attributes['content-type']) {
     case 'application/vnd.metanotes.component-jsmodule':
       return loadJsModule(scribble, components);
     default:
-      throw Error(`unsupported mime type for component scribble ${scribble.id}: ${scribble.attributes['content-type']}`);
+      throw Error(
+        `unsupported mime type for component scribble ${scribble.id}: ${scribble.attributes['content-type']}`,
+      );
   }
 }

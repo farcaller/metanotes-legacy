@@ -14,7 +14,6 @@
 
 import React, { PropsWithChildren, useCallback, useContext } from 'react';
 
-
 type VariablesContextType = (key: string) => unknown;
 export const VariablesContext = React.createContext(null as unknown as VariablesContextType);
 
@@ -31,9 +30,11 @@ export function SetVar({ vars, children }: PropsWithChildren<SetVarProps>): JSX.
     return prevVarGetter(key);
   }, [vars, prevVarGetter]);
 
-  return <VariablesContext.Provider value={varContext}>
-    {children}
-  </VariablesContext.Provider>;
+  return (
+    <VariablesContext.Provider value={varContext}>
+      {children}
+    </VariablesContext.Provider>
+  );
 }
 
 type EchoProps = {

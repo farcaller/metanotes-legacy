@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import { status as Status } from '@grpc/grpc-js';
 
-function Blockquote({ children }: React.PropsWithChildren<unknown>): JSX.Element {
-  return <p>{children}</p>;
+class GrpcError extends Error {
+  constructor(public readonly code: Status, message: string) {
+    super(message);
+  }
 }
 
-export default React.memo(Blockquote);
+export default function MakeStatus(status: Status, message: string): GrpcError {
+  return new GrpcError(status, message);
+}

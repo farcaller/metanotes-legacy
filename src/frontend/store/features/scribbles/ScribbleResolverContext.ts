@@ -22,8 +22,9 @@ export interface ResolverQuery {
   title?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ScribbleResolver = (query: ResolverQuery, dispatch: Dispatch<any>, scribble?: Scribble) => React.FunctionComponent<unknown>;
+export type ScribbleResolver = (query: ResolverQuery, dispatch: Dispatch<never>, scribble?: Scribble)
+  => React.ComponentType;
+
 export type ScribbleResolverContextType = {
   resolver: ScribbleResolver,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

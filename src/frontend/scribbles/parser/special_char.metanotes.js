@@ -23,7 +23,7 @@
 const { oneOf } = components.Parsimmon;
 
 function SpecialChar() {
-  return oneOf('~*_`&[]()<!#\\\'"').map(c => ({
+  return oneOf('~*_`&[]()<!#\\\'"').map((c) => ({
     type: 'text',
     value: c,
   }));

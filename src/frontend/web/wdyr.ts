@@ -18,9 +18,10 @@
 
 import React from 'react';
 
-
 if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line global-require
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  // eslint-disable-next-line global-require
   const ReactRedux = require('react-redux/lib/index.js');
   whyDidYouRender(React, {
     trackAllPureComponents: true,

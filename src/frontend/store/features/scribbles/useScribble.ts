@@ -22,20 +22,17 @@ import { Scribble } from './scribble';
 import { ScribbleResolverContext, ScribbleResolverContextType } from './ScribbleResolverContext';
 import { selectScribbleByTitle } from './selectors';
 
-export type ComponentCache = { [key: string]: { scribble: Scribble, component: React.FunctionComponent<unknown> } };
+export type ComponentCache = { [key: string]: { scribble: Scribble, component: React.ComponentType } };
 
 export const UseScribbleContext = React.createContext(null as unknown as ComponentCache);
 
-export function useScribble(title: string): React.FunctionComponent<unknown> {
-  const dispatch = useDispatch();
-  const cache = useContext(UseScribbleContext);
-  const resolver = useContext(ScribbleResolverContext);
-  const sc = useTypedSelector(state => selectScribbleByTitle(state, title), equals);
-
-  return useMemo(() => loadScribbleComponent(resolver, dispatch, cache, title, sc), [resolver, dispatch, cache, title, sc]);
-}
-
-export function loadScribbleComponent(resolver: ScribbleResolverContextType, dispatch: Dispatch<Action<unknown>>, cache: ComponentCache, title: string, scribble?: Scribble): React.FunctionComponent<unknown> {
+export function loadScribbleComponent(
+  resolver: ScribbleResolverContextType,
+  dispatch: Dispatch<Action<unknown>>,
+  cache: ComponentCache,
+  title: string,
+  scribble?: Scribble,
+): React.ComponentType {
   if (scribble === undefined) {
     return resolver.resolver({ title }, dispatch, scribble);
   }
@@ -47,10 +44,23 @@ export function loadScribbleComponent(resolver: ScribbleResolverContextType, dis
 
   const el = resolver.resolver({ title }, dispatch, scribble);
   if (scribble.status === 'core' || scribble.status === 'synced') {
+    // eslint-disable-next-line no-param-reassign
     cache[scribble.id] = {
-      scribble: scribble,
+      scribble,
       component: el,
     };
   }
   return el;
+}
+
+export function useScribble(title: string): React.ComponentType {
+  const dispatch = useDispatch();
+  const cache = useContext(UseScribbleContext);
+  const resolver = useContext(ScribbleResolverContext);
+  const sc = useTypedSelector((state) => selectScribbleByTitle(state, title), equals);
+
+  return useMemo(
+    () => loadScribbleComponent(resolver, dispatch, cache, title, sc),
+    [resolver, dispatch, cache, title, sc],
+  );
 }

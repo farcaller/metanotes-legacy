@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { cloneElement, PropsWithChildren, ReactElement, useMemo } from 'react';
+/* eslint-disable no-param-reassign */
+
+import React, {
+  cloneElement, PropsWithChildren, ReactElement, useMemo,
+} from 'react';
 
 import { SetVar } from '../widgets/variables';
-
 
 type FinalStepProps = {
   input?: unknown[];
@@ -29,18 +32,17 @@ function FinalStep({ input, as, children }: PropsWithChildren<FinalStepProps>): 
 
   // TODO: I spent some non-trivial type to propery guess the type and I failed.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const unrolledChildren: any = useMemo(() => {
-    // validated above
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return input!.map((i, idx) => {
-      const vars = { [as]: i };
-      
-      return <SetVar key={idx} vars={vars}>
-        {cloneElement(children as ReactElement)}
-      </SetVar>;
-    });
-  }, [input]);
+  const unrolledChildren: any = useMemo(() => input!.map((i, idx) => {
+    const vars = { [as]: i };
 
+    return (
+      // eslint-disable-next-line react/no-array-index-key
+      <SetVar key={idx} vars={vars}>
+        {cloneElement(children as ReactElement)}
+      </SetVar>
+    );
+  }),
+  [input, as, children]);
 
   return <>{unrolledChildren}</>;
 }

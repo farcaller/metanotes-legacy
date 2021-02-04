@@ -21,10 +21,10 @@
  */
 
 function Document(r) {
-  return r.Block.many().map(p => ({
+  return r.Block.many().map((p) => ({
     type: 'root',
     children: p,
   }));
-};
+}
 
 export default Document;

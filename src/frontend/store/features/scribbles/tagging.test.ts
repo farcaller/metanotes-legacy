@@ -17,7 +17,6 @@ import { recomputeAttributes, Scribble } from './scribble';
 import { scribblesAdapter, resyncTitleToIdMap } from './scribblesSlice';
 import { selectScribblesByTag } from './tagging';
 
-
 function makeState(scribbles: Scribble[]): RootState {
   const state: RootState = {
     scribbles: {
@@ -26,7 +25,7 @@ function makeState(scribbles: Scribble[]): RootState {
       titleToIdMap: {},
       scribbles: scribblesAdapter.addMany(scribblesAdapter.getInitialState(), scribbles),
       lastSyncError: null,
-    }
+    },
   };
 
   resyncTitleToIdMap(state.scribbles);
@@ -34,7 +33,7 @@ function makeState(scribbles: Scribble[]): RootState {
   return state;
 }
 
-function makeScribble(id: string, title?: string, attrs?: any): Scribble {
+function makeScribble(id: string, title?: string, attrs?: Record<string, unknown>): Scribble {
   const s: Scribble = {
     id,
     status: 'core',
@@ -50,7 +49,7 @@ function makeScribble(id: string, title?: string, attrs?: any): Scribble {
 }
 
 function getIDs(scribbles: Scribble[]): string[] {
-  return scribbles.map(s => s.id);
+  return scribbles.map((s) => s.id);
 }
 
 test('it sorts tags by title', () => {

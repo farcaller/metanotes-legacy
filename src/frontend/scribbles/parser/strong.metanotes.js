@@ -22,9 +22,8 @@
 
 const { alt } = components.Parsimmon;
 
-
 function Strong(r) {
-  return alt(r.StrongStar, r.StrongUnderline)
+  return alt(r.StrongStar, r.StrongUnderline);
 }
 
 export default Strong;

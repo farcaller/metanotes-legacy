@@ -20,7 +20,7 @@
  * parser: AtxInline
  */
 
-const { notFollowedBy, seq } = components.Parsimmon;
+const { notFollowedBy } = components.Parsimmon;
 
 function AtxInline(r) {
   return notFollowedBy(r.Newline).then(notFollowedBy(r.AtxMarker.then(r.Newline))).then(r.Inline);

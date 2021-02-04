@@ -16,8 +16,8 @@ import React from 'react';
 
 import { HeadingProps } from '../../../../metamarkdown/ast/components';
 
-
 function Heading({ depth, children }: React.PropsWithChildren<HeadingProps>): JSX.Element {
+  // eslint-disable-next-line default-case
   switch (depth) {
     case 1: return <h1>{children}</h1>;
     case 2: return <h2>{children}</h2>;

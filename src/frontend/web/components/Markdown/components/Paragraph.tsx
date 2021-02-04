@@ -14,7 +14,6 @@
 
 import React from 'react';
 
-
 function Paragraph({ children }: React.PropsWithChildren<unknown>): JSX.Element {
   return <p>{children}</p>;
 }

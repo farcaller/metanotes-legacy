@@ -18,7 +18,6 @@ import { ulid } from 'ulid';
 
 import { createDraft } from '../store/features/scribbles';
 
-
 export interface CoreEventsContextType {
   createDraft(id: string): string;
 }

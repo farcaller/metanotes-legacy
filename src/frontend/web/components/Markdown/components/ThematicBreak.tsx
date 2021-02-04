@@ -14,9 +14,8 @@
 
 import React from 'react';
 
-
 function ThematicBreak(): JSX.Element {
-  return <hr/>;
+  return <hr />;
 }
 
 export default React.memo(ThematicBreak);

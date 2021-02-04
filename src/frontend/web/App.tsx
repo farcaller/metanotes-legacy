@@ -17,32 +17,48 @@ import { useDispatch } from 'react-redux';
 import { CssBaseline, LinearProgress } from '@material-ui/core';
 import equals from 'deep-equal';
 
-import { useTypedSelector } from '../store';
-import { fetchStoreMetadata, loadScribbleComponent, ScribbleResolverContext, selectScribbleByTitle, selectScribblesByTag, UseScribbleContext } from '../store/features/scribbles';
-import { ErrorBoundary } from './ScribbleResolver';
 import { Route, Switch } from 'react-router-dom';
-
+import { useTypedSelector } from '../store';
+import {
+  fetchStoreMetadata,
+  loadScribbleComponent,
+  ScribbleResolverContext,
+  selectScribbleByTitle,
+  selectScribblesByTag,
+  UseScribbleContext,
+} from '../store/features/scribbles';
+import ErrorBoundary from './ErrorBoundary';
 
 function App(): JSX.Element {
-  const preloaderStatus = useTypedSelector(state => state.scribbles.status);
+  const preloaderStatus = useTypedSelector((state) => state.scribbles.status);
 
   const dispatch = useDispatch();
-  const routeScribbles = useTypedSelector(state => selectScribblesByTag(state, '$:core/routes'), equals);
+  const routeScribbles = useTypedSelector((state) => selectScribblesByTag(state, '$:core/routes'), equals);
   let rootEl = <LinearProgress />;
 
   const cache = useContext(UseScribbleContext);
   const resolver = useContext(ScribbleResolverContext);
-  const routeScribbleElements = useTypedSelector(state => routeScribbles.map(rs => selectScribbleByTitle(state, rs.attributes['element'] as string)), equals);
+  const routeScribbleElements = useTypedSelector(
+    (state) => routeScribbles.map(
+      (rs) => selectScribbleByTitle(state, rs.attributes.element as string),
+    ), equals,
+  );
   const routeScribbleRoutes = useMemo(() => routeScribbles.map((scribble, idx) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const Comp = loadScribbleComponent(resolver, dispatch, cache, scribble.attributes.title!, routeScribbleElements[idx]);
+    const Comp = loadScribbleComponent(
+      resolver,
+      dispatch,
+      cache,
+      scribble.attributes.title!,
+      routeScribbleElements[idx],
+    );
     return (
-      <Route exact={scribble.attributes['exact'] === 'true'} path={scribble.attributes['path']}>
+      <Route exact={scribble.attributes.exact === 'true'} path={scribble.attributes.path}>
         <Comp />
       </Route>
     );
   }), [resolver, dispatch, cache, routeScribbles, routeScribbleElements]);
-  
+
   switch (preloaderStatus) {
     case 'idle':
       dispatch(fetchStoreMetadata());

@@ -15,12 +15,15 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 
 import { Scribble } from '../../../../../store/features/scribbles';
+// eslint-disable-next-line import/no-cycle
 import PipelineStep from '../PipelineStep';
+// eslint-disable-next-line import/no-cycle
 import { CmdletProps } from '../cmdlets';
 
-
-function GetAttribute({ args, pipeline, children, as, input }: PropsWithChildren<CmdletProps<Scribble[]>>): JSX.Element {
-  const output = input.map(s => s.attributes[args[0]]);
+function GetAttribute({
+  args, pipeline, children, as, input,
+}: PropsWithChildren<CmdletProps<Scribble[]>>): JSX.Element {
+  const output = input.map((s) => s.attributes[args[0]]);
 
   return <PipelineStep input={output} pipeline={pipeline} as={as}>{children as ReactElement}</PipelineStep>;
 }

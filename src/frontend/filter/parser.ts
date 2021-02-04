@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { alt, any, createLanguage, noneOf, oneOf, regexp, seq, seqMap, string, succeed, whitespace } from 'parsimmon';
+import {
+  alt, any, createLanguage, noneOf, oneOf, regexp, seq, seqMap, string, succeed, whitespace,
+} from 'parsimmon';
 
-
-export type CmdletCall = { name: string, flags: { [key: string]: string }, args: (string | number)[] };
+export type CmdletCallType = { name: string, flags: { [key: string]: string }, args: (string | number)[] };
 
 const Lang = createLanguage<{
   Keyword: string,
@@ -25,26 +26,24 @@ const Lang = createLanguage<{
   CmdletFlagName: string,
   CmdletFlagValue: string,
   CmdletFlag: { name: string; value: string },
-  CmdletCall: CmdletCall,
+  CmdletCall: CmdletCallType,
   CmdletArgument: string|number,
 
-  Pipeline: CmdletCall[],
+  Pipeline: CmdletCallType[],
 }>({
   Keyword() {
     return regexp(/[\w]+/);
   },
   QuotedString() {
-    return oneOf(`"'`).chain(function (q) {
-      return alt(
-        noneOf(`\\${q}`)
-          .atLeast(1)
-          .tie(), // everything but quote and escape sign
-        string(`\\`).then(any) // escape sequence like \"
-      )
-        .many()
-        .tie()
-        .skip(string(q));
-    });
+    return oneOf(`"'`).chain((q) => alt(
+      noneOf(`\\${q}`)
+        .atLeast(1)
+        .tie(), // everything but quote and escape sign
+      string('\\').then(any), // escape sequence like \"
+    )
+      .many()
+      .tie()
+      .skip(string(q)));
   },
 
   CmdletName() {
@@ -68,24 +67,26 @@ const Lang = createLanguage<{
       alt(
         whitespace.then(seq(
           r.CmdletFlag.sepBy(whitespace),
-          r.CmdletArgument.sepBy(whitespace)
-        )), succeed<[{ name: string, value: string }[], string[]]>([[], []])),
-        (name, a) => {
+          r.CmdletArgument.sepBy(whitespace),
+        )), succeed<[{ name: string, value: string }[], string[]]>([[], []]),
+      ),
+      (name, a) => {
         const [flagsList, args] = a;
         const flags: { [key: string]: string } = {};
         for (const f of flagsList) {
           if (flags[f.name]) {
-            throw `repeated argument '${f.name}'`;
+            throw new Error(`repeated argument '${f.name}'`);
           }
           flags[f.name] = f.value;
         }
         return { name, flags, args };
-    });
+      },
+    );
   },
 
   Pipeline(r) {
     return r.CmdletCall.sepBy1(string('|').trim(whitespace));
-  }
+  },
 });
 
 export default Lang;

@@ -31,7 +31,7 @@ function processScribble(source: string): string {
 
   // check the magic
   if (lines.shift() !== '/* attributes *') {
-    throw Error(`magic not found`);
+    throw Error('magic not found');
   }
 
   const attrs = {} as { [key: string]: string };
@@ -45,7 +45,8 @@ function processScribble(source: string): string {
     if (!groups) {
       throw Error(`cannot parse attibute from "${l}"`);
     }
-    attrs[groups[1]] = groups[2];
+    const [_, k, v] = groups;
+    attrs[k] = v;
   }
   if (!attrs.id) {
     throw Error('id not present in attributes');
@@ -53,17 +54,10 @@ function processScribble(source: string): string {
   if (!attrs['content-type']) {
     throw Error('content-type not present in attributes');
   }
-  const id = attrs.id;
+  const { id } = attrs;
   delete attrs.id;
 
   const body = lines.join('\n').trim();
-
-  const doc = {
-    id,
-    body,
-    attributes: attrs,
-    status: 'core',
-  }
 
   let output = '';
   output += `export default {\n`;

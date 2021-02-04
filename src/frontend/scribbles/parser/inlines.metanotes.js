@@ -21,13 +21,15 @@
  */
 
 function Inlines(r) {
-  return r.Inline.atLeast(1).map(ii => ii.reduce((out, curr) => {
-    if (curr.type === 'text' && out.length > 0 && out[out.length - 1].type === 'text') {
-      out[out.length - 1].value += curr.value;
+  return r.Inline.atLeast(1).map((ii) => ii.reduce((out, curr) => {
+    const inlines = out;
+    const inlinesCount = inlines.length;
+    if (curr.type === 'text' && inlinesCount > 0 && inlines[inlinesCount - 1].type === 'text') {
+      inlines[inlinesCount - 1].value += curr.value;
     } else {
-      out.push(curr);
+      inlines.push(curr);
     }
-    return out;
+    return inlines;
   }, []));
 }
 

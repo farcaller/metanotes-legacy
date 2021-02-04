@@ -17,7 +17,6 @@ import { makeStyles } from '@material-ui/core';
 
 import { ImageProps } from '../../../../metamarkdown/ast/components';
 
-
 const useStyles = makeStyles({
   image: {
     width: '100%',
@@ -25,7 +24,6 @@ const useStyles = makeStyles({
     objectFit: 'contain',
   },
 });
-
 
 function Image({ url, title, alt }: React.PropsWithChildren<ImageProps>): JSX.Element {
   const classes = useStyles();

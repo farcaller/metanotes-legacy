@@ -26,8 +26,9 @@ ts_project(
 
 ts_jest_test(
     name = "metamarkdown_test",
-    srcs = glob(["**/*.test.ts"]) + glob(["types/*.d.ts"]) + [
+    srcs = glob(["**/*.test.ts"]) + [
         "parser/test-helpers.ts",
+        "//src/types",
     ],
     deps = [
         ":metamarkdown",

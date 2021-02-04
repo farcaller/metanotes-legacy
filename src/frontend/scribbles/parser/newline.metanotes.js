@@ -24,6 +24,6 @@ const { regexp } = components.Parsimmon;
 
 function Newline() {
   return regexp(/\n|\r\n?/);
-};
+}
 
 export default Newline;

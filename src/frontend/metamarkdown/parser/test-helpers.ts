@@ -13,16 +13,15 @@
 // limitations under the License.
 
 import unified from 'unified';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Parent, Node } from 'unist';
 import * as mdast from 'ts-mdast';
 import compact from 'mdast-util-compact';
 import * as commonmarkSpec from 'commonmark-spec';
 
 import makeParser from './parser';
-import scribbles from '../../scribbles';
-// const scribbles = require('../../scribbles');
+import allScribbles from '../../scribbles';
 import { Scribble } from '../../store/features/scribbles';
-
 
 const ParserScribblesPrefix = '$:core/parser/';
 
@@ -38,11 +37,12 @@ function loadScribbles(scribbles: Scribble[]) {
 }
 
 // TODO: forced typecast
-export const parserScribbles = loadScribbles(scribbles as Scribble[]);
+export const parserScribbles = loadScribbles(allScribbles as Scribble[]);
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 
 export function doParse(doc: string, rootNode?: string): mdast.Node {
   if (rootNode === undefined) {
+    // eslint-disable-next-line no-param-reassign
     rootNode = 'Document';
   }
   if (rootParsers[rootNode] === undefined) {
@@ -69,7 +69,7 @@ function loadCommonmarkTests(): TestSpec[] {
   const tests: TestSpec[] = [];
   for (let i = 0; i < (commonmarkSpec as { tests: TestSpec[] }).tests.length; ++i) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    tests.push((commonmarkSpec as { tests: TestSpec[] }).tests.find(s => s.number === i)!);
+    tests.push((commonmarkSpec as { tests: TestSpec[] }).tests.find((s) => s.number === i)!);
   }
   return tests;
 }

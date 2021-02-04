@@ -19,11 +19,10 @@ import React, { ReactElement, useMemo } from 'react';
 import { Pipeline } from '../../../../filter';
 import PipelineStep from '../cmdlet/PipelineStep';
 
-
 function For({ filter, as, children }: { filter: string, as: string, children: ReactElement }): JSX.Element {
   const pipeline = useMemo(() => Pipeline.tryParse(filter), [filter]);
 
   return <PipelineStep pipeline={pipeline} as={as}>{children}</PipelineStep>;
-};
+}
 
 export default React.memo(For);

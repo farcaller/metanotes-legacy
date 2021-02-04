@@ -16,7 +16,6 @@ import React from 'react';
 
 import { LinkProps } from '../../../../metamarkdown/ast/components';
 
-
 function Link({ url, title, children }: React.PropsWithChildren<LinkProps>): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   return <a href={url} title={title} target="_blank" rel="noopener noreferrer">{children}</a>;

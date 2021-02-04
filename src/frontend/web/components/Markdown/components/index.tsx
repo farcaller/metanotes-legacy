@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React  from 'react';
+/* eslint-disable react/require-default-props */
+
+import React from 'react';
 
 import { Components } from '../../../../metamarkdown/ast/components';
 import Include from './Include';
@@ -26,7 +28,6 @@ import List from './List';
 import ListItem from './ListItem';
 import Link from './Link';
 
-
 const components: Components = {
   paragraph: Paragraph,
   heading: Heading,
@@ -37,14 +38,14 @@ const components: Components = {
   table: () => <></>,
   tableRow: () => <></>,
   tableCell: () => <></>,
-  code: ({ value }) => <pre>{value}</pre>,
+  code: ({ value }: { value: string }) => <pre>{value}</pre>,
 
-  text: ({ children }) => <>{children}</>,
-  emphasis: ({ children }) => <em>{children}</em>,
-  strong: ({ children }) => <strong>{children}</strong>,
-  delete: ({ children }) => <del>{children}</del>,
-  inlineCode: ({ value }) => <code>{value}</code>,
-  break: () => <br/>,
+  text: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+  emphasis: ({ children }: { children?: React.ReactNode }) => <em>{children}</em>,
+  strong: ({ children }: { children?: React.ReactNode }) => <strong>{children}</strong>,
+  delete: ({ children }: { children?: React.ReactNode }) => <del>{children}</del>,
+  inlineCode: ({ value }: { value: string }) => <code>{value}</code>,
+  break: () => <br />,
   image: Image,
 
   link: Link,
@@ -53,9 +54,14 @@ const components: Components = {
   metanotesTag: (tagname: string): React.FunctionComponent<unknown> => {
     switch (tagname) {
       case 'include':
-        return Include as React.FunctionComponent<unknown>;
+        return Include as unknown as React.FunctionComponent<unknown>;
       default:
-        return () => <>unknown tag {tagname}</>;
+        return () => (
+          <>
+            unknown tag
+            {tagname}
+          </>
+        );
     }
   },
   wikiLink: WikiLink,

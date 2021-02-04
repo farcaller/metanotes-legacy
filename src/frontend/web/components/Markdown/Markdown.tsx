@@ -16,13 +16,11 @@ import React, { useMemo } from 'react';
 import { Alert } from '@material-ui/lab';
 import equals from 'deep-equal';
 
-
 import { compile } from '../../../metamarkdown/ast';
 import components from './components';
 import { useTypedSelector } from '../../../store';
 import { Scribble, selectScribblesByTag } from '../../../store/features/scribbles';
 import makeParser from '../../../metamarkdown/parser/parser';
-
 
 export interface MarkdownProps {
   text: string;
@@ -30,11 +28,11 @@ export interface MarkdownProps {
 }
 
 const Markdown = ({ text, inline }: MarkdownProps) => {
-  const parserScribbles = useTypedSelector(state => selectScribblesByTag(state, '$:core/parser'), equals);
+  const parserScribbles = useTypedSelector((state) => selectScribblesByTag(state, '$:core/parser'), equals);
   const parserScribblesKeyed = useMemo(() => {
     const scribsByName = {} as { [key: string]: Scribble };
     for (const sc of parserScribbles) {
-      const parser = sc.attributes['parser'];
+      const { parser } = sc.attributes;
       if (parser !== undefined) {
         scribsByName[parser] = sc;
       }
@@ -43,7 +41,7 @@ const Markdown = ({ text, inline }: MarkdownProps) => {
   }, [parserScribbles]);
   // TODO: these scribbles might not be loaded?
 
-  const documentEl = compile(text + '\n\n', components, inline === true, makeParser, parserScribblesKeyed);
+  const documentEl = compile(`${text}\n\n`, components, inline === true, makeParser, parserScribblesKeyed);
 
   if (!documentEl) {
     return <Alert severity="error">failed to parse the markdown document</Alert>;

@@ -22,9 +22,8 @@
 
 const { alt } = components.Parsimmon;
 
-
 function Emphasis(r) {
-  return alt(r.EmphasisStar, r.EmphasisUnderline)
+  return alt(r.EmphasisStar, r.EmphasisUnderline);
 }
 
 export default Emphasis;

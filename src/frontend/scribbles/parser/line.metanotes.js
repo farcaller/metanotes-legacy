@@ -20,7 +20,9 @@
  * parser: Line
  */
 
-const { alt, seq, regexp, eof } = components.Parsimmon;
+const {
+  alt, seq, regexp, eof,
+} = components.Parsimmon;
 
 function Line(r) {
   return alt(seq(regexp(/[^\r\n]*/), r.Newline), seq(regexp(/.+/), eof));

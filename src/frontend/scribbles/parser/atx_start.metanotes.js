@@ -22,8 +22,15 @@
 
 const { string, alt } = components.Parsimmon;
 
-function AtxStart(r) {
-  return alt(string('######'), string('#####'), string('####'), string('###'), string('##'), string('#')).map(s => s.length);
+function AtxStart() {
+  return alt(
+    string('######'),
+    string('#####'),
+    string('####'),
+    string('###'),
+    string('##'),
+    string('#'),
+  ).map((s) => s.length);
 }
 
 export default AtxStart;

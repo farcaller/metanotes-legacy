@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable @typescript-eslint/no-use-before-define,no-param-reassign */
 
+import {
+  createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction,
+} from '@reduxjs/toolkit';
+
+// eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
 import { StorageAPI } from '../../client';
-import { Attributes, recomputeAttributes, Scribble, ScribbleID } from './scribble';
-
+import {
+  Attributes, recomputeAttributes, Scribble, ScribbleID,
+} from './scribble';
 
 export interface ScribblesState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -40,27 +46,34 @@ const initialState: ScribblesState = {
   scribbles: scribblesAdapter.getInitialState(),
 };
 
-export const fetchStoreMetadata = createAsyncThunk<Scribble[], void, {extra: StorageAPI}>('scribbles/fetchStoreMetadata', async (_, { extra }) => {
-  return await extra.getAllMetadata();
-});
+export const fetchStoreMetadata = createAsyncThunk<Scribble[], void, {extra: StorageAPI}>(
+  'scribbles/fetchStoreMetadata',
+  async (_, { extra }) => extra.getAllMetadata(),
+);
 
-export const fetchScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/fetchScribble', async (payload, { extra }) => {
-  return await extra.getScribble(payload.id);
-});
+export const fetchScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>(
+  'scribbles/fetchScribble',
+  async (payload, { extra }) => extra.getScribble(payload.id),
+);
 
-export const syncScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>('scribbles/syncScribble', async (payload, { extra }) => {
-  await extra.setScribble(payload);
-  return payload;
-});
+export const syncScribble = createAsyncThunk<Scribble, Scribble, { extra: StorageAPI }>(
+  'scribbles/syncScribble',
+  async (payload, { extra }) => {
+    await extra.setScribble(payload);
+    return payload;
+  },
+);
 
 export function resyncTitleToIdMap(state: ScribblesState): void {
   const m: { [key: string]: string[] } = {};
   const scribbles = selectAllScribbles({ scribbles: state });
 
   for (const scribble of scribbles) {
-    const title = scribble.attributes.title;
+    const { title } = scribble.attributes;
+    // eslint-disable-next-line no-continue
     if (!title) { continue; }
     // draft scribbles don't participate
+    // eslint-disable-next-line no-continue
     if (scribble.attributes['mn-draft-of'] !== undefined || scribble.attributes['mn-draft-of'] === '') { continue; }
 
     if (!m[title]) {
@@ -119,7 +132,7 @@ const scribblesSlice = createSlice({
         changes: {
           body,
           dirty: true,
-        }
+        },
       });
     },
     updateScribbleAttributes(state, action: PayloadAction<{ id: ScribbleID, attributes: Partial<Attributes> }>) {
@@ -152,7 +165,7 @@ const scribblesSlice = createSlice({
       for (const a of attributes) {
         delete newScribble.attributes[a];
       }
-      
+
       const changes = {
         attributes: newScribble.attributes,
         computedAttributes: recomputeAttributes(newScribble),
@@ -201,9 +214,9 @@ const scribblesSlice = createSlice({
     },
     resetSyncError(state) {
       state.lastSyncError = null;
-    }
+    },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(fetchStoreMetadata.pending, (state) => {
       state.status = 'loading';
     });
@@ -245,7 +258,7 @@ const scribblesSlice = createSlice({
       });
     });
 
-    builder.addCase(syncScribble.pending, (state, action) => {
+    builder.addCase(syncScribble.pending, (_state, _action) => {
       // TODO: do something?
     });
     builder.addCase(syncScribble.fulfilled, (state, action) => {
@@ -274,10 +287,20 @@ const scribblesSlice = createSlice({
 
 export default scribblesSlice.reducer;
 
-export const { setCoreScribbles, createDraft, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, removeScribble, commitDraft, createDraftScribble, resetSyncError } = scribblesSlice.actions;
+export const {
+  setCoreScribbles,
+  createDraft,
+  updateScribbleBody,
+  updateScribbleAttributes,
+  removeScribbleAttributes,
+  removeScribble,
+  commitDraft,
+  createDraftScribble,
+  resetSyncError,
+} = scribblesSlice.actions;
 
 export const {
   selectAll: selectAllScribbles,
   selectById: selectScribbleById,
-  selectIds: selectScribbleIds
+  selectIds: selectScribbleIds,
 } = scribblesAdapter.getSelectors((state: RootState) => state.scribbles.scribbles);

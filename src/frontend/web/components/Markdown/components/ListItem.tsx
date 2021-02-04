@@ -16,7 +16,6 @@ import React from 'react';
 
 import { ListItemProps } from '../../../../metamarkdown/ast/components';
 
-
 function ListItem({ children }: React.PropsWithChildren<ListItemProps>): JSX.Element {
   // TODO: checked
   return <li>{children}</li>;

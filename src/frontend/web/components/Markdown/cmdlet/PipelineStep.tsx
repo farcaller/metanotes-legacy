@@ -16,10 +16,13 @@ import React, { ReactElement } from 'react';
 
 import { CmdletCall } from '../../../../filter';
 import FinalStep from './FinalStep';
+// eslint-disable-next-line import/no-cycle
 import { Cmdlets } from './cmdlets';
 
-
-function PipelineStep({ pipeline, input, children, as }: { input?: unknown[]; pipeline: CmdletCall[]; children: ReactElement; as: string; }): JSX.Element {
+function PipelineStep({
+  pipeline, input, children, as,
+// eslint-disable-next-line react/require-default-props
+}: { input?: unknown[]; pipeline: CmdletCall[]; children: ReactElement; as: string; }): JSX.Element {
   const [first, ...rest] = pipeline;
   if (first === undefined) {
     return <FinalStep input={input} as={as}>{children}</FinalStep>;
@@ -27,7 +30,14 @@ function PipelineStep({ pipeline, input, children, as }: { input?: unknown[]; pi
 
   const Cmdlet = Cmdlets[first.name];
   if (!Cmdlet) {
-    return <>error: no cmdlet {first.name} defined</>;
+    return (
+      <>
+        error: no cmdlet
+        {first.name}
+        {' '}
+        defined
+      </>
+    );
   }
 
   return <Cmdlet args={first.args} flags={first.flags} input={input} pipeline={rest} as={as}>{children}</Cmdlet>;

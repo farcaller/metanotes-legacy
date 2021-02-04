@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* eslint-disable no-console */
+
 import process, { exit } from 'process';
 
-import { runServer } from './server';
-import { Store } from './store';
+import runServer from './server';
+import Store from './store';
 
 const args = process.argv.slice(2);
 

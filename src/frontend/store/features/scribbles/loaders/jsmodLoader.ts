@@ -21,12 +21,23 @@ import { ulid } from 'ulid';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { SyncedScribble } from '../scribble';
-import { fetchScribble, selectScribbleById, selectAllScribbles, removeScribble, updateScribbleBody, updateScribbleAttributes, removeScribbleAttributes, commitDraft, createDraftScribble, syncScribble, resetSyncError } from '../scribblesSlice';
+import {
+  fetchScribble,
+  selectScribbleById,
+  selectAllScribbles,
+  removeScribble,
+  updateScribbleBody,
+  updateScribbleAttributes,
+  removeScribbleAttributes,
+  commitDraft,
+  createDraftScribble,
+  syncScribble,
+  resetSyncError,
+} from '../scribblesSlice';
 import { selectScribbleByTitle, selectLastSyncError } from '../selectors';
 import { loadScribbleComponent, useScribble, UseScribbleContext } from '../useScribble';
 import { selectScribblesByTag } from '../tagging';
 import { ScribbleResolverContext } from '../ScribbleResolverContext';
-
 
 const coreLocals = {
   createCachedSelector,
@@ -56,20 +67,24 @@ const coreLocals = {
 };
 const exportedLocals = { React, core: coreLocals };
 const localKeys = Object.keys(exportedLocals) as (keyof typeof exportedLocals)[];
-const localValues = localKeys.map(k => exportedLocals[k]);
+const localValues = localKeys.map((k) => exportedLocals[k]);
 
-export function loadJsModule(sc: SyncedScribble, components: { [key: string]: React.FunctionComponent<unknown> }): React.FunctionComponent<unknown> {
+// eslint-disable-next-line import/prefer-default-export
+export function loadJsModule(
+  sc: SyncedScribble,
+  components: { [key: string]: React.ComponentType },
+): React.ComponentType {
   const modBody = transform(sc.body, {
-    presets: ['env', 'react']
+    presets: ['env', 'react'],
   }).code;
   if (modBody === null || modBody === undefined) {
     throw Error('failed to transpile the body');
   }
-  const exports = {} as { default: React.FunctionComponent<unknown> };
-  // eslint-disable-next-line @typescript-eslint/no-implied-eval
+  const exports = {} as { default: React.ComponentType };
+  // eslint-disable-next-line no-new-func
   new Function('exports', 'components', ...localKeys, modBody)(exports, components, ...localValues);
   if (exports.default === undefined) {
-    throw 'the modeule does not define a default export';
+    throw Error('the modeule does not define a default export');
   }
   return exports.default;
 }

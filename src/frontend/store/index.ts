@@ -14,9 +14,9 @@
 
 import { configureStore, getDefaultMiddleware, combineReducers } from '@reduxjs/toolkit';
 import { useSelector, TypedUseSelectorHook } from 'react-redux';
-import logger from 'redux-logger';
 
 import { StorageAPI } from './client';
+// eslint-disable-next-line import/no-cycle
 import scribblesReducer, { ScribblesState as _ScribblesState } from './features/scribbles/scribblesSlice';
 
 const rootReducer = combineReducers({
@@ -26,13 +26,14 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const store = (preloadedState: RootState | undefined, api: StorageAPI) => configureStore({
   reducer: rootReducer,
-  preloadedState,
+  preloadedState: preloadedState as unknown as any,
   middleware: getDefaultMiddleware({
     thunk: {
       extraArgument: api,
-    }
+    },
   }),
 });
 

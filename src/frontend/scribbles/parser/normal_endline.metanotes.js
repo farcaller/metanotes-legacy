@@ -24,15 +24,16 @@ const { string, seq, alt } = components.Parsimmon;
 
 function NormalEndline(r) {
   // TODO: a newline not followed by a start of any other block. add all the other blocks (e.g. lists)
-  return r.Sp.then(r.Newline).
-    notFollowedBy(r.BlankLine).
-    notFollowedBy(string('>')).
-    notFollowedBy(r.AtxStart).
-    notFollowedBy(seq(
+  return r.Sp.then(r.Newline)
+    .notFollowedBy(r.BlankLine)
+    .notFollowedBy(string('>'))
+    .notFollowedBy(r.AtxStart)
+    .notFollowedBy(seq(
       r.Line,
       alt(string('=').atLeast(1), string('-').atLeast(1)),
       r.Newline,
-    )).map(() => '\n');
+    ))
+    .map(() => '\n');
 }
 
 export default NormalEndline;

@@ -20,7 +20,6 @@
  * parser: Heading
  */
 
-
 function Heading(r) {
   return r.AtxHeading;
 }

@@ -30,7 +30,9 @@ import SpeedDial from '@material-ui/core/SpeedDial';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
 import TextField from '@material-ui/core/TextField';
 import * as icons from '@material-ui/icons';
-import { useParams, Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import {
+  useParams, Link as RouterLink, useHistory, useLocation,
+} from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Autocomplete from '@material-ui/core/Autocomplete';
@@ -38,28 +40,51 @@ import { useDebouncedCallback } from 'use-debounce';
 import { makeStyles } from '@material-ui/core/styles';
 import Parsimmon from 'parsimmon';
 
-import { Scribble, SyncedScribble, ScribbleResolverContext, loadScribbleComponentModule, fetchScribble, ResolverQuery, ScribbleResolverContextType } from '../store/features/scribbles';
+import {
+  Scribble,
+  SyncedScribble,
+  ScribbleResolverContext,
+  loadScribbleComponentModule,
+  fetchScribble,
+  ResolverQuery,
+  ScribbleResolverContextType,
+} from '../store/features/scribbles';
 import Markdown from './components/Markdown';
 import { CoreEventsContext } from './CoreEvents';
 import { parse as parseMarkdown } from '../metamarkdown/ast';
 import markdownComponents from './components/Markdown/components';
-import makeParser from '../metamarkdown/parser/parser';
-import { buildLanguage } from '../metamarkdown/parser/parser';
+import makeParser, { buildLanguage } from '../metamarkdown/parser/parser';
+import ErrorBoundary from './ErrorBoundary';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: Scribble): React.FunctionComponent<unknown> {
+function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: Scribble): React.ComponentType {
   if (scribble === undefined) {
     // TODO: these will cause re-renders every time because they return new components.
-    return () => <Alert severity="error">cannot find scribble named <code>{title}</code></Alert>;
+    return () => (
+      <Alert severity="error">
+        cannot find scribble named
+        <code>{title}</code>
+      </Alert>
+    );
   }
   switch (scribble.status) {
     case 'core':
     case 'synced':
       try {
-        return loadScribbleComponentModule(scribble as SyncedScribble, componentLocals as { [key: string]: React.FunctionComponent<unknown> });
+        return loadScribbleComponentModule(
+          scribble as SyncedScribble,
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          componentLocals as { [key: string]: React.ComponentType },
+        );
       } catch (e) {
         const err = e as Error;
-        return () => <Alert severity="error">loading scribble failed: <code>{err.name}</code><pre>{err.stack ? err.stack : err.message}</pre></Alert>;
+        return () => (
+          <Alert severity="error">
+            loading scribble failed:
+            <code>{err.name}</code>
+            <pre>{err.stack ? err.stack : err.message}</pre>
+          </Alert>
+        );
       }
     case 'syncedMetadataOnly':
       dispatch(fetchScribble(scribble));
@@ -67,45 +92,14 @@ function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: 
     case 'pullingBody':
       return () => <LinearProgress />;
     case 'failed':
-      return () => <Alert severity="error">loading scribble failed: <code>{scribble.error}</code></Alert>;
+      return () => (
+        <Alert severity="error">
+          loading scribble failed:
+          <code>{scribble.error}</code>
+        </Alert>
+      );
     default:
       throw Error('wtf');
-  }
-}
-
-export class ErrorBoundary extends React.Component<{ children: JSX.Element }, {error?: Error}> {
-  constructor(props: {children: JSX.Element}) {
-    super(props);
-    this.state = { error: undefined };
-  }
-
-  shouldComponentUpdate(nextProps: { children: JSX.Element }, nextState: { error?: Error }): boolean {
-    return (this.state.error !== nextState.error) || (this.props.children !== nextProps.children);
-  }
-
-  componentDidUpdate(prevProps: { children: JSX.Element }): void {
-    if (this.props.children !== prevProps.children && this.state.error !== undefined) {
-      this.setState({ error: undefined });
-    }
-  }
-
-  static getDerivedStateFromError(error: Error): { error?: Error } {
-    return { error };
-  }
-
-  componentDidCatch(error: Error, _errorInfo: unknown): void {
-    this.setState({ error });
-  }
-
-  render(): JSX.Element {
-    if (this.state.error !== undefined) {
-      return <Alert severity="error">
-        <div>rendering scribble failed</div>
-        <code>{JSON.stringify(this.state.error)}</code>
-      </Alert>;
-    }
-
-    return this.props.children;
   }
 }
 

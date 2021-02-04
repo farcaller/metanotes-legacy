@@ -16,10 +16,10 @@ import './wdyr';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
 import store from '../store';
 import { createBackend } from '../store/client';
@@ -29,7 +29,8 @@ import ScribbleResolver from './ScribbleResolver';
 import CoreEvents from './CoreEvents';
 import { STABLE_GIT_COMMIT, STABLE_NODE_ENV } from './buildinfo';
 
-let backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
+let backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+  ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
 
 const urlParams = new URLSearchParams(window.location.search);
 const overrideBackend = urlParams.get('overrideBackend');
@@ -63,7 +64,7 @@ ReactDOM.render(
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function

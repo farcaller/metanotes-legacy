@@ -17,7 +17,8 @@ jobs:
           /home/runner/.cache/bazel
           dist
           node_modules
-        key: bazel
+        key: ${{ runner.os }}-bazel-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-bazel-
     - name: Setup Node
       uses: actions/setup-node@v2
       with:

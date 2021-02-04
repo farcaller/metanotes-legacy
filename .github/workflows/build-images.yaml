@@ -33,7 +33,7 @@ jobs:
       run: yarn run bazel build //:container_images
     - name: Report Web Bundle Size
       run: |
-        echo "::warning bundle.js size: $(numfmt --to=iec-i --suffix=B --format="%.3f" $(stat -c%s dist/bin/src/frontend/web/bundle/bundle.js))"
+        echo "::warning file=bundle.js::size: $(numfmt --to=iec-i --suffix=B --format="%.3f" $(stat -c%s dist/bin/src/frontend/web/bundle/bundle.js))"
     - name: Archive Bundle Size Results
       uses: actions/upload-artifact@v2
       with:

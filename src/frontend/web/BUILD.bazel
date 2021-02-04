@@ -83,6 +83,7 @@ rollup_bundle(
     format = "iife",
     rollup_bin = ":rollup_bin",
     sourcemap = "false",
+    rollup_worker_bin = "//tools/rollup-worker",
     deps = [
         ":buildinfo_lib",
         ":web",
@@ -92,6 +93,7 @@ rollup_bundle(
         "@npm//@rollup/plugin-replace",
         "@npm//rollup-plugin-node-polyfills",
     ],
+    supports_workers = True,
 )
 
 terser_minified(

@@ -78,9 +78,15 @@ function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: 
         );
       } catch (e) {
         const err = e as Error;
+        console.error('loading scribble failed:', scribble);
         return () => (
           <Alert severity="error">
-            loading scribble failed:
+            loading scribble
+            {title}
+            (id:
+            {scribble.id}
+            )
+            failed:
             <code>{err.name}</code>
             <pre>{err.stack ? err.stack : err.message}</pre>
           </Alert>
@@ -94,7 +100,12 @@ function resolver({ title }: ResolverQuery, dispatch: Dispatch<any>, scribble?: 
     case 'failed':
       return () => (
         <Alert severity="error">
-          loading scribble failed:
+          fetching scribble
+          {title}
+          (id:
+          {scribble.id}
+          )
+          failed:
           <code>{scribble.error}</code>
         </Alert>
       );

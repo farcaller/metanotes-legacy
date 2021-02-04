@@ -17,9 +17,8 @@ ts_project(
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/api:api_grpc_web_lib",
-        "@npm//@babel/standalone",
+        "@npm//buble",
         "@npm//@reduxjs/toolkit",
-        "@npm//@types/babel__standalone",
         "@npm//@types/deep-equal",
         "@npm//@types/google-protobuf",
         "@npm//@types/js-yaml",

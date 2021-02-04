@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import { transform } from '@babel/standalone';
+import { transform } from 'buble';
 import { useDispatch, useSelector } from 'react-redux';
 import equals from 'deep-equal';
 import createCachedSelector from 're-reselect';
@@ -74,15 +74,13 @@ export function loadJsModule(
   sc: SyncedScribble,
   components: { [key: string]: React.ComponentType },
 ): React.ComponentType {
-  const modBody = transform(sc.body, {
-    presets: ['env', 'react'],
-  }).code;
-  if (modBody === null || modBody === undefined) {
+  const { code } = transform(sc.body);
+  if (code === null || code === undefined) {
     throw Error('failed to transpile the body');
   }
   const exports = {} as { default: React.ComponentType };
   // eslint-disable-next-line no-new-func
-  new Function('exports', 'components', ...localKeys, modBody)(exports, components, ...localValues);
+  new Function('exports', 'components', ...localKeys, code)(exports, components, ...localValues);
   if (exports.default === undefined) {
     throw Error('the modeule does not define a default export');
   }

@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: bundle-stats
-        path: dist/bin/src/frontend/web/bundle/stats.html
+        path: dist/bin/src/frontend/web/bundle/stats*
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
       with:

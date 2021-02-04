@@ -80,9 +80,11 @@ rollup_bundle(
     config_file = "rollup.config.js",
     entry_point = "index.js",
     format = "iife",
+    output_dir = True,
     rollup_bin = ":rollup_bin",
-    sourcemap = "false",
     rollup_worker_bin = "//tools/rollup-worker",
+    sourcemap = "false",
+    supports_workers = True,
     deps = [
         ":buildinfo_lib",
         ":web",
@@ -93,8 +95,6 @@ rollup_bundle(
         "@npm//rollup-plugin-node-polyfills",
         "@npm//rollup-plugin-visualizer",
     ],
-    supports_workers = True,
-    output_dir = True,
 )
 
 terser_minified(

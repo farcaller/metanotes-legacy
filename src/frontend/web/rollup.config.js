@@ -37,6 +37,14 @@ export default {
     visualizer({
       filename: 'bazel-out/k8-fastbuild/bin/src/frontend/web/bundle/stats.html',
     }),
+    visualizer({
+      template: 'network',
+      filename: 'bazel-out/k8-fastbuild/bin/src/frontend/web/bundle/stats-network.html',
+    }),
+    visualizer({
+      template: 'sunburst',
+      filename: 'bazel-out/k8-fastbuild/bin/src/frontend/web/bundle/stats-sunburst.html',
+    }),
   ],
   output: {
     exports: 'auto',

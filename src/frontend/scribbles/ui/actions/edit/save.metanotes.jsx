@@ -21,7 +21,7 @@
 
 const { useCallback } = React;
 const { useSelector, selectScribbleById, createCachedSelector, useDispatch, commitDraft } = core;
-const { icons, IconButton, useHistory } = components;
+const { Icon, IconButton, useHistory } = components;
 
 
 const selectScribbleDraftOfById = createCachedSelector(
@@ -45,7 +45,7 @@ function SaveAction({ id }) {
 
   return (
     <IconButton onClick={onClose}>
-      <icons.Save />
+      <Icon>save</Icon>
     </IconButton>
   )
 }

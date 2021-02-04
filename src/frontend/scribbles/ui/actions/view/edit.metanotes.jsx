@@ -21,7 +21,7 @@
 
 const { useCallback } = React;
 const { useSelector, selectScribbleById, createCachedSelector } = core;
-const { icons, IconButton, useHistory, useCoreEvents } = components;
+const { Icon, IconButton, useHistory, useCoreEvents } = components;
 
 
 const selectScribbleStatusById = createCachedSelector(
@@ -46,7 +46,7 @@ function EditAction({ id }) {
 
   return (
     <IconButton onClick={onEdit}>
-      <icons.Edit />
+      <Icon>edit</Icon>
     </IconButton>
   )
 }

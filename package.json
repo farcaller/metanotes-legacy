@@ -18,7 +18,6 @@
     "@emotion/styled": "^11.0.0",
     "@grpc/grpc-js": "^1.2.5",
     "@material-ui/core": "=5.0.0-alpha.24",
-    "@material-ui/icons": "=5.0.0-alpha.24",
     "@material-ui/lab": "=5.0.0-alpha.24",
     "@monaco-editor/react": "^4.0.9",
     "@reduxjs/toolkit": "^1.5.0",

@@ -22,7 +22,7 @@
 
 const { useCallback } = React;
 const { useSelector, selectScribbleById, createCachedSelector, useDispatch, removeScribble } = core;
-const { icons, IconButton, useHistory } = components;
+const { Icon, IconButton, useHistory } = components;
 
 
 const selectScribbleDraftOfById = createCachedSelector(
@@ -46,7 +46,7 @@ function CloseAction({ id }) {
 
   return (
     <IconButton onClick={onClose}>
-      <icons.Close />
+      <Icon>close</Icon>
     </IconButton>
   )
 }

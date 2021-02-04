@@ -29,7 +29,7 @@ import Button from '@material-ui/core/Button';
 import SpeedDial from '@material-ui/core/SpeedDial';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
 import TextField from '@material-ui/core/TextField';
-import * as icons from '@material-ui/icons';
+import Icon from '@material-ui/core/Icon';
 import {
   useParams, Link as RouterLink, useHistory, useLocation,
 } from 'react-router-dom';
@@ -155,7 +155,7 @@ const componentLocals: { [key: string]: unknown } = {
   useHistory,
   useLocation,
   // TODO: this now takes up 37% of the runtime, split into a chunk?
-  icons,
+  Icon,
   useCoreEvents: () => useContext(CoreEventsContext),
   ErrorBoundary,
   useDebouncedCallback,

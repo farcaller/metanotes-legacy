@@ -21,7 +21,7 @@
 
 const { useCallback } = React;
 const { useDispatch, createDraftScribble, ulid } = core;
-const { icons, IconButton, useHistory } = components;
+const { Icon, IconButton, useHistory } = components;
 
 
 function UploadImageAction({ id }) {
@@ -49,7 +49,7 @@ function UploadImageAction({ id }) {
     <input accept="image/*" style={{ display: 'none' }} id="icon-button-file" type="file" onChange={onUploadImage} />
     <label htmlFor="icon-button-file">
       <IconButton color="primary" aria-label="upload picture" component="span">
-        <icons.PhotoCamera />
+        <Icon>photo_camera</Icon>
       </IconButton>
     </label>
   </>;

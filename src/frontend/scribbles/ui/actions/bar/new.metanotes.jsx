@@ -21,7 +21,7 @@
 
 const { useCallback } = React;
 const { useDispatch, createDraftScribble, ulid } = core;
-const { icons, IconButton, useHistory } = components;
+const { Icon, IconButton, useHistory } = components;
 
 
 function NewAction({ id }) {
@@ -45,7 +45,7 @@ function NewAction({ id }) {
 
   return (
     <IconButton color="primary" aria-label="create scribble" onClick={onCreateNew}>
-      <icons.NoteAdd />
+      <Icon>note_add</Icon>
     </IconButton>
   )
 }

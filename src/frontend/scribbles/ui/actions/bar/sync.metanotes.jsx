@@ -21,7 +21,7 @@
 
 const { useCallback, useMemo } = React;
 const { useDispatch, createSelector, useSelector, selectAllScribbles, equals, syncScribble, resetSyncError, selectLastSyncError } = core;
-const { icons, IconButton, makeStyles } = components;
+const { Icon, IconButton, makeStyles } = components;
 
 
 const useStyles = makeStyles({
@@ -55,7 +55,7 @@ function SyncAction({ id }) {
 
   return (
     <IconButton color={(isDirty || lastSyncFailed) ? "secondary" : "primary"} classes={{ colorSecondary: lastSyncFailed ? classes.error : isDirty ? classes.dirty : ''}} aria-label="sync to server" onClick={onSync}>
-      <icons.Sync />
+      <Icon>sync</Icon>
     </IconButton>
   )
 }

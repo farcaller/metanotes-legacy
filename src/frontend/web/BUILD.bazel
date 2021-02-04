@@ -113,7 +113,7 @@ live_server(
         "./src/frontend/web",
         "--no-browser",
         "--wait=1000",
-        "--entry-file=index.html",
+        "--entry-file=index-dev.html",
     ],
 )
 
@@ -123,6 +123,6 @@ container_image(
     directory = "/usr/share/nginx/html",
     files = [
         "index.html",
-        ":bundle",
+        ":bundle.minified",
     ],
 )

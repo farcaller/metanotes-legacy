@@ -17,6 +17,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
+import visualizer from 'rollup-plugin-visualizer';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const buildInfo = require('./buildinfo');
@@ -33,6 +34,9 @@ export default {
     commonjs(),
     json(),
     nodePolyfills(),
+    visualizer({
+      filename: 'bazel-out/k8-fastbuild/bin/src/frontend/web/bundle/stats.html',
+    }),
   ],
   output: {
     exports: 'auto',

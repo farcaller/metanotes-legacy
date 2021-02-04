@@ -92,8 +92,10 @@ rollup_bundle(
         "@npm//@rollup/plugin-node-resolve",
         "@npm//@rollup/plugin-replace",
         "@npm//rollup-plugin-node-polyfills",
+        "@npm//rollup-plugin-visualizer",
     ],
     supports_workers = True,
+    output_dir = True,
 )
 
 terser_minified(

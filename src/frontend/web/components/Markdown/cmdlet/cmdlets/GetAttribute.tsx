@@ -21,7 +21,11 @@ import PipelineStep from '../PipelineStep';
 import { CmdletProps } from '../cmdlets';
 
 function GetAttribute({
-  args, pipeline, children, as, input,
+  args,
+  pipeline,
+  children,
+  as,
+  input,
 }: PropsWithChildren<CmdletProps<Scribble[]>>): JSX.Element {
   const output = input.map((s) => s.attributes[args[0]]);
 

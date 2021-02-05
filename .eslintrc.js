@@ -89,6 +89,13 @@ module.exports = {
     ],
     'no-plusplus': ['off'],
     quotes: ['error', 'single', { allowTemplateLiterals: true }],
+    'object-curly-newline': ['error', {
+      ObjectExpression: { consistent: true },
+      ObjectPattern: { multiline: true },
+      ImportDeclaration: { multiline: true, minProperties: 5 },
+      ExportDeclaration: { multiline: true, minProperties: 3 },
+    }],
+    'no-continue': ['off'],
 
     'no-use-before-define': ['off'],
     '@typescript-eslint/no-use-before-define': ['error'],

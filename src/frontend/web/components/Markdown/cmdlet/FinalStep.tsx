@@ -14,9 +14,7 @@
 
 /* eslint-disable no-param-reassign */
 
-import React, {
-  cloneElement, PropsWithChildren, ReactElement, useMemo,
-} from 'react';
+import React, { cloneElement, PropsWithChildren, ReactElement, useMemo } from 'react';
 
 import { SetVar } from '../widgets/variables';
 

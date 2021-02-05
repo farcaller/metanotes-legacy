@@ -22,7 +22,10 @@ import PipelineStep from '../PipelineStep';
 import { CmdletProps } from '../cmdlets';
 
 function GetScribbles({
-  flags, pipeline, as, children,
+  flags,
+  pipeline,
+  as,
+  children,
 }: PropsWithChildren<CmdletProps>): JSX.Element {
   const output = useTypedSelector((state) => {
     let sc = selectAllScribbles(state);

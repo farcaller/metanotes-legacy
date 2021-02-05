@@ -21,9 +21,7 @@ import {
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
 import { StorageAPI } from '../../client';
-import {
-  Attributes, recomputeAttributes, Scribble, ScribbleID,
-} from './scribble';
+import { Attributes, recomputeAttributes, Scribble, ScribbleID } from './scribble';
 
 export interface ScribblesState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';

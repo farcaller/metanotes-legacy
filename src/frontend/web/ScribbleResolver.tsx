@@ -30,9 +30,7 @@ import SpeedDial from '@material-ui/core/SpeedDial';
 import SpeedDialAction from '@material-ui/core/SpeedDialAction';
 import TextField from '@material-ui/core/TextField';
 import Icon from '@material-ui/core/Icon';
-import {
-  useParams, Link as RouterLink, useHistory, useLocation,
-} from 'react-router-dom';
+import { useParams, Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Autocomplete from '@material-ui/core/Autocomplete';

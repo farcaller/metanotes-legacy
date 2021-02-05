@@ -41,6 +41,9 @@ export function buildParser(
   return parser;
 }
 
+/**
+ * @deprecated use buildParser
+ */
 export const compile = (
   doc: string,
   components: Components,
@@ -54,6 +57,9 @@ export const compile = (
   return f.result as JSX.Element;
 };
 
+/**
+ * @deprecated use buildParser
+ */
 export const parse = (
   doc: string,
   components: Components,

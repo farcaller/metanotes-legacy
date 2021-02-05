@@ -97,6 +97,7 @@ module.exports = {
     }],
     'no-continue': ['off'],
     'no-param-reassign': ['error', { props: false }],
+    'import/no-deprecated': ['warn'],
 
     'no-use-before-define': ['off'],
     '@typescript-eslint/no-use-before-define': ['error'],

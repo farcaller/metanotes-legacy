@@ -14,14 +14,15 @@
 
 import unified from 'unified';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Parent, Node } from 'unist';
+import { Node } from 'unist';
 import * as mdast from 'ts-mdast';
-import compact from 'mdast-util-compact';
 import * as commonmarkSpec from 'commonmark-spec';
 
 import makeParser from './parser';
 import allScribbles from '../../scribbles';
 import { Scribble } from '../../store/features/scribbles';
+import { balancerTransformer } from '../ast/emphasis_transformer';
+import { concatTransformer } from '../ast/concat_transformer';
 
 const ParserScribblesPrefix = '$:core/parser/';
 
@@ -40,20 +41,18 @@ function loadScribbles(scribbles: Scribble[]) {
 export const parserScribbles = loadScribbles(allScribbles as Scribble[]);
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 
-export function doParse(doc: string, rootNode?: string): mdast.Node {
-  if (rootNode === undefined) {
-    // eslint-disable-next-line no-param-reassign
-    rootNode = 'Document';
-  }
+export function doParse(doc: string, rootNode = 'Document'): mdast.Node {
   if (rootParsers[rootNode] === undefined) {
     const parser = unified()
-      .use(makeParser, { parserScribbles, rootNode });
+      .use(makeParser, { parserScribbles, rootNode })
+      .use(balancerTransformer)
+      .use(concatTransformer as never);
     rootParsers[rootNode] = parser;
   }
   const parser = rootParsers[rootNode];
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const node = compact((parser.parse(doc))) as Parent;
+  let node = parser.parse(doc);
+  node = parser.runSync(node);
 
   return node;
 }

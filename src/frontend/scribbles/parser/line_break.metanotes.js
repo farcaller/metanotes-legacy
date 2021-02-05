@@ -23,9 +23,7 @@
 const { string } = components.Parsimmon;
 
 function LineBreak(r) {
-  return string('  ').then(r.NormalEndline).map(() => ({
-    type: 'break',
-  }));
+  return string('  ').then(r.NormalEndline).map(() => ({ type: 'break' }));
 }
 
 export default LineBreak;

@@ -21,7 +21,7 @@
  */
 
 function Inlines(r) {
-  return r.Inline.atLeast(1).map((ii) => ii.reduce((out, curr) => {
+  return r.Inline.atLeast(1).map((ii) => ii.flat().reduce((out, curr) => {
     const inlines = out;
     const inlinesCount = inlines.length;
     if (curr.type === 'text' && inlinesCount > 0 && inlines[inlinesCount - 1].type === 'text') {

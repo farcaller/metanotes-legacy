@@ -33,7 +33,10 @@ function NormalEndline(r) {
       alt(string('=').atLeast(1), string('-').atLeast(1)),
       r.Newline,
     ))
-    .map(() => '\n');
+    .map(() => ({
+      type: 'text',
+      value: '\n',
+    }));
 }
 
 export default NormalEndline;

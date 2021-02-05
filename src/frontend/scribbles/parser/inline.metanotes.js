@@ -28,7 +28,7 @@ function Inline(r) {
     r.Endline,
     // | UlOrStarLine
     r.Space,
-    r.Strong,
+    // r.Strong,
     r.Emphasis,
     // | Strike
     // | Image

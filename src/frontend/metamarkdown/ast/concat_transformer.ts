@@ -12,18 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* attributes *
- * id: 01ES1SE9PESSXPVTB4CHCPXAHS
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Strong
- * tags: ['$:core/parser']
- * parser: Strong
- */
+import compact from 'mdast-util-compact';
 
-const { alt } = components.Parsimmon;
-
-function Strong(r) {
-  return alt(r.StrongStar, r.StrongUnderline);
+// eslint-disable-next-line import/prefer-default-export
+export function concatTransformer(): (node: Node) => Node {
+  return compact;
 }
-
-export default Strong;

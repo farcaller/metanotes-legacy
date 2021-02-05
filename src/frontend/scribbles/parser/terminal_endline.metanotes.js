@@ -23,7 +23,10 @@
 const { seq, eof } = components.Parsimmon;
 
 function TerminalEndline(r) {
-  return seq(r.Sp, r.Newline, eof).map(() => '\n');
+  return seq(r.Sp, r.Newline, eof).map(() => ({
+    type: 'text',
+    value: '\n',
+  }));
 }
 
 export default TerminalEndline;

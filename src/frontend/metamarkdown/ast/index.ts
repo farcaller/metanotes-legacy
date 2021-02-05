@@ -20,7 +20,6 @@ import { Components } from './components';
 import { ParserOptions } from '../parser/types';
 import { Scribble } from '../../store/features/scribbles';
 
-// TODO: fix that any type
 export const compile = (
   doc: string,
   components: Components,
@@ -49,3 +48,20 @@ export const parse = (
   const f = parser.parse(doc);
   return f;
 };
+
+export function buildParser(
+  metaParser: Attacher<[ParserOptions], Settings>,
+  options: ParserOptions,
+  emitJSX: boolean,
+  components?: Components,
+  inline?: boolean,
+): unified.Processor {
+  const parser = unified()
+    .use(metaParser, options);
+  if (emitJSX) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    parser.use(metaCompiler, { components: components!, inline: inline === true });
+  }
+
+  return parser;
+}

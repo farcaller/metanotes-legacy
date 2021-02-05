@@ -19,6 +19,27 @@ import { metaCompiler } from './compiler';
 import { Components } from './components';
 import { ParserOptions } from '../parser/types';
 import { Scribble } from '../../store/features/scribbles';
+import { balancerTransformer } from './emphasis_transformer';
+import { concatTransformer } from './concat_transformer';
+
+export function buildParser(
+  metaParser: Attacher<[ParserOptions], Settings>,
+  options: ParserOptions,
+  emitJSX: boolean,
+  components?: Components,
+  inline?: boolean,
+): unified.Processor {
+  const parser = unified()
+    .use(metaParser, options)
+    .use(balancerTransformer)
+    .use(concatTransformer as never);
+  if (emitJSX) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    parser.use(metaCompiler, { components: components!, inline: inline === true });
+  }
+
+  return parser;
+}
 
 export const compile = (
   doc: string,
@@ -27,9 +48,7 @@ export const compile = (
   metaParser: Attacher<[ParserOptions], Settings>,
   metaScribbles: { [key: string]: Scribble },
 ): JSX.Element => {
-  const parser = unified()
-    .use(metaParser, { parserScribbles: metaScribbles })
-    .use(metaCompiler, { components, inline });
+  const parser = buildParser(metaParser, { parserScribbles: metaScribbles }, false, components, inline);
 
   const f = parser.processSync({ contents: doc });
   return f.result as JSX.Element;
@@ -42,26 +61,10 @@ export const parse = (
   metaParser: Attacher<[ParserOptions], Settings>,
   options: ParserOptions,
 ): ast.Node => {
-  const parser = unified()
-    .use(metaParser, options);
+  const parser = buildParser(metaParser, options, false, components, inline);
 
-  const f = parser.parse(doc);
-  return f;
+  let node = parser.parse(doc);
+  node = parser.runSync(node);
+
+  return node;
 };
-
-export function buildParser(
-  metaParser: Attacher<[ParserOptions], Settings>,
-  options: ParserOptions,
-  emitJSX: boolean,
-  components?: Components,
-  inline?: boolean,
-): unified.Processor {
-  const parser = unified()
-    .use(metaParser, options);
-  if (emitJSX) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    parser.use(metaCompiler, { components: components!, inline: inline === true });
-  }
-
-  return parser;
-}

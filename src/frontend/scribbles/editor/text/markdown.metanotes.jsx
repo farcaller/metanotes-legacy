@@ -52,7 +52,7 @@ function MarkdownEditor({ id }) {
   return (
     <Paper>
       <MonacoEditor
-        height="400px"
+        height="80vh"
         width="100%"
         language="markdown"
         value={body}

@@ -20,7 +20,7 @@ const args = argv.slice(2);
 const src = args[0];
 const dst = args[1];
 
-function processScribble(source: string): string {
+function processScribble(sourceFile: string, source: string): string {
   const lines = source.split('\n');
 
   // skip the license header
@@ -57,7 +57,9 @@ function processScribble(source: string): string {
   const { id } = attrs;
   delete attrs.id;
 
-  const body = lines.join('\n').trim();
+  let body = lines.join('\n').trim();
+
+  body += `\n//# sourceURL=${sourceFile}`;
 
   let output = '';
   output += `export default {\n`;
@@ -71,7 +73,7 @@ function processScribble(source: string): string {
 }
 
 const i = fs.readFileSync(src, { encoding: 'utf8' });
-const o = processScribble(i);
+const o = processScribble(src, i);
 if (dst === '-') {
   process.stdout.write(o);
 } else {

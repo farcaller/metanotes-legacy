@@ -20,7 +20,7 @@ import createCachedSelector from 're-reselect';
 import { ulid } from 'ulid';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { SyncedScribble } from '../scribble';
+import { Scribble, SyncedScribble } from '../scribble';
 import {
   fetchScribble,
   selectScribbleById,
@@ -69,20 +69,29 @@ const exportedLocals = { React, core: coreLocals };
 const localKeys = Object.keys(exportedLocals) as (keyof typeof exportedLocals)[];
 const localValues = localKeys.map((k) => exportedLocals[k]);
 
+class ScribbleEvaluationError extends Error {
+  constructor(public readonly scribble: Scribble, public readonly parentError: Error) {
+    super(`failed to evaluate scribble ${scribble.id}`
+      + `${scribble.attributes.title ? ` '${scribble.attributes.title}'` : ''}: ${parentError}`);
+  }
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export function loadJsModule(
   sc: SyncedScribble,
   components: { [key: string]: React.ComponentType },
 ): React.ComponentType {
-  const modBody = transform(sc.body, {
-    presets: ['env', 'react'],
-  }).code;
+  const modBody = transform(sc.body, { presets: ['env', 'react'] }).code;
   if (modBody === null || modBody === undefined) {
     throw Error('failed to transpile the body');
   }
   const exports = {} as { default: React.ComponentType };
-  // eslint-disable-next-line no-new-func
-  new Function('exports', 'components', ...localKeys, modBody)(exports, components, ...localValues);
+  try {
+    // eslint-disable-next-line no-new-func
+    new Function('exports', 'components', ...localKeys, modBody)(exports, components, ...localValues);
+  } catch (e) {
+    throw new ScribbleEvaluationError(sc, e);
+  }
   if (exports.default === undefined) {
     throw Error('the modeule does not define a default export');
   }

@@ -1,15 +1,15 @@
 {
   "name": "metanotes",
   "version": "0.1.0",
-  "main": "index.js",
-  "license": "Apache-2.0",
   "private": true,
+  "license": "Apache-2.0",
+  "main": "index.js",
   "scripts": {
     "build": "bazel build //...",
-    "test": "bazel test //...",
     "buildifier": "buildifier -r .",
+    "postinstall": "husky install",
     "lint": "eslint .",
-    "postinstall": "husky install"
+    "test": "bazel test //..."
   },
   "dependencies": {
     "@babel/standalone": "^7.12.12",
@@ -27,6 +27,7 @@
     "google-protobuf": "^3.14.0",
     "grpc-web": "^1.2.1",
     "js-yaml": "^4.0.0",
+    "mdast-util-compact": "^3.0.0",
     "monaco-editor": "^0.21.2",
     "parsimmon": "^1.16.0",
     "path-browserify": "^1.0.1",
@@ -95,7 +96,6 @@
     "jest-cli": "^26.6.3",
     "json5": "^2.2.0",
     "live-server": "^1.2.1",
-    "mdast-util-compact": "^3.0.0",
     "node-gyp": "^7.1.2",
     "protobufjs": "^6.10.2",
     "remark-html": "^13.0.1",
@@ -103,6 +103,7 @@
     "rollup": "^2.38.4",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-visualizer": "^4.2.0",
+    "sort-package-json": "^1.48.1",
     "terser": "^4.8.0",
     "typescript": "3.x"
   }

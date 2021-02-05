@@ -44,7 +44,6 @@ export function loadScribbleComponent(
 
   const el = resolver.resolver({ title }, dispatch, scribble);
   if (scribble.status === 'core' || scribble.status === 'synced') {
-    // eslint-disable-next-line no-param-reassign
     cache[scribble.id] = {
       scribble,
       component: el,

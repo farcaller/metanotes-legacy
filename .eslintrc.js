@@ -96,6 +96,7 @@ module.exports = {
       ExportDeclaration: { multiline: true, minProperties: 3 },
     }],
     'no-continue': ['off'],
+    'no-param-reassign': ['error', { props: false }],
 
     'no-use-before-define': ['off'],
     '@typescript-eslint/no-use-before-define': ['error'],

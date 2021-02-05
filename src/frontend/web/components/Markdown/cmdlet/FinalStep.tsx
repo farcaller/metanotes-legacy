@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-param-reassign */
-
 import React, { cloneElement, PropsWithChildren, ReactElement, useMemo } from 'react';
 
 import { SetVar } from '../widgets/variables';
@@ -23,14 +21,8 @@ type FinalStepProps = {
   as: string;
 };
 
-function FinalStep({ input, as, children }: PropsWithChildren<FinalStepProps>): JSX.Element {
-  if (input === undefined) {
-    input = [];
-  }
-
-  // TODO: I spent some non-trivial type to propery guess the type and I failed.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const unrolledChildren: any = useMemo(() => input!.map((i, idx) => {
+function FinalStep({ input = [], as, children }: PropsWithChildren<FinalStepProps>): JSX.Element {
+  const unrolledChildren = useMemo(() => input.map((i, idx) => {
     const vars = { [as]: i };
 
     return (

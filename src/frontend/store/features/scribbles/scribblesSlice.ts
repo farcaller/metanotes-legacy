@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable @typescript-eslint/no-use-before-define,no-param-reassign */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 import {
   createAsyncThunk, createEntityAdapter, createSlice, EntityState, PayloadAction,

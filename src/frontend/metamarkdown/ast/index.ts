@@ -51,7 +51,7 @@ export const compile = (
   metaParser: Attacher<[ParserOptions], Settings>,
   metaScribbles: { [key: string]: Scribble },
 ): JSX.Element => {
-  const parser = buildParser(metaParser, { parserScribbles: metaScribbles }, false, components, inline);
+  const parser = buildParser(metaParser, { parserScribbles: metaScribbles }, true, components, inline);
 
   const f = parser.processSync({ contents: doc });
   return f.result as JSX.Element;

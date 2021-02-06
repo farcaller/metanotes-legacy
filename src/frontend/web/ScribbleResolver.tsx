@@ -37,6 +37,7 @@ import Autocomplete from '@material-ui/core/Autocomplete';
 import { useDebouncedCallback } from 'use-debounce';
 import { makeStyles } from '@material-ui/core/styles';
 import Parsimmon from 'parsimmon';
+import PropTypes from 'prop-types';
 
 import {
   Scribble,
@@ -158,6 +159,7 @@ const componentLocals: { [key: string]: unknown } = {
   ErrorBoundary,
   useDebouncedCallback,
   makeStyles,
+  PropTypes,
 
   // TODO: test only?
   parseMarkdown,

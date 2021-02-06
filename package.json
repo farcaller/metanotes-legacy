@@ -9,6 +9,7 @@
     "buildifier": "buildifier -r .",
     "postinstall": "husky install",
     "lint": "eslint .",
+    "lint:scribbles": "eslint -c .eslintrc.scribbles.js src/frontend/scribbles/",
     "test": "bazel test //..."
   },
   "dependencies": {
@@ -31,6 +32,7 @@
     "monaco-editor": "^0.21.2",
     "parsimmon": "^1.16.0",
     "path-browserify": "^1.0.1",
+    "prop-types": "^15.7.2",
     "re-reselect": "^4.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

@@ -12,23 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* attributes *
- * id: 01EQ448BAYWZPVMPGF9JJY0ZYR
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/editor/image/jpeg
- */
-
-const { useSelector, selectScribbleById } = core;
-const { PropTypes } = components;
-
-function ImageEditor({ id }) {
-  const binaryBodyURL = useSelector((state) => selectScribbleById(state, id).binaryBodyURL);
-
-  return <img src={binaryBodyURL} alt="" />;
-}
-
-ImageEditor.propTypes = {
-  id: PropTypes.string.isRequired,
+module.exports = {
+  extends: './.eslintrc.js',
+  parserOptions: {
+    project: './tsconfig.eslint.json',
+  },
+  overrides: [
+    {
+      files: ['src/frontend/scribbles/**/*.metanotes.*'],
+      extends: [
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+      ],
+    },
+  ],
 };
-
-export default React.memo(ImageEditor);

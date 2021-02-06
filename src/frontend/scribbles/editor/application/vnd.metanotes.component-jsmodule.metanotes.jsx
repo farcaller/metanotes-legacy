@@ -18,14 +18,12 @@
  * title: $:core/editor/application/vnd.metanotes.component-jsmodule
  */
 
-const { useCallback } = React;
 const { useDispatch, updateScribbleBody, useSelector, selectScribbleById } = core;
-const { MonacoEditor, Paper, useDebouncedCallback } = components;
-
+const { MonacoEditor, Paper, useDebouncedCallback, PropTypes } = components;
 
 const MonacoConfig = {
   minimap: {
-    enabled: false
+    enabled: false,
   },
   wordWrap: 'off',
   lineNumbers: 'on',
@@ -37,17 +35,15 @@ const MonacoConfig = {
 };
 
 function JavascriptEditor({ id }) {
-  const body = useSelector(state => selectScribbleById(state, id).body);
+  const body = useSelector((state) => selectScribbleById(state, id).body);
   const dispatch = useDispatch();
 
   const debounced = useDebouncedCallback(
-    (body) => {
-      dispatch(updateScribbleBody({ id, body }));
+    (text) => {
+      dispatch(updateScribbleBody({ id, body: text }));
     },
     100,
   );
-
-  const debouncedCallback = useCallback(debounced.callback, [debounced]);
 
   return (
     <Paper>
@@ -56,11 +52,15 @@ function JavascriptEditor({ id }) {
         width="100%"
         language="javascript"
         value={body}
-        onChange={debouncedCallback}
+        onChange={debounced.callback}
         options={MonacoConfig}
       />
     </Paper>
   );
 }
+
+JavascriptEditor.propTypes = {
+  id: PropTypes.string.isRequired,
+};
 
 export default React.memo(JavascriptEditor);

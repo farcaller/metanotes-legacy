@@ -19,7 +19,7 @@ module.exports = {
   root: true,
   settings: {
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
+      '@typescript-eslint/parser': ['.ts', '.tsx', '.js', '.jsx'],
     },
     'import/resolver': {
       node: {
@@ -27,7 +27,7 @@ module.exports = {
       },
       typescript: {
         alwaysTryTypes: true,
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
       },
       [path.resolve('./tools/ts-resolver')]: {},
     },
@@ -61,7 +61,7 @@ module.exports = {
   rules: {
     'import/extensions': ['error', 'never'],
     'no-undef': ['off'],
-    'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.jsx'] }],
+    'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.jsx', '.js', '.jsx'] }],
     'max-len': ['error', {
       code: 120,
       tabWidth: 2,
@@ -111,15 +111,29 @@ module.exports = {
     'no-empty-function': ['off'],
     '@typescript-eslint/no-empty-function': ['error'],
   },
-  overrides: [{
-    files: ['*.metanotes.js'],
-    rules: {
-      '@typescript-eslint/explicit-module-boundary-types': ['off'],
+  overrides: [
+    {
+      files: ['src/frontend/scribbles/**/*.metanotes.*'],
+      extends: [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+      ],
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': ['off'],
+        'react/react-in-jsx-scope': ['off'],
+        'no-undef': ['error'],
+      },
+      globals: {
+        core: 'readonly',
+        components: 'readonly',
+        React: 'readonly',
+      },
     },
-  }, {
-    files: ['tools/*.js', '*.test.ts', 'test-*.ts'],
-    rules: {
-      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    {
+      files: ['tools/*.js', '*.test.ts', 'test-*.ts'],
+      rules: {
+        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+      },
     },
-  }],
+  ],
 };

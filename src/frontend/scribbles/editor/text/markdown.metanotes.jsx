@@ -18,14 +18,12 @@
  * title: $:core/editor/text/markdown
  */
 
-const { useCallback } = React;
 const { useDispatch, updateScribbleBody, useSelector, selectScribbleById } = core;
-const { MonacoEditor, Paper, useDebouncedCallback } = components;
-
+const { MonacoEditor, Paper, useDebouncedCallback, PropTypes } = components;
 
 const MonacoConfig = {
   minimap: {
-    enabled: false
+    enabled: false,
   },
   wordWrap: 'on',
   lineNumbers: 'off',
@@ -37,17 +35,15 @@ const MonacoConfig = {
 };
 
 function MarkdownEditor({ id }) {
-  const body = useSelector(state => selectScribbleById(state, id).body);
+  const body = useSelector((state) => selectScribbleById(state, id).body);
   const dispatch = useDispatch();
 
   const debounced = useDebouncedCallback(
-    (body) => {
-      dispatch(updateScribbleBody({ id, body }));
+    (text) => {
+      dispatch(updateScribbleBody({ id, body: text }));
     },
     100,
   );
-
-  const debouncedCallback = useCallback(debounced.callback, [debounced]);
 
   return (
     <Paper>
@@ -56,11 +52,15 @@ function MarkdownEditor({ id }) {
         width="100%"
         language="markdown"
         value={body}
-        onChange={debouncedCallback}
+        onChange={debounced.callback}
         options={MonacoConfig}
       />
     </Paper>
   );
 }
+
+MarkdownEditor.propTypes = {
+  id: PropTypes.string.isRequired,
+};
 
 export default React.memo(MarkdownEditor);

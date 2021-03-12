@@ -45,8 +45,6 @@ function Editor({ input, setInput }) {
     100,
   );
 
-  const debouncedCallback = useCallback((e, value) => debounced.callback(value), [debounced]);
-
   return (
     <Paper>
       <MonacoEditor
@@ -54,7 +52,7 @@ function Editor({ input, setInput }) {
         width={'100%'}
         language="javascript"
         value={input}
-        onChange={debouncedCallback}
+        onChange={debounced.callback}
         options={MonacoConfig}
       />
     </Paper>

@@ -13,44 +13,35 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EY0PME5SZ3BNJ3SV2EDENVR8
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/Link
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: Link
  */
 
-const { alt } = components.Parsimmon;
+const { alt, succeed, seqObj, string, whitespace, optWhitespace, regexp } = components.Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    // | UlOrStarLine
-    r.Space,
-    // r.Strong,
-    r.Emphasis,
-    // | Strike
-    // | Image
-    r.Link,
-    // | NoteReference
-    // | InlineNote
-    // | Code
-    // | RawHtml
-    // | Entity
-    r.EscapedChar,
-    // | Smart
-    r.Symbol,
-  ).map((el) => {
-    // TODO: should all the inlines be forced elements?
-    if (typeof el === 'string') {
-      return {
-        type: 'text',
-        value: el,
-      };
-    }
-    return el;
-  });
+function Link(r) {
+  return seqObj(
+    string('['),
+    ['children', regexp(/[^\]]*/)],
+    string(']('),
+    ['url', r.LinkDestination.fallback(null)],
+    [
+      'title',
+      alt(
+        whitespace.then(r.LinkTitle).skip(optWhitespace),
+        succeed(null),
+      ),
+    ],
+    string(')'),
+  ).map((link) => ({
+    type: 'link',
+    url: link.url === null ? '' : link.url,
+    title: link.title === null ? undefined : link.title,
+    children: r.Inlines.tryParse(link.children),
+  }));
 }
 
-export default Inline;
+export default Link;

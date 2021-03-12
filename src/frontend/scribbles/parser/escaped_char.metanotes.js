@@ -13,44 +13,22 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EY0ZZDQG0HRZMYFCF2TQN5E9
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/EscapedChar
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: EscapedChar
  */
 
-const { alt } = components.Parsimmon;
+const { string, oneOf } = components.Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    // | UlOrStarLine
-    r.Space,
-    // r.Strong,
-    r.Emphasis,
-    // | Strike
-    // | Image
-    r.Link,
-    // | NoteReference
-    // | InlineNote
-    // | Code
-    // | RawHtml
-    // | Entity
-    r.EscapedChar,
-    // | Smart
-    r.Symbol,
-  ).map((el) => {
-    // TODO: should all the inlines be forced elements?
-    if (typeof el === 'string') {
-      return {
-        type: 'text',
-        value: el,
-      };
-    }
-    return el;
-  });
+const EscapedChars = '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-';
+
+function EscapedChar(r) {
+  return string('\\').then(oneOf(EscapedChars).fallback('\\')).map((c) => ({
+    type: 'text',
+    value: c,
+  }));
 }
 
-export default Inline;
+export default EscapedChar;

@@ -14,6 +14,7 @@
 
 import unified from 'unified';
 import remarkHTML from 'remark-html';
+import { Parent } from 'ts-mdast';
 
 import makeParser from './parser';
 import { commonmarkTests, doParse, parserScribbles } from './test-helpers';
@@ -21,10 +22,12 @@ import { balancerTransformer } from '../ast/emphasis_transformer';
 import { concatTransformer } from '../ast/concat_transformer';
 
 // TODO: dedup
-function testCommonmark(idx: number) {
+function testCommonmark(idx: number, only?: boolean) {
   const spec = commonmarkTests[idx];
 
-  test(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
+  const testFn = only === true ? test.only : test;
+
+  testFn(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
     const parser = unified()
       .use(makeParser, { parserScribbles })
       .use(balancerTransformer)
@@ -33,8 +36,24 @@ function testCommonmark(idx: number) {
       .use(remarkHTML);
 
     const out = parser.processSync(`${spec.markdown}\n\n`);
-    const outString = (out.contents as string).split('"').join('&quot;');
-    expect(outString).toEqual(spec.html);
+    const outString = (out.contents as string)
+      .split('&#x3C;')
+      .join('<') // test 488
+      .split('%5C')
+      .join('\\')
+      .split('&#x26;')
+      .join('&');
+    expect(outString).toEqual(
+      spec.html
+        .split('&lt;')
+        .join('<')
+        .split('&gt;')
+        .join('>')
+        .split('%5C')
+        .join('\\')
+        .split('%C3%A4')
+        .join('&auml;'),
+    );
   });
 }
 
@@ -188,18 +207,17 @@ test('Symbol matches special characters', () => {
   });
 });
 
-test.skip('Inline strings get concatenated', () => {
-  const n = doParse('hello - world', 'Inlines');
-  expect(n).toEqual([{
+test('Inline strings get concatenated', () => {
+  const n = doParse('hello - world\n\n', 'Paragraph');
+  expect((n as Parent).children).toEqual([{
     type: 'text',
     value: 'hello - world',
   }]);
 });
 
-// TODO: this is broken because emphasis uses its own inline concatenator
-test.skip('Inline newlines get concatenated', () => {
-  const n = doParse('_a\n:_', 'Inlines');
-  expect(n).toEqual([{
+test('Inline newlines get concatenated', () => {
+  const n = doParse('_a\n:_\n\n', 'Paragraph');
+  expect((n as Parent).children).toEqual([{
     type: 'emphasis',
     children: [{
       type: 'text',
@@ -207,3 +225,28 @@ test.skip('Inline newlines get concatenated', () => {
     }],
   }]);
 });
+
+// Links
+
+testCommonmark(481, true);
+testCommonmark(482, true);
+testCommonmark(483, true);
+testCommonmark(484, true);
+testCommonmark(485, true);
+testCommonmark(486, true);
+testCommonmark(487, true);
+testCommonmark(488, true);
+testCommonmark(489, true);
+testCommonmark(490, true);
+testCommonmark(491, true);
+testCommonmark(492, true);
+testCommonmark(493, true);
+testCommonmark(494, true);
+testCommonmark(495, true);
+testCommonmark(496, true);
+testCommonmark(497, true);
+testCommonmark(498, true);
+testCommonmark(499, true);
+testCommonmark(500, true);
+testCommonmark(501, true);
+testCommonmark(502, true);

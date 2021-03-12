@@ -13,44 +13,22 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01EY0VQ0W4MD0N59Y9Z8DZT6B6
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/LinkTitle
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: LinkTitle
  */
 
-const { alt } = components.Parsimmon;
+const { alt, string, regexp } = components.Parsimmon;
 
-function Inline(r) {
+function LinkTitle(r) {
   return alt(
-    r.Str,
-    r.Endline,
-    // | UlOrStarLine
-    r.Space,
-    // r.Strong,
-    r.Emphasis,
-    // | Strike
-    // | Image
-    r.Link,
-    // | NoteReference
-    // | InlineNote
-    // | Code
-    // | RawHtml
-    // | Entity
-    r.EscapedChar,
-    // | Smart
-    r.Symbol,
-  ).map((el) => {
-    // TODO: should all the inlines be forced elements?
-    if (typeof el === 'string') {
-      return {
-        type: 'text',
-        value: el,
-      };
-    }
-    return el;
-  });
+    // TODO: this might be escaping too much. Check EscapedChar
+    string('"').then(regexp(/(?:[^"\\]|\\.)*/)).skip(string('"')),
+    string('\'').then(regexp(/(?:[^'\\]|\\.)*/)).skip(string('\'')),
+    string('(').then(regexp(/(?:[^()\\]|\\.)*/)).skip(string(')')),
+  );
 }
 
-export default Inline;
+export default LinkTitle;

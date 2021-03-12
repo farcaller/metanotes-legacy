@@ -42,4 +42,5 @@ declare const core: {
 
 declare const components: {
   PropTypes: typeof import('prop-types'),
+  Parsimmon: typeof import('parsimmon'),
 };

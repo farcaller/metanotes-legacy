@@ -1,0 +1,54 @@
+# load("@npm//react-native:index.bzl", "react-native")
+
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "nodejs_binary")
+
+sh_binary(
+    name = "bazelbuild",
+    srcs = ["bazel-build.sh"],
+)
+
+genrule(
+    name = "mobile.android",
+    srcs = glob(['*/**', '*.json', '*.js']) + ["//:package.json"],
+    outs = ["concatenated.txt"],
+    cmd = "$(location :bazelbuild) $(location @npm//react-native/bin:react-native) $@",
+    tools = [
+        ":bazelbuild",
+        "@npm//react-native/bin:react-native",
+        # ":rncli",
+    ],
+)
+
+nodejs_binary(
+    name = "rncli",
+    entry_point = "@npm//:node_modules/react-native/cli.js",
+    data = ["@npm//:node_modules"] + glob(['*/**', '*.json', '*.js']),
+    templated_args = [
+        "bundle",
+    ]
+)
+
+npm_package_bin(
+    name = "metro",
+    package = "react-native",
+    package_bin = "react-native",
+    data = glob(['*/**', '*.json', '*.js', "*.tsx"]) + [
+        "//:package.json",
+    ] + [
+        "@npm//metro-react-native-babel-preset",
+        "@npm//:node_modules",
+    ],
+    args = [
+        "bundle",
+        "--entry-file",
+        "./src/mobile/index.js",
+        "--platform",
+        "android",
+        "--dev",
+        "true",
+        "--bundle-output",
+        "$@"
+    ],
+    outs = ["index.android.js"],
+    # chdir = "src/mobile",
+)

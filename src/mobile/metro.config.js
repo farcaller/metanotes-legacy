@@ -6,6 +6,7 @@
  */
 
 module.exports = {
+  // projectRoot: '',  // TODO: do we actually need this?
   transformer: {
     getTransformOptions: async () => ({
       transform: {

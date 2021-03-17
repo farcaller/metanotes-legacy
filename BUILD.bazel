@@ -6,6 +6,7 @@ exports_files(
         "jest.ts.config.js",
         "tsconfig.json",
         "babel.config.json",
+        "package.json",
     ],
     visibility = ["//visibility:public"],
 )

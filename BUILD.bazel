@@ -7,6 +7,7 @@ exports_files(
         "tsconfig.json",
         "babel.config.json",
         "package.json",
+        "metro.config.js",
     ],
     visibility = ["//visibility:public"],
 )

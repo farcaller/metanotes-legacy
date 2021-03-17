@@ -1,6 +1,6 @@
 # load("@npm//react-native:index.bzl", "react-native")
 
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "nodejs_binary")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
 
 sh_binary(
     name = "bazelbuild",
@@ -9,7 +9,11 @@ sh_binary(
 
 genrule(
     name = "mobile.android",
-    srcs = glob(['*/**', '*.json', '*.js']) + ["//:package.json"],
+    srcs = glob([
+        "*/**",
+        "*.json",
+        "*.js",
+    ]) + ["//:package.json"],
     outs = ["concatenated.txt"],
     cmd = "$(location :bazelbuild) $(location @npm//react-native/bin:react-native) $@",
     tools = [
@@ -21,23 +25,20 @@ genrule(
 
 nodejs_binary(
     name = "rncli",
+    data = ["@npm//:node_modules"] + glob([
+        "*/**",
+        "*.json",
+        "*.js",
+    ]),
     entry_point = "@npm//:node_modules/react-native/cli.js",
-    data = ["@npm//:node_modules"] + glob(['*/**', '*.json', '*.js']),
     templated_args = [
         "bundle",
-    ]
+    ],
 )
 
 npm_package_bin(
     name = "metro",
-    package = "react-native",
-    package_bin = "react-native",
-    data = glob(['*/**', '*.json', '*.js', "*.tsx"]) + [
-        "//:package.json",
-    ] + [
-        "@npm//metro-react-native-babel-preset",
-        "@npm//:node_modules",
-    ],
+    outs = ["index.android.js"],
     args = [
         "bundle",
         "--entry-file",
@@ -47,8 +48,28 @@ npm_package_bin(
         "--dev",
         "true",
         "--bundle-output",
-        "$@"
+        "$@",
+        "--config",
+        # "./src/mobile/metro.config.js",
+        "./metro.config.js",
     ],
-    outs = ["index.android.js"],
-    # chdir = "src/mobile",
+    data = glob([
+        "*/**",
+        "*.json",
+        "*.js",
+        "*.tsx",
+    ]) + [
+        "//:package.json", # NB: react-native needs to see the package.json or it will be detached
+                           # s.a. https://sourcegraph.com/github.com/react-native-community/cli/-/blob/packages/cli/src/index.ts#L226
+        "//:metro.config.js",  # if we move this it will lose track of ../../node_modules. WAT?
+        "//:tsconfig.json",
+    ] + [
+        "@npm//metro-react-native-babel-preset",
+        "@npm//:node_modules",  # TODO: trim down to the needed modules
+    ] + [
+        "//src/test",
+    ],
+    package = "react-native",
+    package_bin = "react-native",
+    # chdir = "src/mobile",  # NB: doesn't seem to be needed? breaks bazel-out path
 )

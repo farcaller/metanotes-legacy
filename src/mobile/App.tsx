@@ -28,6 +28,10 @@
    ReloadInstructions,
  } from 'react-native/Libraries/NewAppScreen';
 
+ import test from '../test/test';
+
+ console.log(test());
+
  const Section = ({children, title}): Node => {
    const isDarkMode = useColorScheme() === 'dark';
    return (

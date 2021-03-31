@@ -31,10 +31,13 @@ filegroup(
 nodejs_binary(
     name = "backend",
     data = [
-        ":backend_lib",
+        ":bundle",
         ":migrations",
     ],
     entry_point = "index.js",
+    env = {
+        "METANOTES_MIGRATIONS_DIR": "src/backend/migrations",
+    },
     templated_args = [
         "db.sqlite",
         "0.0.0.0:55001",

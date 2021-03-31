@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import path from 'path';
+import process from 'process';
 
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
@@ -48,9 +49,12 @@ export default class Store {
       filename: this.basePath,
       driver: sqlite3.Database,
     });
-    await this.db.migrate({
-      migrationsPath: path.resolve(__dirname, 'migrations'),
-    });
+    let migrationsPath = process.env.METANOTES_MIGRATIONS_DIR;
+    if (!migrationsPath) {
+      migrationsPath = path.resolve(__dirname, 'migrations');
+    }
+    console.log(`loading migrations from ${migrationsPath}`);
+    await this.db.migrate({ migrationsPath });
     await this.db.run(SQL`PRAGMA foreign_keys = ON`);
   }
 

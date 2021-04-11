@@ -38,10 +38,6 @@ nodejs_binary(
     env = {
         "METANOTES_MIGRATIONS_DIR": "src/backend/migrations",
     },
-    templated_args = [
-        "db.sqlite",
-        "0.0.0.0:55001",
-    ],
 )
 
 rollup_bundle(

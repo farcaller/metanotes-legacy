@@ -30,7 +30,7 @@ import CoreEvents from './CoreEvents';
 import { STABLE_GIT_COMMIT, STABLE_NODE_ENV } from './buildinfo';
 
 let backendAddress = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
-  ? 'http://127.0.0.1:55080' : `${window.location.protocol}//${window.location.host}`;
+  ? 'http://localhost:55080' : `${window.location.protocol}//${window.location.host}`;
 
 const urlParams = new URLSearchParams(window.location.search);
 const overrideBackend = urlParams.get('overrideBackend');

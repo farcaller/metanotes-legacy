@@ -10,8 +10,8 @@
     "postinstall": "husky install && patch-package",
     "lint": "eslint .",
     "lint:scribbles": "eslint -c .eslintrc.scribbles.js src/frontend/scribbles/",
-    "run:backend": "bazel run //src/backend",
-    "run:web": "live-server ./data/web",
+    "watch:backend": "mkdir -p data && ibazel run //src/backend -- $PWD/data/db.sqlite 127.0.0.1:50010",
+    "watch:web": "ibazel run //src/frontend/web:devserver",
     "test": "bazel test //..."
   },
   "dependencies": {

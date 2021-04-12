@@ -104,9 +104,9 @@ terser_minified(
 )
 
 live_server(
-    name = "server",
+    name = "devserver",
     data = [
-        "index.html",
+        "index-dev.html",
         ":bundle",
     ],
     templated_args = [
@@ -114,6 +114,7 @@ live_server(
         "--no-browser",
         "--wait=1000",
         "--entry-file=index-dev.html",
+        "--mount=/bundle.js:src/frontend/web/bundle/bundle.js",
     ],
 )
 

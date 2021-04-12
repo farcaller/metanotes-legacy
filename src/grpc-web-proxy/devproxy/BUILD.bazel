@@ -1,0 +1,13 @@
+# TODO: fetch is hard-coded to call out to linux only
+sh_binary(
+    name = "fetch",
+    srcs = ["fetch.sh"],
+)
+
+genrule(
+    name = "grpcwebproxy",
+    outs = ["grpcwebproxy"],
+    cmd = "$(location :fetch) $@",
+    executable = 1,
+    tools = [":fetch"],
+)

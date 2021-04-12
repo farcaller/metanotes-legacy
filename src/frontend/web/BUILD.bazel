@@ -83,7 +83,7 @@ rollup_bundle(
     output_dir = True,
     rollup_bin = ":rollup_bin",
     rollup_worker_bin = "//tools/rollup-worker",
-    sourcemap = "false",
+    sourcemap = "inline",
     supports_workers = True,
     deps = [
         ":buildinfo_lib",

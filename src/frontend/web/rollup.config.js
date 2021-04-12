@@ -48,6 +48,6 @@ export default {
   ],
   output: {
     exports: 'auto',
-    sourcemap: false,
+    sourcemap: 'inline',
   },
 };

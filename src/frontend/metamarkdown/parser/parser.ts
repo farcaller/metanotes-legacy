@@ -17,7 +17,7 @@ import { VFile } from 'vfile';
 import * as mdast from 'ts-mdast';
 import Parsimmon, { Language, Parser } from 'parsimmon';
 import * as P from 'parsimmon';
-import { Scribble, loadJsModule, SyncedScribble } from '../../store/features/scribbles';
+import { Scribble } from '../../store/interface/scribble';
 
 export function buildLanguage(parserScribbles: { [key: string]: Scribble }): Parsimmon.Language {
   const parserFuncs = {} as { [key: string]: (r: Language) => Parser<never> };

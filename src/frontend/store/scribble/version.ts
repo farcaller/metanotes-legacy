@@ -14,10 +14,12 @@
 
 import { makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
+import { computedFn } from 'mobx-utils';
 
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
 import * as pb from '../../../common/api/api_pb';
+import ComputedMetadata from './computed_metadata';
 
 /**
  * Generates a costant VersionID for the given ScribbleID.
@@ -43,6 +45,9 @@ export default class Version {
   /** Version metadata. */
   private $meta: Map<string, string> = new Map();
 
+  /** Computed metadata. */
+  private $computedMeta: ComputedMetadata;
+
   /**
    * Creates a new scribble version.
    *
@@ -53,6 +58,7 @@ export default class Version {
       versionID: false,
     });
     this.versionID = versionID;
+    this.$computedMeta = new ComputedMetadata(this);
   }
 
   /**
@@ -98,7 +104,11 @@ export default class Version {
    * @param key Metadata key.
    * @returns Metadata value or `undefined` if value isn't defined.
    */
-  getMeta(key: string): string | undefined {
+  getMeta = computedFn(function getMeta(this: Version, key: string): string | undefined {
     return this.$meta.get(key);
+  })
+
+  get computedMeta(): ComputedMetadata {
+    return this.$computedMeta;
   }
 }

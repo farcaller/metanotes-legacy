@@ -16,6 +16,7 @@ import { StorageAPI } from './client';
 import ScribbleStore from './store';
 import * as pb from '../../common/api/api_pb';
 import { FetchFailed } from './fetch_status';
+import { Scribble } from './interface/scribble';
 
 test('it returns core scribbles by id', () => {
   const store = new ScribbleStore(undefined as unknown as StorageAPI);
@@ -86,5 +87,122 @@ describe('fetchScribbles', () => {
 
     expect((store.fetchStatus as FetchFailed).error).toBeUndefined();
     expect(store.scribbleByID('01F35516BMJFC42SGG5VTPSWJV')?.title).toEqual('test');
+  });
+});
+
+describe('scribblesByTag', () => {
+  let store: ScribbleStore;
+
+  beforeEach(() => {
+    store = new ScribbleStore(undefined as unknown as StorageAPI);
+  });
+
+  const makeScribble = (id: string, title?: string, meta: { [key: string]: string } = {}) => {
+    store.loadCoreScribbles([{
+      id,
+      title,
+      body: '',
+      meta,
+    }]);
+  };
+
+  const getIDs = (scribbles: Scribble[]) => scribbles.map((s) => s.scribbleID);
+
+  test('it sorts tags by title', () => {
+    makeScribble('3', '3', { tags: '["hello"]' });
+    makeScribble('2', '2', { tags: '["hello"]' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['1', '2', '3']);
+  });
+
+  test('it includes the `list`-ed scribbles first', () => {
+    makeScribble('3', '3', { tags: '["hello"]' });
+    makeScribble('2', '2', { tags: '["hello"]' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+    makeScribble('4', 'hello', { list: '["3"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['3', '1', '2']);
+  });
+
+  test('it includes the untitled scribbles last', () => {
+    makeScribble('3', '3', { tags: '["hello"]' });
+    makeScribble('2', undefined, { tags: '["hello"]' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['1', '3', '2']);
+  });
+
+  test('it puts the scribble with and empty `list-before` first', () => {
+    makeScribble('3', '3', { tags: '["hello"]', 'list-before': '' });
+    makeScribble('2', '2', { tags: '["hello"]' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['3', '1', '2']);
+  });
+
+  test('it puts the scribble with and empty `list-after` last', () => {
+    makeScribble('3', '3', { tags: '["hello"]' });
+    makeScribble('2', '2', { tags: '["hello"]', 'list-after': '' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['1', '3', '2']);
+  });
+
+  test('it puts the scribble before its `list-before`', () => {
+    makeScribble('5', '5', { tags: '["hello"]' });
+    makeScribble('4', '4', { tags: '["hello"]' });
+    makeScribble('3', '3', { tags: '["hello"]', 'list-before': '2' });
+    makeScribble('2', '2', { tags: '["hello"]', 'list-before': '' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['3', '2', '1', '4', '5']);
+  });
+
+  test('it puts the scribble after its `list-after`', () => {
+    makeScribble('5', '5', { tags: '["hello"]' });
+    makeScribble('4', '4', { tags: '["hello"]' });
+    makeScribble('3', '3', { tags: '["hello"]', 'list-after': '2' });
+    makeScribble('2', '2', { tags: '["hello"]', 'list-before': '' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['2', '3', '1', '4', '5']);
+  });
+
+  test('it puts the scribble after its `list-after` in the very end', () => {
+    makeScribble('5', '5', { tags: '["hello"]' });
+    makeScribble('4', '4', { tags: '["hello"]' });
+    makeScribble('3', '3', { tags: '["hello"]', 'list-after': '2' });
+    makeScribble('2', '2', { tags: '["hello"]', 'list-after': '' });
+    makeScribble('1', '1', { tags: '["hello"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['1', '4', '5', '2', '3']);
+  });
+
+  test('it correctly includes the first found tagged scribble', () => {
+    makeScribble('1', '1', { tags: '["hello"]' });
+    makeScribble('3', '3', { tags: '["hello"]' });
+    makeScribble('2', '2', { tags: '["hello"]' });
+    makeScribble('4', 'hello', { list: '["1", "2", "3"]' });
+
+    const selection = store.scribblesByTag('hello');
+
+    expect(getIDs(selection)).toEqual(['1', '2', '3']);
   });
 });

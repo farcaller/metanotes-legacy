@@ -13,11 +13,14 @@
 // limitations under the License.
 
 import { ScribbleID } from './ids';
+import { Version } from './version';
 
 export interface Scribble {
   /** Scribble ID. */
   readonly scribbleID: ScribbleID;
 
   /** Scribble title. */
-  readonly title: string;
+  readonly title?: string;
+
+  latestStableVersion: Version;
 }

@@ -26,6 +26,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
         "--no-cache",
         "--no-watchman",
         "--ci",
+        "--verbose",
         # "--colors",
         # "--runInBand",  # TODO: makes shit faster?
     ]

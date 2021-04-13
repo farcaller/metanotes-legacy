@@ -17,28 +17,34 @@ import unified from 'unified';
 import { Node } from 'unist';
 import * as mdast from 'ts-mdast';
 import * as commonmarkSpec from 'commonmark-spec';
+import { autorun } from 'mobx';
 
 import makeParser from './parser';
-import allScribbles from '../../scribbles';
-import { Scribble } from '../../store/features/scribbles';
+import coreScribbles from '../../scribbles';
+import Scribble from '../../store/scribble/scribble';
+import { CoreScribble } from '../../store/interface/core_scribble';
 import { balancerTransformer } from '../ast/emphasis_transformer';
 import { concatTransformer } from '../ast/concat_transformer';
 
 const ParserScribblesPrefix = '$:core/parser/';
 
-function loadScribbles(scribbles: Scribble[]) {
+function loadScribbles(scribbles: CoreScribble[]) {
   const scribsByName = {} as { [key: string]: Scribble };
-  for (const sc of scribbles) {
-    if (sc.attributes.title?.startsWith(ParserScribblesPrefix)) {
-      const title = sc.attributes.title.slice(ParserScribblesPrefix.length);
-      scribsByName[title] = sc;
+  for (const coreScribble of scribbles) {
+    if (coreScribble.title?.startsWith(ParserScribblesPrefix)) {
+      const title = coreScribble.title.slice(ParserScribblesPrefix.length);
+      scribsByName[title] = Scribble.fromCoreScribble(coreScribble);
     }
   }
   return scribsByName;
 }
 
-// TODO: forced typecast
-export const parserScribbles = loadScribbles(allScribbles as Scribble[]);
+export const parserScribbles = loadScribbles(coreScribbles);
+autorun(() => {
+  for (const scribble of Object.values(parserScribbles)) {
+    scribble.JSModule();
+  }
+});
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 
 export function doParse(doc: string, rootNode = 'Document'): mdast.Node {

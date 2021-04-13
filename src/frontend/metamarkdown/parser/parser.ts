@@ -22,19 +22,10 @@ import { Scribble } from '../../store/interface/scribble';
 export function buildLanguage(parserScribbles: { [key: string]: Scribble }): Parsimmon.Language {
   const parserFuncs = {} as { [key: string]: (r: Language) => Parser<never> };
   for (const k of Object.keys(parserScribbles)) {
-    parserFuncs[k] = loadJsModule(
-      parserScribbles[k] as SyncedScribble,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { Parsimmon: P } as any,
-    ) as unknown as (r: Language) => Parser<never>;
+    parserFuncs[k] = parserScribbles[k].JSModule<(r: Language) => Parser<never>>();
   }
   // TODO: see https://stackoverflow.com/questions/994143/javascript-getter-for-all-properties for better errors
   return Parsimmon.createLanguage(parserFuncs);
-}
-
-function parse(text: string, _file: VFile, parserScribbles: { [key: string]: Scribble }, rootNode: string): mdast.Root {
-  const rootParser = buildLanguage(parserScribbles)[rootNode] as Parsimmon.Parser<mdast.Root>;
-  return rootParser.tryParse(text);
 }
 
 export interface ParseOptions {
@@ -44,7 +35,9 @@ export interface ParseOptions {
 
 function makeParser(this: Processor, options: ParseOptions): void {
   const rootNode = options.rootNode || 'Document';
-  this.Parser = (text, file) => parse(text, file, options.parserScribbles, rootNode);
+  const rootParser = buildLanguage(options.parserScribbles)[rootNode] as Parsimmon.Parser<mdast.Root>;
+
+  this.Parser = (text) => rootParser.tryParse(text);
 }
 
 makeParser.settings = {};

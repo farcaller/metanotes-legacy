@@ -20,7 +20,7 @@
  * parser: PunctuationChar
  */
 
-const { oneOf } = components.Parsimmon;
+const { oneOf } = Parsimmon;
 
 function PunctuationChar() {
   // TODO: A punctuation character is an ASCII punctuation character or anything in the general Unicode categories Pc, Pd, Pe, Pf, Pi, Po, or Ps.

@@ -20,7 +20,7 @@
  * parser: SpecialChar
  */
 
-const { oneOf } = components.Parsimmon;
+const { oneOf } = Parsimmon;
 
 function SpecialChar() {
   return oneOf('~*_`&[]()<!#\\\'"').map((c) => ({

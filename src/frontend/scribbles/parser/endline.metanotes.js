@@ -20,7 +20,7 @@
  * parser: Endline
  */
 
-const { alt } = components.Parsimmon;
+const { alt } = Parsimmon;
 
 function Endline(r) {
   return alt(r.LineBreak, r.TerminalEndline, r.NormalEndline);

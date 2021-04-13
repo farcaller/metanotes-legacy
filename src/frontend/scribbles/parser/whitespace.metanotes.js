@@ -20,7 +20,7 @@
  * parser: Whitespace
  */
 
-const { alt } = components.Parsimmon;
+const { alt } = Parsimmon;
 
 function Whitespace(r) {
   return alt(r.SpaceChar, r.Newline);

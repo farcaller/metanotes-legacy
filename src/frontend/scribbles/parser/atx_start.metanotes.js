@@ -20,7 +20,7 @@
  * parser: AtxStart
  */
 
-const { string, alt } = components.Parsimmon;
+const { string, alt } = Parsimmon;
 
 function AtxStart() {
   return alt(

@@ -20,7 +20,7 @@
  * parser: Emphasis
  */
 
-const { seqMap, regexp, Parser, makeSuccess } = components.Parsimmon;
+const { seqMap, regexp, Parser, makeSuccess } = Parsimmon;
 
 const PunctuationRegex = new RegExp(
   // eslint-disable-next-line max-len,no-useless-escape

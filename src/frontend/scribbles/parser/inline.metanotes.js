@@ -20,7 +20,7 @@
  * parser: Inline
  */
 
-const { alt } = components.Parsimmon;
+const { alt } = Parsimmon;
 
 function Inline(r) {
   return alt(

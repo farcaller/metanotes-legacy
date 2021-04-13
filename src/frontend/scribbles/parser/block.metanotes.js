@@ -20,7 +20,7 @@
  * parser: Block
  */
 
-const { alt } = components.Parsimmon;
+const { alt } = Parsimmon;
 
 function Block(r) {
   return r.BlankLine.many().then(alt(

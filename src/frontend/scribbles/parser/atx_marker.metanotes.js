@@ -20,7 +20,7 @@
  * parser: AtxMarker
  */
 
-const { string } = components.Parsimmon;
+const { string } = Parsimmon;
 
 function AtxMarker(r) {
   return r.Sp.then(string('#').many()).then(r.Sp);

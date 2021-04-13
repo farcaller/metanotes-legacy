@@ -20,7 +20,7 @@
  * parser: NormalChar
  */
 
-const { notFollowedBy, alt, any } = components.Parsimmon;
+const { notFollowedBy, alt, any } = Parsimmon;
 
 function NormalChar(r) {
   return notFollowedBy(alt(r.SpecialChar, r.SpaceChar, r.Newline)).then(any);

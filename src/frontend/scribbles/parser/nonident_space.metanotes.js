@@ -20,7 +20,7 @@
  * parser: NonindentSpace
  */
 
-const { alt, string } = components.Parsimmon;
+const { alt, string } = Parsimmon;
 
 function NonindentSpace() {
   return alt(string('   '), string('  '), string(' '), string(''));

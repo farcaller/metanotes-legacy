@@ -15,6 +15,7 @@ ts_project(
         "//src/common/api:api_grpc_web_lib",
         "//src/frontend/store/interface",
         "//src/frontend/store/scribble/module",
+        "//src/frontend/store/scribble/module/locals",
         "@npm//@types/js-yaml",
         "@npm//ajv",
         "@npm//google-protobuf",

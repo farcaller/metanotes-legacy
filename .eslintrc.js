@@ -50,6 +50,7 @@ module.exports = {
     'react',
     '@typescript-eslint',
     'header',
+    'jsdoc',
   ],
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
@@ -57,6 +58,7 @@ module.exports = {
     'plugin:react/recommended',
     'airbnb',
     'airbnb/hooks',
+    'plugin:jsdoc/recommended',
   ],
   rules: {
     'import/extensions': ['error', 'never'],
@@ -111,6 +113,18 @@ module.exports = {
     }],
     'no-empty-function': ['off'],
     '@typescript-eslint/no-empty-function': ['error'],
+    'jsdoc/require-returns-type': ['off'],
+    'jsdoc/require-param-type': ['off'],
+    'jsdoc/require-description-complete-sentence': ['warn'],
+    'jsdoc/require-jsdoc': ['warn', {
+      contexts: ['ClassDeclaration', 'ClassProperty', 'FunctionDeclaration', 'MethodDefinition:not([kind="get"])'],
+    }],
+    'jsdoc/require-description': ['warn', {
+      contexts: ['ClassDeclaration', 'ClassProperty', 'FunctionDeclaration', 'MethodDefinition'],
+    }],
+    'jsdoc/require-returns': ['warn', {
+      checkGetters: false,
+    }],
   },
   overrides: [
     {

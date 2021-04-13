@@ -112,6 +112,6 @@
     "rollup-plugin-visualizer": "^4.2.0",
     "sort-package-json": "^1.48.1",
     "terser": "^4.8.0",
-    "typescript": "3.x"
+    "typescript": "4.x"
   }
 }

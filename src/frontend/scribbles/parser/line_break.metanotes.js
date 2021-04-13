@@ -20,7 +20,7 @@
  * parser: LineBreak
  */
 
-const { string } = components.Parsimmon;
+const { string } = Parsimmon;
 
 function LineBreak(r) {
   return string('  ').then(r.NormalEndline).map(() => ({ type: 'break' }));

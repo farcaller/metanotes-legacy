@@ -20,7 +20,7 @@
  * parser: NormalEndline
  */
 
-const { string, seq, alt } = components.Parsimmon;
+const { string, seq, alt } = Parsimmon;
 
 function NormalEndline(r) {
   // TODO: a newline not followed by a start of any other block. add all the other blocks (e.g. lists)

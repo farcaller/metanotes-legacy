@@ -20,7 +20,7 @@
  * parser: TerminalEndline
  */
 
-const { seq, eof } = components.Parsimmon;
+const { seq, eof } = Parsimmon;
 
 function TerminalEndline(r) {
   return seq(r.Sp, r.Newline, eof).map(() => ({

@@ -20,7 +20,7 @@
  * parser: Newline
  */
 
-const { regexp } = components.Parsimmon;
+const { regexp } = Parsimmon;
 
 function Newline() {
   return regexp(/\n|\r\n?/);

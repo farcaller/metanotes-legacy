@@ -20,7 +20,7 @@
  * parser: SpaceChar
  */
 
-const { oneOf } = components.Parsimmon;
+const { oneOf } = Parsimmon;
 
 function SpaceChar() {
   return oneOf(' \t');

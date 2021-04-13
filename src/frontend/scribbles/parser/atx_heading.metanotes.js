@@ -20,7 +20,7 @@
  * parser: AtxHeading
  */
 
-const { seqMap } = components.Parsimmon;
+const { seqMap } = Parsimmon;
 
 function AtxHeading(r) {
   return seqMap(r.AtxStart, r.Sp, r.AtxInline.atLeast(1), r.AtxMarker, r.Newline, (s, _, i) => ({

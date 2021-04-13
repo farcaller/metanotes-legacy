@@ -1,0 +1,16 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "client",
+    srcs = glob(["*.ts"]),
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/common/api:api_grpc_web_lib",
+        "@npm//@types/google-protobuf",
+        "@npm//google-protobuf",
+        "@npm//grpc-web",
+    ],
+)

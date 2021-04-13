@@ -23,4 +23,6 @@ export interface Scribble {
   readonly title?: string;
 
   latestStableVersion: Version;
+
+  JSModule<T>(): T;
 }

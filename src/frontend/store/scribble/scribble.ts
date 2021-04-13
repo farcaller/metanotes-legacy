@@ -21,6 +21,7 @@ import { ScribbleID, VersionID } from '../interface/ids';
 import Version from './version';
 import * as pb from '../../../common/api/api_pb';
 import loadModule from './module';
+import localsForScribble from './module/locals';
 
 /**
  * Mobx model for the scribble.
@@ -117,7 +118,9 @@ export default class Scribble {
    * @returns JS module for the scribble.
    */
   JSModule = computedFn(function JSModule<T>(this: Scribble): T {
-    return loadModule(this, {});
+    return loadModule(this, {
+      ...localsForScribble(this),
+    });
   })
 
   toString(): string {

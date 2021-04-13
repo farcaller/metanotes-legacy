@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble } from '../../store/interface/scribble';
-
-export type ParserOptions = {
-  parserScribbles: { [key: string]: Scribble },
-};
+export interface ComputedMetadata {
+  tags: string[];
+  list: string[];
+}

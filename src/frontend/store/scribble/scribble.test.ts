@@ -85,3 +85,53 @@ describe('fromProto', () => {
     expect(scribble.latestStableVersion.getMeta('abc')).toEqual('def');
   });
 });
+
+describe('JSModule', () => {
+  test('it evals the js module and returns the default export', () => {
+    const scribble = Scribble.fromCoreScribble({
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      title: 'test',
+      body: 'export default function() { return 42; }',
+      meta: { abc: 'def' },
+    });
+
+    const jsmod = scribble.JSModule<() => number>();
+
+    expect(jsmod()).toEqual(42);
+  });
+});
+
+describe('computedMetadata', () => {
+  it('returns computed metadata for tags', () => {
+    const scribble = Scribble.fromCoreScribble({
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      title: 'test',
+      body: '',
+      meta: { tags: '["hello", "world"]' },
+    });
+
+    expect(scribble.latestStableVersion.computedMeta.tags).toEqual(['hello', 'world']);
+  });
+
+  it('returns empty tags if there is no source meta', () => {
+    const scribble = Scribble.fromCoreScribble({
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      title: 'test',
+      body: '',
+      meta: {},
+    });
+
+    expect(scribble.latestStableVersion.computedMeta.tags).toEqual([]);
+  });
+
+  it('returns empty tags if the source meta is malformed', () => {
+    const scribble = Scribble.fromCoreScribble({
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      title: 'test',
+      body: '',
+      meta: { tags: 'broken json' },
+    });
+
+    expect(scribble.latestStableVersion.computedMeta.tags).toEqual([]);
+  });
+});

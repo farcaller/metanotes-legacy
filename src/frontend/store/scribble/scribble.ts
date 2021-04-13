@@ -14,11 +14,13 @@
 
 import { makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
+import { computedFn } from 'mobx-utils';
 
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
 import Version from './version';
 import * as pb from '../../../common/api/api_pb';
+import loadModule from './module';
 
 /**
  * Mobx model for the scribble.
@@ -39,8 +41,9 @@ export default class Scribble {
    * @param scribbleID Scribble ID, defaults to a new ulid.
    */
   constructor(scribbleID: ScribbleID = ulid()) {
-    makeAutoObservable<Scribble>(this, {
+    makeAutoObservable<Scribble, 'toString'>(this, {
       scribbleID: false,
+      toString: false as never,
     });
     this.scribbleID = scribbleID;
   }
@@ -105,5 +108,23 @@ export default class Scribble {
         this.$versionsByID.set(versionID, v);
       }
     });
+  }
+
+  /**
+   * Evaluates and returns the JS module for the scribble.
+   *
+   * @throws Will throw if failed to load.
+   * @returns JS module for the scribble.
+   */
+  JSModule = computedFn(function JSModule<T>(this: Scribble): T {
+    return loadModule(this, {});
+  })
+
+  toString(): string {
+    let desc = `${this.scribbleID}`;
+    if (this.$title) {
+      desc += ` "${this.$title}"`;
+    }
+    return desc;
   }
 }

@@ -18,7 +18,7 @@ import * as ast from 'ts-mdast';
 import { metaCompiler } from './compiler';
 import { Components } from './components';
 import { ParserOptions } from '../parser/types';
-import { Scribble } from '../../store/features/scribbles';
+import { Scribble } from '../../store/interface/scribble';
 import { balancerTransformer } from './emphasis_transformer';
 import { concatTransformer } from './concat_transformer';
 

@@ -117,10 +117,20 @@ module.exports = {
     'jsdoc/require-param-type': ['off'],
     'jsdoc/require-description-complete-sentence': ['warn'],
     'jsdoc/require-jsdoc': ['warn', {
-      contexts: ['ClassDeclaration', 'ClassProperty', 'FunctionDeclaration', 'MethodDefinition:not([kind="get"])'],
+      contexts: [
+        'ClassDeclaration',
+        'ClassProperty',
+        'FunctionDeclaration',
+        'MethodDefinition:not([key.name="toString"], [kind="get"])',
+      ],
     }],
     'jsdoc/require-description': ['warn', {
-      contexts: ['ClassDeclaration', 'ClassProperty', 'FunctionDeclaration', 'MethodDefinition'],
+      contexts: [
+        'ClassDeclaration',
+        'ClassProperty',
+        'FunctionDeclaration',
+        'MethodDefinition:not([key.name="toString"], [kind="get"])',
+      ],
     }],
     'jsdoc/require-returns': ['warn', {
       checkGetters: false,

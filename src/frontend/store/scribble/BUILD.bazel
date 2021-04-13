@@ -14,8 +14,13 @@ ts_project(
     deps = [
         "//src/common/api:api_grpc_web_lib",
         "//src/frontend/store/interface",
+        "//src/frontend/store/scribble/module",
+        "@npm//@types/js-yaml",
+        "@npm//ajv",
         "@npm//google-protobuf",
+        "@npm//js-yaml",
         "@npm//mobx",
+        "@npm//mobx-utils",
         "@npm//ulid",
     ],
 )

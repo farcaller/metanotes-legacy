@@ -13,12 +13,14 @@
 // limitations under the License.
 
 import { makeAutoObservable, runInAction } from 'mobx';
+import { computedFn } from 'mobx-utils';
 
 import { StorageAPI } from './client';
 import { FetchStatus, isPending } from './fetch_status';
 import { CoreScribble } from './interface/core_scribble';
 import { ScribbleID } from './interface/ids';
 import Scribble from './scribble/scribble';
+import scribblesByTag from './tagging';
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -110,6 +112,14 @@ class ScribblesStore {
   scribbleByTitle(title: string): Scribble | undefined {
     return this.$scribblesByTitle.get(title);
   }
+
+  /**
+   * Returns the scribbles matching the given tag using the tiddlywiki sort algorithm.
+   *
+   * @param tag The tag.
+   * @returns Sorted array of matched scribbles.
+   */
+  scribblesByTag = computedFn(scribblesByTag);
 
   /**
    * Returns all scribbles.

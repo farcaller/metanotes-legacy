@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { ComputedMetadata } from './computed_metadata';
 import { VersionID } from './ids';
 
 export interface Version {
@@ -20,4 +21,8 @@ export interface Version {
 
   /** Version body if fetched, null otherwise. New versions are created with body set to an empty string. */
   readonly body: string | null;
+
+  getMeta(key: string): string | undefined;
+
+  computedMeta: ComputedMetadata;
 }

@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble } from '../../store/interface/scribble';
+import { Scribble } from './scribble';
 
-export type ParserOptions = {
-  parserScribbles: { [key: string]: Scribble },
-};
+export interface ScribblesStore {
+  scribbles: Scribble[];
+  scribbleByTitle(title: string): Scribble | undefined;
+}

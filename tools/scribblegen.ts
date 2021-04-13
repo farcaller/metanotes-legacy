@@ -34,7 +34,7 @@ function processScribble(sourceFile: string, source: string): string {
     throw Error('magic not found');
   }
 
-  const attrs = {} as { [key: string]: string };
+  const meta = {} as { [key: string]: string };
   while (lines.length > 0) {
     const l = lines.shift()!;
     if (l === ' */') {
@@ -46,16 +46,18 @@ function processScribble(sourceFile: string, source: string): string {
       throw Error(`cannot parse attibute from "${l}"`);
     }
     const [_, k, v] = groups;
-    attrs[k] = v;
+    meta[k] = v;
   }
-  if (!attrs.id) {
-    throw Error('id not present in attributes');
+  if (!meta.id) {
+    throw Error('"id" not found in the metadata');
   }
-  if (!attrs['content-type']) {
-    throw Error('content-type not present in attributes');
+  if (!meta['content-type']) {
+    throw Error('"content-type" not found in the metadata');
   }
-  const { id } = attrs;
-  delete attrs.id;
+  const { id } = meta;
+  delete meta.id;
+  const { title } = meta;
+  delete meta.title;
 
   let body = lines.join('\n').trim();
 
@@ -63,11 +65,11 @@ function processScribble(sourceFile: string, source: string): string {
 
   let output = '';
   output += `export default {\n`;
-  output += `  id: '${id}',\n`;
-  output += `  status: 'core',\n`;
-  output += `  attributes: ${JSON.stringify(attrs)},\n`;
-  output += `  body: ${JSON.stringify(body)},\n`;
-  output += `} as { id: string, status: 'core', attributes: unknown, body: string };\n`;
+  output += `  id:    '${id}',\n`;
+  output += `  title: '${title}',\n`;
+  output += `  meta:  ${JSON.stringify(meta)},\n`;
+  output += `  body:  ${JSON.stringify(body)},\n`;
+  output += `} as { id: string, title: string|undefined, meta: { [key: string]: string }, body: string };\n`;
 
   return output;
 }

@@ -1,43 +1,64 @@
+load("//bazel:jest.bzl", "ts_jest_test")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
 load("@npm//@bazel/terser:index.bzl", "terser_minified")
 load("@io_bazel_rules_docker//nodejs:image.bzl", "nodejs_image")
-load("@io_bazel_rules_docker//container:layer.bzl", "container_layer")
 
 package(default_visibility = ["//visibility:public"])
 
 ts_project(
-    name = "backend_lib",
-    srcs = glob(["*.ts"]),
+    name = "store_lib",
+    srcs = [
+        "error.ts",
+        "schema.ts",
+        "store.ts",
+    ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/api:api_grpc_lib",
         "@npm//@grpc/grpc-js",
+        "@npm//@types/better-sqlite3",
         "@npm//@types/google-protobuf",
+        "@npm//better-sqlite3",
         "@npm//google-protobuf",
-        "@npm//sql-template-strings",
-        "@npm//sqlite",
-        "@npm//sqlite3",
     ],
 )
 
-filegroup(
-    name = "migrations",
-    srcs = glob(["migrations/*.sql"]),
+ts_jest_test(
+    name = "store_test",
+    srcs = ["store.test.ts"],
+    deps = [
+        ":store_lib",
+    ],
+)
+
+ts_project(
+    name = "backend_lib",
+    srcs = [
+        "index.ts",
+        "server.ts",
+    ],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":store_lib",
+        "//src/common/api:api_grpc_lib",
+        "@npm//@grpc/grpc-js",
+        "@npm//@types/better-sqlite3",
+        "@npm//@types/google-protobuf",
+        "@npm//better-sqlite3",
+        "@npm//google-protobuf",
+    ],
 )
 
 nodejs_binary(
     name = "backend",
     data = [
         ":bundle",
-        ":migrations",
     ],
     entry_point = "index.js",
-    env = {
-        "METANOTES_MIGRATIONS_DIR": "src/backend/migrations",
-    },
 )
 
 rollup_bundle(
@@ -59,17 +80,10 @@ terser_minified(
     sourcemap = False,
 )
 
-container_layer(
-    name = "migrations_layer",
-    files = [":migrations"],
-)
-
 nodejs_image(
     name = "backend_image",
     data = [
         ":bundle",
-        ":migrations",
     ],
     entry_point = "bundle.js",
-    layers = [":migrations_layer"],
 )

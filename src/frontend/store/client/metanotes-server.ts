@@ -36,7 +36,7 @@ export class MetanotesServerAPI {
   async getScribble(scribbleID: string, versionIDs: string[]): Promise<pb.Scribble> {
     const req = new pb.GetScribbleRequest();
     req.setScribbleId(scribbleID);
-    req.setVersionList(versionIDs);
+    req.setVersionIdList(versionIDs);
 
     const rep = await this.client.getScribble(req);
     const spb = rep.getScribble();

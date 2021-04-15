@@ -32,7 +32,7 @@ message Scribble {
 
 message GetScribbleRequest {
   string scribble_id = 1;
-  repeated string version = 2;
+  repeated string version_id = 2;
 }
 
 message GetScribbleReply {

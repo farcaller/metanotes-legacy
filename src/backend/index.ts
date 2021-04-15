@@ -14,7 +14,8 @@
 
 /* eslint-disable no-console */
 
-import process, { exit } from 'process';
+import process from 'process';
+import open from 'better-sqlite3';
 
 import runServer from './server';
 import Store from './store';
@@ -23,9 +24,7 @@ const args = process.argv.slice(2);
 
 console.log(`running on ${args[1]} serving from ${args[0]}`);
 
-const store = new Store(args[0]);
+const db = open(args[0]);
+const store = new Store(db);
 
-store.init().then(() => runServer(args[1], store)).catch((e) => {
-  console.log(e);
-  exit(1);
-});
+runServer(args[1], store);

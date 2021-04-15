@@ -26,7 +26,7 @@ import Store from './store';
 function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, pb.GetScribbleReply> {
   return async (call, callback) => {
     try {
-      const s = await store.getScribble(call.request.getId());
+      const s = await store.getScribble(call.request.getScribbleId(), call.request.getVersionIdList());
       const rep = new pb.GetScribbleReply();
       rep.setScribble(s);
       callback(null, rep);
@@ -49,44 +49,6 @@ function getAllMetadata(store: Store): grpc.handleUnaryCall<emptyPb.Empty, pb.Ge
   };
 }
 
-function setScribble(store: Store): grpc.handleUnaryCall<pb.SetScribbleRequest, emptyPb.Empty> {
-  return async (call, callback) => {
-    try {
-      // eslint-rationale: will fail the try{} block
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await store.setScribble(call.request.getScribble()!);
-      callback(null, new emptyPb.Empty());
-    } catch (e) {
-      callback(e, null);
-    }
-  };
-}
-
-function removeScribble(store: Store): grpc.handleUnaryCall<pb.RemoveScribbleRequest, emptyPb.Empty> {
-  return async (call, callback) => {
-    try {
-      await store.removeScribble(call.request.getId());
-      callback(null, new emptyPb.Empty());
-    } catch (e) {
-      callback(e, null);
-    }
-  };
-}
-
-function getScribblesByTextSearch(store: Store):
-    grpc.handleUnaryCall<pb.GetScribblesByTextSearchRequest, pb.GetScribblesByTextSearchReply> {
-  return async (call, callback) => {
-    try {
-      const result = await store.getScribblesByTextSearch(call.request.getQuery());
-      const rep = new pb.GetScribblesByTextSearchReply();
-      rep.setResultList(result);
-      callback(null, rep);
-    } catch (e) {
-      callback(e, null);
-    }
-  };
-}
-
 export default function runServer(bind: string, store: Store): void {
   const server = new grpc.Server({
     'grpc.max_send_message_length': -1,
@@ -96,9 +58,6 @@ export default function runServer(bind: string, store: Store): void {
   server.addService(grpcPb.MetanotesService as never, {
     getScribble: getScribble(store),
     getAllMetadata: getAllMetadata(store),
-    setScribble: setScribble(store),
-    removeScribble: removeScribble(store),
-    getScribblesByTextSearch: getScribblesByTextSearch(store),
   });
   try {
     server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e) => {

@@ -18,6 +18,7 @@ import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
 import visualizer from 'rollup-plugin-visualizer';
+import alias from '@rollup/plugin-alias';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const buildInfo = require('./buildinfo');
@@ -25,6 +26,11 @@ const buildInfo = require('./buildinfo');
 export default {
   context: '(undefined)',
   plugins: [
+    alias({
+      entries: [
+        { find: 'react-native', replacement: 'react-native-web' },
+      ],
+    }),
     nodeResolve({
       preferBuiltins: false,
     }),

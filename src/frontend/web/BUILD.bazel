@@ -61,6 +61,7 @@ live_server(
         ":bundle",
         "@npm//:node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
     ],
+    tags = ["ibazel_notify_changes"],
     templated_args = [
         "./src/frontend/web",
         "--no-browser",

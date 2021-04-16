@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import React from 'react';
 
-import { ListProps } from '../../../../metamarkdown/ast/components';
-
-function List({ ordered, start, children }: React.PropsWithChildren<ListProps>): JSX.Element {
-  if (ordered) {
-    // TODO: what's the bother with this lint?
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return <ol start={start}>{children}</ol>;
-  }
-  return <ul>{children}</ul>;
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line global-require
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  // eslint-disable-next-line global-require
+  whyDidYouRender(React, {
+    trackAllPureComponents: true,
+    trackHooks: true,
+  });
 }
-
-export default React.memo(List);

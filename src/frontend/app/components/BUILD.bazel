@@ -1,0 +1,25 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "components",
+    srcs = glob(
+        [
+            "*.ts",
+            "*.tsx",
+        ],
+        exclude = [
+            "**/*.test.ts",
+            "**/*.test.tsx",
+        ],
+    ),
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@types/react",
+        "@npm//@types/react-native",
+        "@npm//react",
+        "@npm//react-native",
+    ],
+)

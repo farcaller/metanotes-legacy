@@ -12,22 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import React from 'react';
+import { Text } from 'react-native';
 
-if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line global-require
-  const whyDidYouRender = require('@welldone-software/why-did-you-render');
-  // eslint-disable-next-line global-require
-  const ReactRedux = require('react-redux/lib/index.js');
-  whyDidYouRender(React, {
-    trackAllPureComponents: true,
-    trackHooks: true,
-    trackExtraHooks: [
-      [ReactRedux, 'useSelector'],
-    ],
-  });
+function Root() {
+  return (
+    <Text>hello world</Text>
+  );
 }
+
+export default Root;

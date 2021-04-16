@@ -1,0 +1,49 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@npm//@bazel/terser:index.bzl", "terser_minified")
+load("@npm//live-server:index.bzl", "live_server")
+load("@io_bazel_rules_docker//container:image.bzl", "container_image")
+
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "buildinfo_ts",
+    outs = ["buildinfo.ts"],
+    cmd = "cat bazel-out/stable-status.txt | " +
+          "awk '{print \"export const \" $$1 \" = \\\"\" $$2 \"\\\";\"}' > $@",
+    stamp = 1,
+)
+
+ts_project(
+    name = "buildinfo_lib",
+    srcs = ["buildinfo.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+)
+
+ts_project(
+    name = "app",
+    srcs = glob(
+        [
+            "*.ts",
+            "*.tsx",
+        ],
+        exclude = [
+            "**/*.test.ts",
+            "**/*.test.tsx",
+        ],
+    ),
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":buildinfo_lib",
+        "//src/frontend/app/components",
+        "@npm//@types/react",
+        "@npm//@types/react-native",
+        "@npm//@welldone-software/why-did-you-render",
+        "@npm//react",
+        "@npm//react-native",
+        "@npm//web-vitals",
+    ],
+)

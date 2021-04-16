@@ -7,62 +7,6 @@ load("@io_bazel_rules_docker//container:image.bzl", "container_image")
 
 package(default_visibility = ["//visibility:public"])
 
-genrule(
-    name = "buildinfo_ts",
-    outs = ["buildinfo.ts"],
-    cmd = "cat bazel-out/stable-status.txt | " +
-          "awk '{print \"export const \" $$1 \" = \\\"\" $$2 \"\\\";\"}' > $@",
-    stamp = 1,
-)
-
-ts_project(
-    name = "buildinfo_lib",
-    srcs = ["buildinfo.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
-)
-
-ts_project(
-    name = "web",
-    srcs = glob(
-        [
-            "**/*.ts",
-            "**/*.tsx",
-        ],
-        exclude = [
-            "**/*.test.ts",
-            "**/*.test.tsx",
-        ],
-    ),
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
-    deps = [
-        ":buildinfo_lib",
-        "//src/frontend/filter",
-        "//src/frontend/metamarkdown",
-        "//src/frontend/scribbles",
-        "//src/frontend/store",
-        "@npm//@monaco-editor/react",
-        "@npm//@types/node",
-        "@npm//@types/react",
-        "@npm//@types/react-dom",
-        "@npm//@types/react-native",
-        "@npm//@types/react-router-dom",
-        "@npm//@types/react-syntax-highlighter",
-        "@npm//@welldone-software/why-did-you-render",
-        "@npm//js-yaml",
-        "@npm//path-browserify",
-        "@npm//react",
-        "@npm//react-dom",
-        "@npm//react-native",
-        "@npm//react-router-dom",
-        "@npm//react-syntax-highlighter",
-        "@npm//use-debounce",
-        "@npm//util",
-        "@npm//web-vitals",
-    ],
-)
-
 nodejs_binary(
     name = "rollup_bin",
     data = ["@npm//rollup"],
@@ -75,7 +19,7 @@ nodejs_binary(
 rollup_bundle(
     name = "bundle",
     config_file = "rollup.config.js",
-    entry_point = "index.js",
+    entry_point = "//src/frontend/app:index.js",
     format = "iife",
     output_dir = True,
     rollup_bin = ":rollup_bin",
@@ -83,8 +27,7 @@ rollup_bundle(
     sourcemap = "inline",
     supports_workers = True,
     deps = [
-        ":buildinfo_lib",
-        ":web",
+        "//src/frontend/app",
         "@npm//@rollup/plugin-alias",
         "@npm//@rollup/plugin-commonjs",
         "@npm//@rollup/plugin-json",

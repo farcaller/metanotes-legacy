@@ -16,10 +16,25 @@
 
 import React from 'react';
 
-import UIProvider from './ui-kitten';
+import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 
-function CommonUIProvider(props: React.PropsWithChildren<{}>): JSX.Element {
-  return UIProvider(props);
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'tomato',
+    accent: 'yellow',
+  },
+};
+
+function UIProvider({ children }: React.PropsWithChildren<{}>): JSX.Element {
+  return (
+    <>
+      <PaperProvider theme={theme}>
+        {children}
+      </PaperProvider>
+    </>
+  );
 }
 
-export default CommonUIProvider;
+export default UIProvider;

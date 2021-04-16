@@ -19,6 +19,7 @@ import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
 import visualizer from 'rollup-plugin-visualizer';
 import alias from '@rollup/plugin-alias';
+import babel from '@rollup/plugin-babel';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const buildInfo = require('../../common/buildinfo');
@@ -37,6 +38,14 @@ export default {
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify(buildInfo.STABLE_NODE_ENV),
+    }),
+    babel({
+      babelHelpers: 'bundled',
+      presets: ['@babel/preset-react'],
+      plugins: ['@babel/plugin-proposal-class-properties'],
+      include: [
+        /.*node_modules\/react-native-vector-icons.+/,
+      ],
     }),
     commonjs(),
     json(),

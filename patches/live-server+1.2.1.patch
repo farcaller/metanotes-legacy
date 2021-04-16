@@ -1,0 +1,64 @@
+diff --git a/node_modules/live-server/index.js b/node_modules/live-server/index.js
+index 77a2a7e..76d2005 100644
+--- a/node_modules/live-server/index.js
++++ b/node_modules/live-server/index.js
+@@ -11,7 +11,8 @@ var fs = require('fs'),
+ 	open = require('opn'),
+ 	es = require("event-stream"),
+ 	os = require('os'),
+-	chokidar = require('chokidar');
++	chokidar = require('chokidar'),
++	readline = require('readline');
+ require('colors');
+ 
+ var INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
+@@ -369,6 +370,23 @@ LiveServer.start = function(options) {
+ 				ws.send(cssChange ? 'refreshcss' : 'reload');
+ 		});
+ 	}
++
++	if (options.ibazelListener) {
++		var rl = readline.createInterface({
++			input: process.stdin,
++			terminal: false,
++		});
++
++		rl.on('line', function (line) {
++			if (line === 'IBAZEL_BUILD_COMPLETED SUCCESS') {
++				clients.forEach(function (ws) {
++					if (ws)
++						ws.send(cssChange ? 'refreshcss' : 'reload');
++				});
++			}
++		})
++	}
++
+ 	LiveServer.watcher
+ 		.on("change", handleChange)
+ 		.on("add", handleChange)
+diff --git a/node_modules/live-server/live-server.js b/node_modules/live-server/live-server.js
+index 9eac8f1..f8f5218 100755
+--- a/node_modules/live-server/live-server.js
++++ b/node_modules/live-server/live-server.js
+@@ -12,6 +12,7 @@ var opts = {
+ 	proxy: [],
+ 	middleware: [],
+ 	logLevel: 2,
++	ibazelListener: false,
+ };
+ 
+ var homeDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+@@ -146,8 +147,12 @@ for (var i = process.argv.length - 1; i >= 2; --i) {
+ 		opts.middleware.push(arg.substring(13));
+ 		process.argv.splice(i, 1);
+ 	}
++	else if (arg === "--ibazel") {
++		opts.ibazelListener = true;
++		process.argv.splice(i, 1);
++	}
+ 	else if (arg === "--help" || arg === "-h") {
+-		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--no-css-inject] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--https=PATH] [--https-module=MODULE_NAME] [--proxy=PATH] [PATH]');
++		console.log('Usage: live-server [-v|--version] [-h|--help] [-q|--quiet] [--port=PORT] [--host=HOST] [--open=PATH] [--no-browser] [--browser=BROWSER] [--ignore=PATH] [--ignorePattern=RGXP] [--no-css-inject] [--entry-file=PATH] [--spa] [--mount=ROUTE:PATH] [--wait=MILLISECONDS] [--htpasswd=PATH] [--cors] [--ibazel] [--https=PATH] [--https-module=MODULE_NAME] [--proxy=PATH] [PATH]');
+ 		process.exit();
+ 	}
+ 	else if (arg === "--test") {

@@ -12,23 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, Icon } from '@ui-kitten/components';
+/* eslint-disable react/jsx-props-no-spreading */
+
 import React from 'react';
-import { Text } from 'react-native';
-import CommonUIProvider from '../ui';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
-const HeartIcon = (props: unknown) => (
-  <Icon {...props} name='heart' />
-);
-
-function Root() {
+function UIProvider({ children }: React.PropsWithChildren<{}>): JSX.Element {
   return (
-    <CommonUIProvider>
-      <Button accessoryLeft={HeartIcon}>
-        PRESS ME
-    </Button>
-    </CommonUIProvider>
+    <>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
+        {children}
+      </ApplicationProvider>
+    </>
   );
 }
 
-export default Root;
+export default UIProvider;

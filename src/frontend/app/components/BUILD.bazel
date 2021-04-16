@@ -17,6 +17,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        "//src/frontend/app/ui",
         "@npm//@types/react",
         "@npm//@types/react-native",
         "@npm//react",

@@ -1,0 +1,18 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "buildinfo_ts",
+    outs = ["index.ts"],
+    cmd = "cat bazel-out/stable-status.txt | " +
+          "awk '{print \"export const \" $$1 \" = \\\"\" $$2 \"\\\";\"}' > $@",
+    stamp = 1,
+)
+
+ts_project(
+    name = "buildinfo",
+    srcs = ["index.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+)

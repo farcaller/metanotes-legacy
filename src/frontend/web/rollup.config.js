@@ -21,7 +21,7 @@ import visualizer from 'rollup-plugin-visualizer';
 import alias from '@rollup/plugin-alias';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const buildInfo = require('./buildinfo');
+const buildInfo = require('../../common/buildinfo');
 
 export default {
   context: '(undefined)',
@@ -29,6 +29,7 @@ export default {
     alias({
       entries: [
         { find: 'react-native', replacement: 'react-native-web' },
+        { find: 'react-native-svg', replacement: 'react-native-svg-web' },
       ],
     }),
     nodeResolve({

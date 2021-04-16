@@ -16,7 +16,7 @@ import './preloader';
 
 import { AppRegistry, Platform } from 'react-native';
 
-import { STABLE_GIT_COMMIT, STABLE_NODE_ENV } from './buildinfo';
+import { STABLE_GIT_COMMIT, STABLE_NODE_ENV } from '../../common/buildinfo';
 import Root from './components/Root';
 
 // eslint-disable-next-line no-console

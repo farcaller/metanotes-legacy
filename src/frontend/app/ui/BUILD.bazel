@@ -1,0 +1,30 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "ui",
+    srcs = ["index.tsx"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":ui_kitten",
+        "@npm//@types/react",
+        "@npm//react",
+    ],
+)
+
+ts_project(
+    name = "ui_kitten",
+    srcs = ["ui-kitten.tsx"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@eva-design/eva",
+        "@npm//@types/react",
+        "@npm//@ui-kitten/components",
+        "@npm//@ui-kitten/eva-icons",
+        "@npm//react",
+        "@npm//react-native-svg",
+    ],
+)

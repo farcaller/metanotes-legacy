@@ -12,10 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import './preloader';
 
-function Blockquote({ children }: React.PropsWithChildren<unknown>): JSX.Element {
-  return <p>{children}</p>;
+import { AppRegistry, Platform } from 'react-native';
+
+import { STABLE_GIT_COMMIT, STABLE_NODE_ENV } from './buildinfo';
+import Root from './components/Root';
+
+// eslint-disable-next-line no-console
+console.log(`running from sha ${STABLE_GIT_COMMIT} env ${STABLE_NODE_ENV}`);
+AppRegistry.registerComponent('Root', () => Root);
+if (Platform.OS === 'web') {
+  AppRegistry.runApplication('Root', {
+    rootTag: document.getElementById('root'),
+  });
 }
-
-export default React.memo(Blockquote);

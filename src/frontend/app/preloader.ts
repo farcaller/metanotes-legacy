@@ -12,4 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-declare module 'mdast-util-compact';
+import './wdyr';
+
+import { Platform } from 'react-native';
+import reportWebVitals from './report-web-vitals';
+
+if (Platform.OS === 'web') {
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
+    reportWebVitals(console.log);
+  }
+}

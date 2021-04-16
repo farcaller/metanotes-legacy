@@ -7,6 +7,20 @@ workspace(
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# skylib
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
+    urls = [
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
+    ],
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
 # nodejs
 http_archive(
     name = "build_bazel_rules_nodejs",
@@ -19,7 +33,9 @@ load("@build_bazel_rules_nodejs//:index.bzl", "yarn_install")
 yarn_install(
     name = "npm",
     data = [
-        # patches go here
+        # react-native-paper tries to be smart abot an optional react-native-vector-icons import.
+        # Unfortunately that breaks rollup, so we replace the optional import with a concrete one.
+        "//:patches/react-native-paper+4.7.2.patch",
     ],
     package_json = "//:package.json",
     yarn_lock = "//:yarn.lock",

@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { Text } from 'react-native';
-import CommonUIProvider from '../ui';
+/* eslint-disable react/jsx-props-no-spreading */
 
-function Root() {
-  return (
-    <CommonUIProvider>
-      <Text>hello world</Text>
-    </CommonUIProvider>
-  );
+import React from 'react';
+
+import UIProvider from './{UI_LIBRARY}';
+
+function CommonUIProvider(props: React.PropsWithChildren<{}>): JSX.Element {
+  return UIProvider(props);
 }
 
-export default Root;
+export default CommonUIProvider;

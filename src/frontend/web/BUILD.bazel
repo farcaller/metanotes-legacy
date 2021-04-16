@@ -34,11 +34,18 @@ rollup_bundle(
         "@npm//@rollup/plugin-json",
         "@npm//@rollup/plugin-node-resolve",
         "@npm//@rollup/plugin-replace",
-        "@npm//react-native-svg-web",  # ui-kitten only
         "@npm//react-native-web",
         "@npm//rollup-plugin-node-polyfills",
         "@npm//rollup-plugin-visualizer",
-    ],
+        "@npm//@rollup/plugin-babel",
+        "@npm//@babel/preset-react",
+        "@npm//@babel/plugin-proposal-class-properties",
+    ] + select({
+        "//src/frontend/app/ui:ui_kitten_config": [
+            "@npm//react-native-svg-web",
+        ],
+        "//conditions:default": [],
+    }),
 )
 
 terser_minified(
@@ -52,6 +59,7 @@ live_server(
     data = [
         "index-dev.html",
         ":bundle",
+        "@npm//:node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
     ],
     templated_args = [
         "./src/frontend/web",
@@ -59,6 +67,7 @@ live_server(
         "--wait=1000",
         "--entry-file=index-dev.html",
         "--mount=/bundle.js:src/frontend/web/bundle/bundle.js",
+        "--mount=/MaterialCommunityIcons.ttf:../npm/node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
     ],
 )
 

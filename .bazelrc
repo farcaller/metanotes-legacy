@@ -86,3 +86,6 @@ try-import %workspace%/.bazelrc.user
 build --worker_sandboxing
 
 build --workspace_status_command ./tools/status.sh
+
+# Use UI-KItten by default, ibazel doesn't seem to understand the --//... flags
+build --//src/frontend/app/ui:ui_library=ui-kitten

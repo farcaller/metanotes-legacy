@@ -1,21 +1,56 @@
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ui.bzl", "tsx_ui_template")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
-package(default_visibility = ["//visibility:public"])
-
-ts_project(
-    name = "ui",
-    srcs = ["index.tsx"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
-    deps = [
-        ":ui_kitten",
-        "@npm//@types/react",
-        "@npm//react",
+string_flag(
+    name = "ui_library",
+    build_setting_default = "",
+    values = [
+        "ui-kitten",
+        "react-native-paper",
     ],
 )
 
+config_setting(
+    name = "ui_kitten_config",
+    flag_values = {
+        ":ui_library": "ui-kitten",
+    },
+)
+
+config_setting(
+    name = "react_native_paper_config",
+    flag_values = {
+        ":ui_library": "react-native-paper",
+    },
+)
+
+tsx_ui_template(
+    name = "index",
+    template = "index.tpl.tsx",
+    ui_library = select({
+        ":ui_kitten_config": "ui-kitten",
+        ":react_native_paper_config": "paper",
+    }),
+)
+
 ts_project(
-    name = "ui_kitten",
+    name = "ui",
+    srcs = [":index.tsx"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    visibility = ["//src/frontend:__subpackages__"],
+    deps = [
+        "@npm//@types/react",
+        "@npm//react",
+    ] + select({
+        ":ui_kitten_config": [":ui_kitten_lib"],
+        ":react_native_paper_config": [":paper_lib"],
+    }),
+)
+
+ts_project(
+    name = "ui_kitten_lib",
     srcs = ["ui-kitten.tsx"],
     declaration = True,
     tsconfig = "//:tsconfig.json",
@@ -26,5 +61,19 @@ ts_project(
         "@npm//@ui-kitten/eva-icons",
         "@npm//react",
         "@npm//react-native-svg",
+    ],
+)
+
+ts_project(
+    name = "paper_lib",
+    srcs = ["paper.tsx"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@eva-design/eva",
+        "@npm//@types/react",
+        "@npm//@types/react-native-vector-icons",
+        "@npm//react-native-paper",
+        "@npm//react-native-vector-icons",
     ],
 )

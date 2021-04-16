@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, Icon } from '@ui-kitten/components';
+/* eslint-disable react/jsx-props-no-spreading */
+
 import React from 'react';
-import { Text } from 'react-native';
-import CommonUIProvider from '../ui';
 
-const HeartIcon = (props: unknown) => (
-  <Icon {...props} name='heart' />
-);
+import UIProvider from './ui-kitten';
 
-function Root() {
-  return (
-    <CommonUIProvider>
-      <Button accessoryLeft={HeartIcon}>
-        PRESS ME
-    </Button>
-    </CommonUIProvider>
-  );
+function CommonUIProvider(props: React.PropsWithChildren<{}>): JSX.Element {
+  return UIProvider(props);
 }
 
-export default Root;
+export default CommonUIProvider;

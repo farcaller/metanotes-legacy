@@ -17,14 +17,14 @@ import * as ast from 'ts-mdast';
 
 import { metaCompiler } from './compiler';
 import { Components } from './components';
-import { ParserOptions } from '../parser/types';
+import { ParseOptions } from '../parser/parser';
 import { Scribble } from '../../store/interface/scribble';
 import { balancerTransformer } from './emphasis_transformer';
 import { concatTransformer } from './concat_transformer';
 
 export function buildParser(
-  metaParser: Attacher<[ParserOptions], Settings>,
-  options: ParserOptions,
+  metaParser: Attacher<[ParseOptions], Settings>,
+  options: ParseOptions,
   emitJSX: boolean,
   components?: Components,
   inline?: boolean,
@@ -48,8 +48,8 @@ export const compile = (
   doc: string,
   components: Components,
   inline: boolean,
-  metaParser: Attacher<[ParserOptions], Settings>,
-  metaScribbles: { [key: string]: Scribble },
+  metaParser: Attacher<[ParseOptions], Settings>,
+  metaScribbles: Scribble[],
 ): JSX.Element => {
   const parser = buildParser(metaParser, { parserScribbles: metaScribbles }, true, components, inline);
 
@@ -64,8 +64,8 @@ export const parse = (
   doc: string,
   components: Components,
   inline: boolean,
-  metaParser: Attacher<[ParserOptions], Settings>,
-  options: ParserOptions,
+  metaParser: Attacher<[ParseOptions], Settings>,
+  options: ParseOptions,
 ): ast.Node => {
   const parser = buildParser(metaParser, options, false, components, inline);
 

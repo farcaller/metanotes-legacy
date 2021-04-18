@@ -154,9 +154,11 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': ['off'],
         'react/react-in-jsx-scope': ['off'],
         'no-undef': ['error'],
+        'jsdoc/require-jsdoc': ['off'],
       },
       globals: {
         React: 'readonly',
+        Parsimmon: 'readonly',
       },
     },
     {

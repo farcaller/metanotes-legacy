@@ -13,23 +13,34 @@
 // limitations under the License.
 
 import { Processor } from 'unified';
-import { VFile } from 'vfile';
 import * as mdast from 'ts-mdast';
 import Parsimmon, { Language, Parser } from 'parsimmon';
-import * as P from 'parsimmon';
 import { Scribble } from '../../store/interface/scribble';
 
-export function buildLanguage(parserScribbles: { [key: string]: Scribble }): Parsimmon.Language {
-  const parserFuncs = {} as { [key: string]: (r: Language) => Parser<never> };
-  for (const k of Object.keys(parserScribbles)) {
-    parserFuncs[k] = parserScribbles[k].JSModule<(r: Language) => Parser<never>>();
+/**
+ * Builds the Parsimmon language from the passed in scribbles.
+ *
+ * @param parserScribbles Array of scribbles for the parser. Each scribble must
+ *                        export the default function that is the parser implementation.
+ * @returns Parsimmon Language.
+ */
+export function buildLanguage(parserScribbles: Scribble[]): Parsimmon.Language {
+  type ParserFunc = (r: Language) => Parser<never>;
+
+  const parserFuncs = {} as { [key: string]: ParserFunc };
+  for (const scribble of parserScribbles) {
+    const parserName = scribble.latestStableVersion.getMeta('parser');
+    if (parserName === undefined) {
+      console.warn(`scribble ${scribble} doesn't have the parser name set, ignoring.`);
+      continue;
+    }
+    parserFuncs[parserName] = scribble.JSModule<ParserFunc>();
   }
-  // TODO: see https://stackoverflow.com/questions/994143/javascript-getter-for-all-properties for better errors
   return Parsimmon.createLanguage(parserFuncs);
 }
 
 export interface ParseOptions {
-  parserScribbles: { [key: string]: Scribble };
+  parserScribbles: Scribble[];
   rootNode?: string;
 }
 

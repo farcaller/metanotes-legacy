@@ -127,3 +127,31 @@ container_pull(
     repository = "library/nginx",
     tag = "1.19-alpine",
 )
+
+# grpcwebproxy
+http_archive(
+    name = "platforms",
+    sha256 = "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+        "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "com_github_improbable_eng_grpcwebproxy_linux",
+    build_file = "@//src/grpc-web-proxy/devproxy:grpcwebproxy.BUILD",
+    sha256 = "fd7f52232a7cb4b49aa6aba1c294b2397028e751b8a533ef3ef44309faff4aea",
+    urls = [
+        "https://github.com/improbable-eng/grpc-web/releases/download/v0.14.0/grpcwebproxy-v0.14.0-linux-x86_64.zip",
+    ],
+)
+
+http_archive(
+    name = "com_github_improbable_eng_grpcwebproxy_osx",
+    build_file = "@//src/grpc-web-proxy/devproxy:grpcwebproxy.BUILD",
+    sha256 = "14a156529943251b81dbd3b6cdeba298af9a4a7950aa57c3b245e325159f8d81",
+    urls = [
+        "https://github.com/improbable-eng/grpc-web/releases/download/v0.14.0/grpcwebproxy-v0.14.0-osx-x86_64.zip",
+    ],
+)

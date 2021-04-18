@@ -1,13 +1,20 @@
-# TODO: fetch is hard-coded to call out to linux only
-sh_binary(
-    name = "fetch",
-    srcs = ["fetch.sh"],
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+
+config_setting(
+    name = "linux",
+    constraint_values = ["@platforms//os:linux"],
 )
 
-genrule(
+config_setting(
+    name = "osx",
+    constraint_values = ["@platforms//os:osx"],
+)
+
+native_binary(
     name = "grpcwebproxy",
-    outs = ["grpcwebproxy"],
-    cmd = "$(location :fetch) $@",
-    executable = 1,
-    tools = [":fetch"],
+    src = select({
+        ":linux": "@com_github_improbable_eng_grpcwebproxy_linux//:dist/grpcwebproxy-v0.14.0-linux-x86_64",
+        ":osx": "@com_github_improbable_eng_grpcwebproxy_osx//:dist/grpcwebproxy-v0.14.0-osx-x86_64",
+    }),
+    out = "grpcwebproxy",
 )

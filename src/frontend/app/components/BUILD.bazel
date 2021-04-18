@@ -18,6 +18,8 @@ ts_project(
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/app/ui",
+        "//src/frontend/scribbles",
+        "//src/frontend/store",
         "@npm//@types/react",
         "@npm//@types/react-native",
         "@npm//react",

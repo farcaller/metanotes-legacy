@@ -29,14 +29,13 @@ import { concatTransformer } from '../ast/concat_transformer';
 const ParserScribblesPrefix = '$:core/parser/';
 
 function loadScribbles(scribbles: CoreScribble[]) {
-  const scribsByName = {} as { [key: string]: Scribble };
+  const resolvedScribbles = [];
   for (const coreScribble of scribbles) {
     if (coreScribble.title?.startsWith(ParserScribblesPrefix)) {
-      const title = coreScribble.title.slice(ParserScribblesPrefix.length);
-      scribsByName[title] = Scribble.fromCoreScribble(coreScribble);
+      resolvedScribbles.push(Scribble.fromCoreScribble(coreScribble));
     }
   }
-  return scribsByName;
+  return resolvedScribbles;
 }
 
 export const parserScribbles = loadScribbles(coreScribbles);

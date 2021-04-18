@@ -16,7 +16,7 @@ import { Database, Statement } from 'better-sqlite3';
 import { status } from '@grpc/grpc-js';
 import { Map as PbMap } from 'google-protobuf';
 
-import * as pb from '../common/api/api_node_pb/src/common/api/api_pb';
+import * as pb from 'api_node/api_pb';
 import MakeStatus from './error';
 import syncDBSchema from './schema';
 

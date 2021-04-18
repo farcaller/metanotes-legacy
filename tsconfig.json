@@ -12,6 +12,22 @@
         "*",
         "dist/bin/*"
       ],
+      "api_node/*": [
+        "./bazel-out/darwin-fastbuild/bin/src/common/api/api_node_pb/src/common/api/*",
+        "./bazel-out/k8-fastbuild/bin/src/common/api/api_node_pb/src/common/api/*",
+        "./bazel-out/x64_windows-fastbuild/bin/src/common/api/api_node_pb/src/common/api/*",
+        "./bazel-out/darwin-dbg/bin/src/common/api/api_node_pb/src/common/api/*",
+        "./bazel-out/k8-dbg/bin/src/common/api/api_node_pb/src/common/api/*",
+        "./bazel-out/x64_windows-dbg/bin/src/common/api/api_node_pb/src/common/api/*",
+      ],
+      "api_web/*": [
+        "./bazel-out/darwin-fastbuild/bin/src/common/api/api_web_pb/src/common/api/*",
+        "./bazel-out/k8-fastbuild/bin/src/common/api/api_web_pb/src/common/api/*",
+        "./bazel-out/x64_windows-fastbuild/bin/src/common/api/api_web_pb/src/common/api/*",
+        "./bazel-out/darwin-dbg/bin/src/common/api/api_web_pb/src/common/api/*",
+        "./bazel-out/k8-dbg/bin/src/common/api/api_web_pb/src/common/api/*",
+        "./bazel-out/x64_windows-dbg/bin/src/common/api/api_web_pb/src/common/api/*",
+      ]
     },
     "declaration": true,
     "inlineSourceMap": true,

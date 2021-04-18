@@ -9,7 +9,6 @@ ts_project(
         ["**/*.ts"],
         exclude = [
             "**/*.test.ts",
-            "parser/test-helpers.ts",
         ],
     ) + ["//src/types"],
     declaration = True,
@@ -28,12 +27,12 @@ ts_project(
 ts_jest_test(
     name = "metamarkdown_test",
     srcs = glob(["**/*.test.ts"]) + [
-        "parser/test-helpers.ts",
         "//src/types",
     ],
     deps = [
         ":metamarkdown",
         "//src/frontend/scribbles",
+        "@npm//beautify",
         "@npm//commonmark-spec",
         "@npm//mdast-util-compact",
         "@npm//remark-html",

@@ -13,18 +13,57 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0A263ZQ42Q36X96QECXJG3
+ * id: 01F3JX7YEA0KH4F1HT07KWE9A8
  * content-type: application/vnd.metanotes.component-jsmodule
  * title: $:core/parser/Paragraph
  * tags: ['$:core/parser']
  * parser: Paragraph
  */
 
+const { string } = Parsimmon;
+
+function removeWhitespace(phrasingContents) {
+  const len = phrasingContents.length;
+  if (len === 0) {
+    return phrasingContents;
+  }
+  if (phrasingContents[0].type === 'text') {
+    phrasingContents[0].value = phrasingContents[0].value.trimStart();
+  }
+  if (phrasingContents[len - 1].type === 'text') {
+    phrasingContents[len - 1].value = phrasingContents[len - 1].value.trimEnd();
+  }
+  return phrasingContents;
+}
+
+function generateBreaks(phrasingContents) {
+  const len = phrasingContents.length;
+  if (len > 0 && phrasingContents[len - 1].type === 'text') {
+    const el = phrasingContents[len - 1];
+    if (el.value.endsWith('  ')) {
+      el.value = el.value.trimEnd();
+      phrasingContents.push({
+        type: 'break',
+      });
+      return phrasingContents;
+    }
+    if (el.value.endsWith('\\')) {
+      el.value = el.value.slice(0, -1).trimEnd();
+      phrasingContents.push({
+        type: 'break',
+        isBackslash: true,
+      });
+      return phrasingContents;
+    }
+  }
+  return phrasingContents;
+}
+
 function Paragraph(r) {
-  return r.NonindentSpace.then(r.Inlines).map((i) => ({
+  return r.PhrasingContent.many().skip(string('\n')).map((phrasingContents) => ({
     type: 'paragraph',
-    children: i,
-  })).skip(r.BlankLine.atLeast(1));
+    children: removeWhitespace(generateBreaks(phrasingContents).flat()),
+  }));
 }
 
 export default Paragraph;

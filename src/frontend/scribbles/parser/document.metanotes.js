@@ -21,9 +21,9 @@
  */
 
 function Document(r) {
-  return r.Block.many().map((p) => ({
+  return r.DocumentContent.map((content) => ({
     type: 'root',
-    children: p,
+    children: content.filter((child) => child),
   }));
 }
 

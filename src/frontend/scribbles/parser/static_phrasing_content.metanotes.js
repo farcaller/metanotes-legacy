@@ -13,15 +13,21 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AQYYDVQSZ5DC8F52FQAQT
+ * id: 01F3K3RT1CVR9184EAXM730JFW
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlankLine
+ * title: $:core/parser/StaticPhrasingContent
  * tags: ['$:core/parser']
- * parser: BlankLine
+ * parser: StaticPhrasingContent
  */
 
-function BlankLine(r) {
-  return r.Sp.then(r.Newline);
+const { alt } = Parsimmon;
+
+function StaticPhrasingContent(r) {
+  return alt(
+    r.Emphasis,
+    r.Text,
+    r.EscapedChar,
+  );
 }
 
-export default BlankLine;
+export default StaticPhrasingContent;

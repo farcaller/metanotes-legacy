@@ -13,44 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01ER0AYQQVQ91R3J4RRA6SJ0KQ
+ * id: 01F3JXEXM8TGWWRQBZ5VK4MJVT
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Inline
+ * title: $:core/parser/Text
  * tags: ['$:core/parser']
- * parser: Inline
+ * parser: Text
  */
 
-const { alt } = Parsimmon;
+const { regexp } = Parsimmon;
 
-function Inline(r) {
-  return alt(
-    r.Str,
-    r.Endline,
-    // | UlOrStarLine
-    r.Space,
-    // r.Strong,
-    r.Emphasis,
-    // | Strike
-    // | Image
-    // | Link
-    // | NoteReference
-    // | InlineNote
-    // | Code
-    // | RawHtml
-    // | Entity
-    // | EscapedChar
-    // | Smart
-    r.Symbol,
-  ).map((el) => {
-    // TODO: should all the inlines be forced elements?
-    if (typeof el === 'string') {
-      return {
-        type: 'text',
-        value: el,
-      };
-    }
-    return el;
-  });
+function Text() {
+  return regexp(/[^_*\n\\]+/).map((value) => ({
+    type: 'text',
+    value,
+  }));
 }
 
-export default Inline;
+export default Text;

@@ -12,21 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* attributes *
- * id: 01ES1THWYNE4BR2393WXQ36A9Y
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/SpecialChar
- * tags: ['$:core/parser']
- * parser: SpecialChar
- */
-
-const { oneOf } = Parsimmon;
-
-function SpecialChar() {
-  return oneOf('~*_`&[]()<!#\\\'"').map((c) => ({
-    type: 'text',
-    value: c,
-  }));
-}
-
-export default SpecialChar;
+declare module 'beautify';

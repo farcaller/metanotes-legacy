@@ -13,17 +13,22 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EWB5E8RFA2B1C5M0W3E9HVZ3
+ * id: 01EY0ZZDQG0HRZMYFCF2TQN5E9
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Whitespace
+ * title: $:core/parser/EscapedChar
  * tags: ['$:core/parser']
- * parser: Whitespace
+ * parser: EscapedChar
  */
 
-const { alt } = Parsimmon;
+const { string, oneOf } = Parsimmon;
 
-function Whitespace(r) {
-  return alt(r.SpaceChar, r.Newline);
+const EscapedChars = '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-';
+
+function EscapedChar(r) {
+  return string('\\').then(oneOf(EscapedChars).fallback('\\')).map((c) => ({
+    type: 'text',
+    value: c,
+  }));
 }
 
-export default Whitespace;
+export default EscapedChar;

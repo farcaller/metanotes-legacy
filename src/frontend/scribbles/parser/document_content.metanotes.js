@@ -13,17 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EV2AWR0V89RK7QG25BK3BZ7B
+ * id: 01F3JWC67WQ6K742HDRZ5WFDCR
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/AtxMarker
+ * title: $:core/parser/DocumentContent
  * tags: ['$:core/parser']
- * parser: AtxMarker
+ * parser: DocumentContent
  */
 
-const { string } = Parsimmon;
+const { alt } = Parsimmon;
 
-function AtxMarker(r) {
-  return r.Sp.then(string('#').many()).then(r.Sp);
+function DocumentContent(r) {
+  return alt(r.BlockContent); // , r.PhrasingContent);
 }
 
-export default AtxMarker;
+export default DocumentContent;

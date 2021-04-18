@@ -13,18 +13,19 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EWDEVY931KWPV2GQ08GDJTNK
+ * id: 01F3JXCM0W6GZT3NB9Z1E2PWY9
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/PunctuationChar
+ * title: $:core/parser/PhrasingContent
  * tags: ['$:core/parser']
- * parser: PunctuationChar
+ * parser: PhrasingContent
  */
 
-const { oneOf } = Parsimmon;
+const { alt } = Parsimmon;
 
-function PunctuationChar() {
-  // TODO: A punctuation character is an ASCII punctuation character or anything in the general Unicode categories Pc, Pd, Pe, Pf, Pi, Po, or Ps.
-  return oneOf('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~');
+function PhrasingContent(r) {
+  return alt(
+    r.StaticPhrasingContent,
+  );
 }
 
-export default PunctuationChar;
+export default PhrasingContent;

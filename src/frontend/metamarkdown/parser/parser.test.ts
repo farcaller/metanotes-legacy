@@ -12,96 +12,197 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import unified from 'unified';
+/* eslint-disable jsdoc/require-jsdoc */
+
+import { autorun } from 'mobx';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Node } from 'unist';
+import * as commonmarkSpec from 'commonmark-spec';
+import * as mdast from 'ts-mdast';
+import beautify from 'beautify';
 import remarkHTML from 'remark-html';
+import unified from 'unified';
 
 import makeParser from './parser';
-import { commonmarkTests, parserScribbles, expectParse } from './test-helpers';
+import coreScribbles from '../../scribbles';
+import Scribble from '../../store/scribble/scribble';
+import { CoreScribble } from '../../store/interface/core_scribble';
 
-function testCommonmark(idx: number) {
-  test(`it passes the commonmark spec #${idx}`, () => {
+const ParserScribblesPrefix = '$:core/parser/';
+
+function loadScribbles(scribbles: CoreScribble[]) {
+  const resolvedScribbles = [];
+  for (const coreScribble of scribbles) {
+    if (coreScribble.title?.startsWith(ParserScribblesPrefix)) {
+      const scribble = Scribble.fromCoreScribble(coreScribble);
+      resolvedScribbles.push(scribble);
+    }
+  }
+  return resolvedScribbles;
+}
+
+const parserScribbles = loadScribbles(coreScribbles);
+autorun(() => {
+  for (const scribble of Object.values(parserScribbles)) {
+    scribble.JSModule();
+    scribble.latestStableVersion.getMeta('parser');
+  }
+});
+const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
+
+function doParse(doc: string, rootNode = 'Document'): mdast.Node {
+  if (rootParsers[rootNode] === undefined) {
+    const parser = unified()
+      .use(makeParser, { parserScribbles, rootNode });
+    rootParsers[rootNode] = parser;
+  }
+  const parser = rootParsers[rootNode];
+
+  let node = parser.parse(doc);
+  node = parser.runSync(node);
+
+  return node;
+}
+
+type TestSpec = {
+  markdown: string;
+  html: string;
+  section: string;
+  number: number;
+};
+
+function loadCommonmarkTests(): TestSpec[] {
+  const tests: TestSpec[] = [];
+  for (let i = 0; i < (commonmarkSpec as { tests: TestSpec[] }).tests.length; ++i) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    tests.push((commonmarkSpec as { tests: TestSpec[] }).tests.find((s) => s.number === i)!);
+  }
+  return tests;
+}
+
+const commonmarkTests = loadCommonmarkTests();
+
+function expectParse(doc: string, expected: Node[]): void {
+  const node = doParse(doc);
+
+  expect(node).toEqual({
+    type: 'root',
+    children: expected,
+  });
+}
+
+function cleanupHtml(html: string): string {
+  return beautify(html, { format: 'html' })
+    .replace(/&quot;/g, '"')
+    .replace(/&#x3C;/g, '<')
+    .replace(/ \/>/g, '>');
+}
+
+function testCommonmark(idx: number, todoReason?: string) {
+  const spec = commonmarkTests[idx];
+
+  if (todoReason) {
+    test.todo(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`);
+    return;
+  }
+  test(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
+    const input = `${spec.markdown}\n\n`;
+    const expected = cleanupHtml(spec.html);
+
     const parser = unified()
       .use(makeParser, { parserScribbles })
       .use(remarkHTML);
 
-    const spec = commonmarkTests[idx];
+    const astParser = unified()
+      .use(makeParser, { parserScribbles });
 
-    const out = parser.processSync(`${spec.markdown}\n\n`);
+    function logParsed() {
+      const node = astParser.parse(input);
+      const processedNode = parser.runSync(node);
+      // eslint-disable-next-line no-console
+      console.warn(`spec #${idx}: ${JSON.stringify(processedNode, null, 2)}`);
+    }
 
-    // console.log(JSON.stringify(parser.parse(spec.markdown + '\n\n'), null, 2));
-
-    expect(out.contents).toEqual(spec.html);
+    let outString;
+    try {
+      const output = parser.processSync(input);
+      outString = cleanupHtml(output.contents as string);
+      if (outString !== expected) {
+        logParsed();
+      }
+    } catch (e) {
+      logParsed();
+      throw e;
+    }
+    expect(outString).toEqual(expected);
   });
 }
 
-testCommonmark(189);
-testCommonmark(191);
+function testCommonmarkSection(section: string, skips: Record<number, string> = {}, endAt?: number) {
+  let count = 0;
+  const finalIndex = endAt || commonmarkTests.length;
+  for (let i = 1; i < finalIndex; ++i) {
+    const spec = commonmarkTests[i];
+    if (spec.section !== section) {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
 
-test('it parses a paragraph', () => {
-  expectParse('hello world\n\n',
-    [
-      {
-        type: 'paragraph',
-        children: [
-          { type: 'text', value: 'hello world' },
-        ],
-      },
-    ]);
+    testCommonmark(i, skips[i]);
+    ++count;
+  }
+  if (count === 0) {
+    throw Error(`no tests for section '${section}'`);
+  }
+}
+
+// 4.8 https://spec.commonmark.org/0.29/#paragraphs
+testCommonmarkSection('Paragraphs', {
+  // 193: TODO: not sure this WAI for react-native
+  195: `TODO: indented code blocks not implemented`,
 });
 
-test('it parses strong text', () => {
-  expectParse('hello **world**\n\n',
-    [
-      {
-        type: 'paragraph',
-        children: [
-          { type: 'text', value: 'hello ' },
-          { type: 'strong', children: [{ type: 'text', value: 'world' }] },
-        ],
-      },
-    ]);
+// 6.4 https://spec.commonmark.org/0.29/#emphasis-and-strong-emphasis
+testCommonmarkSection('Emphasis and strong emphasis', {
+  403: `TODO: links not implemented`,
+  418: `TODO: links not implemented`,
+  421: `TODO: links not implemented`,
+  432: `TODO: links not implemented`,
+  472: `TODO: links not implemented`,
+  473: `TODO: links not implemented`,
+  475: `TODO: links not implemented`,
+  476: `TODO: links not implemented`,
+  477: `TODO: code not implemented`,
+  478: `TODO: code not implemented`,
+  474: `TODO: inline html isn't supported so WAI?`,
+  479: `TODO: links not implemented`,
+  480: `TODO: links not implemented`,
 });
 
-test('it parses broken strong text', () => {
-  expectParse('hello **world\n\n',
-    [
-      {
-        type: 'paragraph',
-        children: [
-          { type: 'text', value: 'hello **world' },
-        ],
-      },
-    ]);
+// 6.9 https://spec.commonmark.org/0.29/#hard-line-breaks
+testCommonmarkSection('Hard line breaks', {
+  637: `TODO: code not implemented`,
+  638: `TODO: code not implemented`,
+  639: `TODO: links not implemented`,
+  640: `TODO: links not implemented`,
+  643: `TODO: headers not implemented`,
+  644: `TODO: headers not implemented`,
 });
 
-test('it parses broken strong text 2', () => {
-  expectParse('hello **  world  **\n\n',
-    [
+test('break parser only triggers at line ends', () => {
+  const n = doParse('hello  *\n');
+  expect(n).toEqual({
+    type: 'root',
+    children: [
       {
         type: 'paragraph',
         children: [
-          { type: 'text', value: 'hello **  world  **' },
+          {
+            type: 'text',
+            value: 'hello  *',
+          },
         ],
       },
-    ]);
-});
-
-test('it parses headers', () => {
-  expectParse('### hello **there** ###\nworld\n\n',
-    [
-      {
-        type: 'heading',
-        depth: 3,
-        children: [
-          { type: 'text', value: 'hello ' },
-          { type: 'strong', children: [{ type: 'text', value: 'there' }] },
-        ],
-      },
-      {
-        type: 'paragraph',
-        children: [
-          { type: 'text', value: 'world' },
-        ],
-      },
-    ]);
+    ],
+  });
 });

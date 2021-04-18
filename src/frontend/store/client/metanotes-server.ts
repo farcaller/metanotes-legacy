@@ -14,8 +14,8 @@
 
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
-import * as pb from '../../../common/api/api_pb';
-import * as grpcWebPb from '../../../common/api/api_grpc_web_pb';
+import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
+import * as grpcWebPb from '../../../common/api/api_web_pb/src/common/api/api_grpc_web_pb';
 
 export interface MetanotesServerConfig {
   hostname: string;

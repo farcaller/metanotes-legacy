@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import open, { Database } from 'better-sqlite3';
-import { Version } from 'metanotes/bazel-out/k8-fastbuild/bin/src/common/api/api_pb';
+import { Version } from '../common/api/api_node_pb/src/common/api/api_pb';
 
 import Store from './store';
 

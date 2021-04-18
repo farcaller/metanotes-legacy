@@ -19,8 +19,8 @@ import { exit } from 'process';
 import * as grpc from '@grpc/grpc-js';
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
 
-import * as pb from '../common/api/api_pb';
-import * as grpcPb from '../common/api/api_grpc_pb';
+import * as pb from '../common/api/api_node_pb/src/common/api/api_pb';
+import * as grpcPb from '../common/api/api_node_pb/src/common/api/api_grpc_pb';
 import Store from './store';
 
 function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, pb.GetScribbleReply> {

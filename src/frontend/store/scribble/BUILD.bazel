@@ -12,7 +12,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/common/api:api_grpc_web_lib",
+        "//src/common/api:api_web",
         "//src/frontend/store/interface",
         "//src/frontend/store/scribble/module",
         "//src/frontend/store/scribble/module/locals",

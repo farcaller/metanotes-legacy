@@ -19,7 +19,7 @@ import { computedFn } from 'mobx-utils';
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
 import Version from './version';
-import * as pb from '../../../common/api/api_pb';
+import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
 import localsForScribble from './module/locals';
 

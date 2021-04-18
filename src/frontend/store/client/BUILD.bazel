@@ -8,7 +8,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/common/api:api_grpc_web_lib",
+        "//src/common/api:api_web",
         "@npm//@types/google-protobuf",
         "@npm//google-protobuf",
         "@npm//grpc-web",

@@ -14,7 +14,7 @@
 
 import { StorageAPI } from './client';
 import ScribbleStore from './store';
-import * as pb from '../../common/api/api_pb';
+import * as pb from '../../common/api/api_web_pb/src/common/api/api_pb';
 import { FetchFailed } from './fetch_status';
 import { Scribble } from './interface/scribble';
 

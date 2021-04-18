@@ -48,12 +48,6 @@ rollup_bundle(
     }),
 )
 
-terser_minified(
-    name = "bundle.minified",
-    src = ":bundle",
-    sourcemap = False,
-)
-
 live_server(
     name = "devserver",
     data = [
@@ -78,6 +72,6 @@ container_image(
     directory = "/usr/share/nginx/html",
     files = [
         "index.html",
-        ":bundle.minified",
+        ":bundle",
     ],
 )

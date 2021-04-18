@@ -26,6 +26,11 @@ export class MetanotesServerAPI {
 
   constructor(config: MetanotesServerConfig) {
     this.client = new grpcWebPb.MetanotesPromiseClient(config.hostname);
+    // eslint-disable-next-line no-underscore-dangle,@typescript-eslint/no-empty-function,@typescript-eslint/no-explicit-any
+    const enableDevTools = (window as any).__GRPCWEB_DEVTOOLS__ || (() => {});
+    enableDevTools([
+      this.client,
+    ]);
   }
 
   async getAllMetadata(): Promise<pb.Scribble[]> {

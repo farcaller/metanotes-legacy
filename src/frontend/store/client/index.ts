@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { MetanotesServerAPI, MetanotesServerConfig } from './metanotes-server';
-import * as pb from '../../../common/api/api_pb';
+import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 
 export interface StorageAPI {
   getAllMetadata(): Promise<pb.Scribble[]>;

@@ -18,7 +18,7 @@ import { computedFn } from 'mobx-utils';
 
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
-import * as pb from '../../../common/api/api_pb';
+import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import ComputedMetadata from './computed_metadata';
 
 /**

@@ -1,91 +1,21 @@
-load("@build_bazel_rules_nodejs//internal/js_library:js_library.bzl", "js_library")
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
+load("@rules_proto_grpc//js:defs.bzl", "js_grpc_node_library", "js_grpc_web_library")
 
 package(default_visibility = ["//visibility:public"])
 
-npm_package_bin(
-    name = "api_pb",
-    outs = [
-        "api_pb.d.ts",
-        "api_pb.js",
-    ],
-    args = [
-        "-I./" + package_name(),
-        "$(execpath api.proto)",
-        "--plugin=protoc-gen-ts=$(execpath @npm//:node_modules/grpc_tools_node_protoc_ts/bin/protoc-gen-ts)",
-        "--plugin=protoc-gen-grpc-web=$(execpath @com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web)",
-        "--ts_out=$(@D)",
-        "--js_out=import_style=commonjs:$(@D)",
-    ],
-    data = [
-        "api.proto",
-        "@com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web",
-        "@npm//:node_modules/grpc_tools_node_protoc_ts/bin/protoc-gen-ts",
-        "@npm//grpc_tools_node_protoc_ts",
-    ],
-    package = "grpc-tools",
-    package_bin = "grpc_tools_node_protoc",
-)
-
-npm_package_bin(
-    name = "api_grpc",
-    outs = [
-        "api_grpc_pb.d.ts",
-        "api_grpc_pb.js",
-    ],
-    args = [
-        "-I./" + package_name(),
-        "$(execpath api.proto)",
-        "--plugin=protoc-gen-ts=$(execpath @npm//:node_modules/grpc_tools_node_protoc_ts/bin/protoc-gen-ts)",
-        "--plugin=protoc-gen-grpc-web=$(execpath @com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web)",
-        "--ts_out=$(@D)",
-        "--grpc_out=grpc_js:$(@D)",
-    ],
-    data = [
-        "api.proto",
-        "@com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web",
-        "@npm//:node_modules/grpc_tools_node_protoc_ts/bin/protoc-gen-ts",
-        "@npm//grpc_tools_node_protoc_ts",
-    ],
-    package = "grpc-tools",
-    package_bin = "grpc_tools_node_protoc",
-)
-
-npm_package_bin(
-    name = "api_grpc_web",
-    outs = [
-        "api_grpc_web_pb.d.ts",
-        "api_grpc_web_pb.js",
-    ],
-    args = [
-        "-I./" + package_name(),
-        "$(execpath api.proto)",
-        "--plugin=protoc-gen-grpc-web=$(execpath @com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web)",
-        "--grpc-web_out=import_style=commonjs+dts,mode=grpcweb:$(@D)",
-    ],
-    data = [
-        "api.proto",
-        "@com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web",
-        "@npm//:node_modules/grpc_tools_node_protoc_ts/bin/protoc-gen-ts",
-        "@npm//grpc_tools_node_protoc_ts",
-    ],
-    package = "grpc-tools",
-    package_bin = "grpc_tools_node_protoc",
-)
-
-# TODO: https://github.com/bazelbuild/rules_nodejs/issues/149
-js_library(
-    name = "api_grpc_lib",
-    srcs = [
-        ":api_grpc",
-        ":api_pb",
+proto_library(
+    name = "api_proto",
+    srcs = ["api.proto"],
+    deps = [
+        "@com_google_protobuf//:empty_proto",
     ],
 )
 
-js_library(
-    name = "api_grpc_web_lib",
-    srcs = [
-        ":api_grpc_web",
-        ":api_pb",
-    ],
+js_grpc_node_library(
+    name = "api_node",
+    protos = [":api_proto"],
+)
+
+js_grpc_web_library(
+    name = "api_web",
+    protos = [":api_proto"],
 )

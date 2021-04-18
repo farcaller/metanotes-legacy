@@ -27,7 +27,7 @@ ts_jest_test(
     srcs = glob(["*.test.ts"]),
     deps = [
         ":store",
-        "//src/common/api:api_grpc_web_lib",
+        "//src/common/api:api_web",
         "@npm//google-protobuf",
     ],
 )

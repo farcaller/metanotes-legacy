@@ -17,7 +17,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/common/api:api_grpc_lib",
+        "//src/common/api:api_node",
         "@npm//@grpc/grpc-js",
         "@npm//@types/better-sqlite3",
         "@npm//@types/google-protobuf",
@@ -44,7 +44,7 @@ ts_project(
     tsconfig = "//:tsconfig.json",
     deps = [
         ":store_lib",
-        "//src/common/api:api_grpc_lib",
+        "//src/common/api:api_node",
         "@npm//@grpc/grpc-js",
         "@npm//@types/better-sqlite3",
         "@npm//@types/google-protobuf",

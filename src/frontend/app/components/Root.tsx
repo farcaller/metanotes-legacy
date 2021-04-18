@@ -15,12 +15,15 @@
 import React from 'react';
 import { Text } from 'react-native';
 import CommonUIProvider from '../ui';
+import Store from './Store';
 
 function Root() {
   return (
-    <CommonUIProvider>
-      <Text>hello world</Text>
-    </CommonUIProvider>
+    <Store>
+      <CommonUIProvider>
+        <Text>hello world</Text>
+      </CommonUIProvider>
+    </Store>
   );
 }
 

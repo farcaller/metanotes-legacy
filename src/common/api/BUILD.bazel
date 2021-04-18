@@ -10,6 +10,10 @@ proto_library(
     ],
 )
 
+# these are exported as .../common/api/api_${KIND}_pb/src/common/api/api{_,grpc_}pb
+# it seems to me that rules_proto_grpc set the package name (https://sourcegraph.com/github.com/rules-proto-grpc/rules_proto_grpc@3.1.1/-/blob/js/js_grpc_web_library.bzl#L30)
+# but rollup fails to link it properly.
+# TODO: investigate path aliases (see also feature/api-path-aliases)
 js_grpc_node_library(
     name = "api_node",
     protos = [":api_proto"],

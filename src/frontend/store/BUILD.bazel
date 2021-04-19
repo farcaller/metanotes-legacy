@@ -39,6 +39,9 @@ ts_jest_test(
         ":store",
         "//src/common/api:api_web",
         "@npm//@testing-library/react-native",
+        "@npm//@types/react-test-renderer",
         "@npm//google-protobuf",
+        "@npm//mobx-react-lite",
+        "@npm//react-dom",
     ],
 )

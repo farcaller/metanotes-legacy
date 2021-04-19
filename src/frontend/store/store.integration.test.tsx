@@ -12,31 +12,182 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import React from 'react';
-import { Button, Text, View } from 'react-native';
-import { fireEvent, render } from '@testing-library/react-native';
+import { Text } from 'react-native';
+import { render } from '@testing-library/react-native';
+import { observer } from 'mobx-react-lite';
+import TestRenderer from 'react-test-renderer';
 
-function Example() {
-  const [name, setUser] = React.useState('hello world');
+import ScribblesStore from './store';
+import { StorageAPI } from './client';
 
-  const onClick = () => {
-    setUser('abc');
-  };
+const { act } = TestRenderer;
 
-  return (
-    <View>
-      <Text testID="text">{name}</Text>
-      <Button onPress={onClick} title="abc" />
-    </View>
-  )
-}
+test('it renders a scribble', async () => {
+  const store = new ScribblesStore(undefined as unknown as StorageAPI);
+  store.loadCoreScribbles([{
+    id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
+    title: 'test',
+    body: 'hello world',
+    meta: {},
+  }]);
 
-test('examples of some things', async () => {
-  const { getByTestId, getByText } = render(<Example />);
+  function Element() {
+    const scribble = store.scribbleByTitle('test');
+    return <Text testID="text">{scribble?.latestStableVersion.body}</Text>;
+  }
+  const { getByTestId } = render(<Element />);
 
   expect(getByTestId('text').props.children).toEqual('hello world');
+});
 
-  const button = getByText('abc');
-  fireEvent.press(button);
-  expect(getByTestId('text').props.children).toEqual('abc');
+test('it updates the element when the store updates', async () => {
+  const store = new ScribblesStore(undefined as unknown as StorageAPI);
+  store.loadCoreScribbles([{
+    id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
+    title: 'test',
+    body: 'hello world',
+    meta: {},
+  }]);
+
+  function Element() {
+    const scribble = store.scribbleByTitle('test');
+    return <Text testID="text">{scribble?.latestStableVersion.body}</Text>;
+  }
+  const ElementObserver = observer(Element);
+  const { getByTestId } = render(<ElementObserver />);
+
+  act(() => {
+    store.scribbleByTitle('test')?.createVersion('new body', new Map());
+  });
+
+  expect(getByTestId('text').props.children).toEqual('new body');
+});
+
+test('it renders the scribble as a JSModule element', async () => {
+  const store = new ScribblesStore(undefined as unknown as StorageAPI);
+  store.loadCoreScribbles([{
+    id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
+    title: 'test',
+    body: `
+const { Text } = ReactNative;
+function ScribbleElement({ value }) {
+  return <Text>{value}</Text>;
+}
+export default ScribbleElement;`,
+    meta: {},
+  }]);
+
+  function Element() {
+    const scribble = store.scribbleByTitle('test')!;
+    const ScribbleEl = scribble.JSModule<React.FC<{value: string}>>();
+    return <ScribbleEl value="42" />;
+  }
+  const ElementObserver = observer(Element);
+  const { toJSON } = render(<ElementObserver />);
+
+  expect(toJSON()).toMatchInlineSnapshot(`
+<Text>
+  42
+</Text>
+`);
+});
+
+describe(`requireScribble`, () => {
+  let store: ScribblesStore;
+  beforeEach(() => {
+    store = new ScribblesStore(undefined as unknown as StorageAPI);
+    store.loadCoreScribbles([{
+      id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
+      title: 'test',
+      body: `
+const { Text } = ReactNative;
+const another = requireScribble('another');
+function ScribbleElement() {
+  return <Text>{another}</Text>;
+}
+export default ScribbleElement;`,
+      meta: {},
+    }]);
+  });
+
+  test('it throws when trying to load a JSModule that depends on a non-compileable scribble', () => {
+    store.loadCoreScribbles([{
+      id: '01F3MN6PRT6MP3E836K6XBB1MN',
+      title: 'another',
+      body: 'bad body',
+      meta: {},
+    }]);
+    const scribble = store.scribbleByTitle('test')!;
+
+    expect(scribble.JSModule.bind(scribble)).toThrowError(
+      'failed to evaluate scribble 01F3MK7KSKWY5ZCVA84HAVBAXD "test": SyntaxError: unknown: Missing semicolon',
+    );
+  });
+
+  test('it throws when trying to load a JSModule that depends on a unloaded scribble', () => {
+    store.loadCoreScribbles([{
+      id: '01F3MN6PRT6MP3E836K6XBB1MN',
+      title: 'another',
+      body: undefined as unknown as string,
+      meta: {},
+    }]);
+    const scribble = store.scribbleByTitle('test')!;
+
+    expect(scribble.JSModule.bind(scribble)).toThrowError(
+      'failed to evaluate scribble 01F3MN6PRT6MP3E836K6XBB1MN "another": Error: body is missing',
+    );
+  });
+
+  test('it renders the scribble as a JSModule element with child scribbles', () => {
+    store.loadCoreScribbles([{
+      id: '01F3MN6PRT6MP3E836K6XBB1MN',
+      title: 'another',
+      body: 'export default 42;',
+      meta: {},
+    }]);
+
+    function Element() {
+      const scribble = store.scribbleByTitle('test')!;
+      const ScribbleEl = scribble.JSModule<React.FC>();
+      return <ScribbleEl />;
+    }
+    const ElementObserver = observer(Element);
+    const { toJSON } = render(<ElementObserver />);
+
+    expect(toJSON()).toMatchInlineSnapshot(`
+<Text>
+  42
+</Text>
+`);
+  });
+
+  test('it re-renders the scribble as a JSModule element with child scribbles', () => {
+    store.loadCoreScribbles([{
+      id: '01F3MN6PRT6MP3E836K6XBB1MN',
+      title: 'another',
+      body: 'export default 42;',
+      meta: {},
+    }]);
+
+    function Element() {
+      const scribble = store.scribbleByTitle('test')!;
+      const ScribbleEl = scribble.JSModule<React.FC>();
+      return <ScribbleEl />;
+    }
+    const ElementObserver = observer(Element);
+    const { toJSON } = render(<ElementObserver />);
+
+    act(() => {
+      store.scribbleByTitle('another')?.createVersion('export default 43;', new Map());
+    });
+
+    expect(toJSON()).toMatchInlineSnapshot(`
+<Text>
+  43
+</Text>
+`);
+  });
 });

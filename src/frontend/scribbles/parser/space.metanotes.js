@@ -13,23 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3K3RT1CVR9184EAXM730JFW
+ * id: 01F3MT5DR8EPEFQVT085053KC3
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/StaticPhrasingContent
+ * title: $:core/parser/Space
  * tags: ['$:core/parser']
- * parser: StaticPhrasingContent
+ * parser: Space
  */
 
-const { alt } = Parsimmon;
+const { regexp } = Parsimmon;
 
-function StaticPhrasingContent(r) {
-  return alt(
-    r.Emphasis,
-    r.Text,
-    r.EscapedChar,
-    r.Space,
-    r.Symbol,
-  );
+function Space() {
+  return regexp(/[^\S\r\n]+/).map((value) => ({
+    type: 'text',
+    value,
+  }));
 }
 
-export default StaticPhrasingContent;
+export default Space;

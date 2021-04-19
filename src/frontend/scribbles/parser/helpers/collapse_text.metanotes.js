@@ -13,23 +13,24 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3K3RT1CVR9184EAXM730JFW
+ * id: 01F3MPPBV2VEQANH73SBSR6V1C
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/StaticPhrasingContent
- * tags: ['$:core/parser']
- * parser: StaticPhrasingContent
+ * title: $:core/parser-helpers/collapseText
  */
 
-const { alt } = Parsimmon;
+function collapseText(block) {
+  block.children = block.children.reduce((acc, curr) => {
+    const last = acc.length > 0 ? acc[acc.length - 1] : { type: undefined };
+    const clastIsText = last.type === 'text';
+    const currIsText = curr.type === 'text';
 
-function StaticPhrasingContent(r) {
-  return alt(
-    r.Emphasis,
-    r.Text,
-    r.EscapedChar,
-    r.Space,
-    r.Symbol,
-  );
+    if (clastIsText && currIsText) {
+      last.value += curr.value;
+      return acc;
+    }
+    return [...acc, curr];
+  }, []);
+  return block;
 }
 
-export default StaticPhrasingContent;
+export default collapseText;

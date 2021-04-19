@@ -23,7 +23,7 @@
 const { regexp } = Parsimmon;
 
 function Text() {
-  return regexp(/[^_*\n\\]+/).map((value) => ({
+  return regexp(/[^#_*\s\\]+/).map((value) => ({
     type: 'text',
     value,
   }));

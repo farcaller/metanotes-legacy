@@ -140,4 +140,15 @@ export default class Scribble {
     }
     return desc;
   }
+
+  /**
+   * Creates a new scribble version with the given body and meta.
+   *
+   * @param body New version's body.
+   * @param meta New version's meta.
+   */
+  createVersion(body: string, meta: Map<string, string>): void {
+    const version = new Version(undefined, meta, body);
+    this.$versionsByID.set(version.versionID, version);
+  }
 }

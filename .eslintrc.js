@@ -163,9 +163,10 @@ module.exports = {
       },
     },
     {
-      files: ['tools/*.js', '*.test.ts', 'test-*.ts'],
+      files: ['tools/*.js', '*.test.ts', '*.test.tsx'],
       rules: {
         'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+        'jsdoc/require-jsdoc': ['off'],
       },
     },
   ],

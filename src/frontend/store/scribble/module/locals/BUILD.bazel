@@ -15,6 +15,10 @@ ts_project(
     deps = [
         "//src/frontend/store/interface",
         "@npm//@types/parsimmon",
+        "@npm//@types/react",
+        "@npm//@types/react-native",
         "@npm//parsimmon",
+        "@npm//react",
+        "@npm//react-native",
     ],
 )

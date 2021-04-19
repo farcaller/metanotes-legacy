@@ -154,6 +154,24 @@ class ScribblesStore {
       this.$scribblesByTitle.set(title, scribble);
     }
   }
+
+  /**
+   * Returns the JSModule for a scribble by title.
+   *
+   * This API is re-exported into the scrubbles as `requireScribble`.
+   *
+   * @param title Scribble title.
+   * @returns JSModule of the scribble.
+   * @throws All the JSModule exceptions.
+   */
+  requireScribble<T>(title: string): T {
+    const scribble = this.scribbleByTitle(title);
+    if (!scribble) {
+      // TODO: catch it?
+      throw Error(`failed to require scribble: '${title}': does not exist`);
+    }
+    return scribble.JSModule();
+  }
 }
 
 export default ScribblesStore;

@@ -159,6 +159,7 @@ module.exports = {
       globals: {
         React: 'readonly',
         Parsimmon: 'readonly',
+        requireScribble: 'readonly',
       },
     },
     {

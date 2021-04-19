@@ -15,6 +15,8 @@
 import Scribble from './scribble';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import { CoreScribble } from '../interface/core_scribble';
+import ScribblesStore from '../store';
+import { StorageAPI } from '../client';
 
 describe('fromCoreScribble', () => {
   let coreScribble: CoreScribble;
@@ -29,20 +31,20 @@ describe('fromCoreScribble', () => {
   });
 
   test('it builds a scribble from core scribble', () => {
-    const scribble = Scribble.fromCoreScribble(coreScribble);
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, coreScribble);
 
     expect(scribble.title).toEqual('test');
     expect(scribble.scribbleID).toEqual('01F35516BMJFC42SGG5VTPSWJV');
   });
 
   test('it adds a core version for a scribble built from core scribble', () => {
-    const scribble = Scribble.fromCoreScribble(coreScribble);
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, coreScribble);
 
     expect(scribble.latestStableVersion.versionID).toEqual('0000000000JFC42SGG5VTPCORE');
   });
 
   test('it builds a version from core scribble', () => {
-    const scribble = Scribble.fromCoreScribble(coreScribble);
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, coreScribble);
 
     expect(scribble.latestStableVersion.body).toEqual('hello');
     expect(scribble.latestStableVersion.getMeta('abc')).toEqual('def');
@@ -64,7 +66,7 @@ describe('fromProto', () => {
   });
 
   test('it builds a scribble from a proto', () => {
-    const scribble = Scribble.fromProto(spb);
+    const scribble = Scribble.fromProto(undefined as unknown as ScribblesStore, spb);
 
     expect(scribble.title).toEqual('test');
     expect(scribble.scribbleID).toEqual('01F35516BMJFC42SGG5VTPSWJV');
@@ -72,13 +74,13 @@ describe('fromProto', () => {
 
   test('it unsets the scribble title if it came empty from the proto', () => {
     spb.setTitle('');
-    const scribble = Scribble.fromProto(spb);
+    const scribble = Scribble.fromProto(undefined as unknown as ScribblesStore, spb);
 
     expect(scribble.title).toBeUndefined();
   });
 
   test('it builds a version from a proto', () => {
-    const scribble = Scribble.fromProto(spb);
+    const scribble = Scribble.fromProto(undefined as unknown as ScribblesStore, spb);
 
     expect(scribble.latestStableVersion.versionID).toEqual('01F357DS7D3VKNQYB3EXJF265Q');
     expect(scribble.latestStableVersion.body).toEqual('hello');
@@ -88,7 +90,8 @@ describe('fromProto', () => {
 
 describe('JSModule', () => {
   test('it evals the js module and returns the default export', () => {
-    const scribble = Scribble.fromCoreScribble({
+    const store = new ScribblesStore(undefined as unknown as StorageAPI);
+    const scribble = Scribble.fromCoreScribble(store, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
       title: 'test',
       body: 'export default function() { return 42; }',
@@ -103,7 +106,7 @@ describe('JSModule', () => {
 
 describe('computedMetadata', () => {
   it('returns computed metadata for tags', () => {
-    const scribble = Scribble.fromCoreScribble({
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
       title: 'test',
       body: '',
@@ -114,7 +117,7 @@ describe('computedMetadata', () => {
   });
 
   it('returns empty tags if there is no source meta', () => {
-    const scribble = Scribble.fromCoreScribble({
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
       title: 'test',
       body: '',
@@ -125,7 +128,7 @@ describe('computedMetadata', () => {
   });
 
   it('returns empty tags if the source meta is malformed', () => {
-    const scribble = Scribble.fromCoreScribble({
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
       title: 'test',
       body: '',

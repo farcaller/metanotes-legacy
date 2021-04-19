@@ -18,6 +18,7 @@ import { computedFn } from 'mobx-utils';
 
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
+import { ScribblesStore } from '../interface/store';
 import Version from './version';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
@@ -27,6 +28,9 @@ import localsForScribble from './module/locals';
  * Mobx model for the scribble.
  */
 export default class Scribble {
+  /** Owning scribble store. */
+  private readonly store: ScribblesStore;
+
   /** Scribble ID. */
   readonly scribbleID: ScribbleID;
 
@@ -39,25 +43,29 @@ export default class Scribble {
   /**
    * Creates a new scribble.
    *
+   * @param store Owning store.
    * @param scribbleID Scribble ID, defaults to a new ulid.
    */
-  constructor(scribbleID: ScribbleID = ulid()) {
-    makeAutoObservable<Scribble, 'toString'>(this, {
+  constructor(store: ScribblesStore, scribbleID: ScribbleID = ulid()) {
+    makeAutoObservable<Scribble, 'toString'|'store'>(this, {
       scribbleID: false,
       toString: false as never,
+      store: false,
     });
     this.scribbleID = scribbleID;
+    this.store = store;
   }
 
   /**
    * Builds a scribble from a core scribble.
    *
+   * @param store Owning store.
    * @param coreScribble Source core scribble.
    * @returns New scribble.
    */
-  static fromCoreScribble(coreScribble: CoreScribble): Scribble {
+  static fromCoreScribble(store: ScribblesStore, coreScribble: CoreScribble): Scribble {
     const v = Version.fromCoreScribble(coreScribble);
-    const s = new Scribble(coreScribble.id);
+    const s = new Scribble(store, coreScribble.id);
     s.$versionsByID.set(v.versionID, v);
     s.$title = coreScribble.title;
 
@@ -67,11 +75,12 @@ export default class Scribble {
   /**
    * Builds a scribble from a protobuf message.
    *
+   * @param store Owning store.
    * @param spb Source protobuf message.
    * @returns New scribble.
    */
-  static fromProto(spb: pb.Scribble): Scribble {
-    const s = new Scribble(spb.getScribbleId());
+  static fromProto(store: ScribblesStore, spb: pb.Scribble): Scribble {
+    const s = new Scribble(store, spb.getScribbleId());
     s.$title = spb.getTitle() === '' ? undefined : spb.getTitle();
     spb.getVersionList().forEach((vpb) => {
       const v = Version.fromProto(vpb);

@@ -26,24 +26,44 @@ import unified from 'unified';
 import makeParser from './parser';
 import coreScribbles from '../../scribbles';
 import Scribble from '../../store/scribble/scribble';
-import { CoreScribble } from '../../store/interface/core_scribble';
 
-const ParserScribblesPrefix = '$:core/parser/';
+class ScribblesStore {
+  readonly scribbles: Scribble[];
 
-function loadScribbles(scribbles: CoreScribble[]) {
-  const resolvedScribbles = [];
-  for (const coreScribble of scribbles) {
-    if (coreScribble.title?.startsWith(ParserScribblesPrefix)) {
-      const scribble = Scribble.fromCoreScribble(coreScribble);
-      resolvedScribbles.push(scribble);
+  constructor() {
+    const resolvedScribbles = [];
+    for (const coreScribble of coreScribbles) {
+      if (coreScribble.title?.startsWith('$:core/parser')) {
+        const scribble = Scribble.fromCoreScribble(this, coreScribble);
+        resolvedScribbles.push(scribble);
+      }
     }
+    this.scribbles = resolvedScribbles;
   }
-  return resolvedScribbles;
+
+  scribbleByTitle(title: string): Scribble | undefined {
+    return this.scribbles.find((scribble) => scribble.title === title);
+  }
+
+  requireScribble<T>(title: string): T {
+    const scribble = this.scribbleByTitle(title);
+    if (!scribble) {
+      throw Error(`failed to require scribble: '${title}': does not exist`);
+    }
+    return scribble.JSModule();
+  }
+
+  get parserScribbles(): Scribble[] {
+    return this.scribbles.filter(
+      (scribble) => scribble.latestStableVersion.computedMeta.tags.includes('$:core/parser'),
+    );
+  }
 }
 
-const parserScribbles = loadScribbles(coreScribbles);
+const mockStore = new ScribblesStore();
+
 autorun(() => {
-  for (const scribble of Object.values(parserScribbles)) {
+  for (const scribble of Object.values(mockStore.parserScribbles)) {
     scribble.JSModule();
     scribble.latestStableVersion.getMeta('parser');
   }
@@ -53,7 +73,7 @@ const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 function doParse(doc: string, rootNode = 'Document'): mdast.Node {
   if (rootParsers[rootNode] === undefined) {
     const parser = unified()
-      .use(makeParser, { parserScribbles, rootNode });
+      .use(makeParser, { parserScribbles: mockStore.parserScribbles, rootNode });
     rootParsers[rootNode] = parser;
   }
   const parser = rootParsers[rootNode];
@@ -98,23 +118,24 @@ function cleanupHtml(html: string): string {
     .replace(/ \/>/g, '>');
 }
 
-function testCommonmark(idx: number, todoReason?: string) {
+function testCommonmark(idx: number, todoReason?: string, only = false) {
   const spec = commonmarkTests[idx];
 
   if (todoReason) {
     test.todo(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`);
     return;
   }
-  test(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
+  const tf = only ? test.only : test;
+  tf(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
     const input = `${spec.markdown}\n\n`;
     const expected = cleanupHtml(spec.html);
 
     const parser = unified()
-      .use(makeParser, { parserScribbles })
+      .use(makeParser, { parserScribbles: mockStore.parserScribbles })
       .use(remarkHTML);
 
     const astParser = unified()
-      .use(makeParser, { parserScribbles });
+      .use(makeParser, { parserScribbles: mockStore.parserScribbles });
 
     function logParsed() {
       const node = astParser.parse(input);
@@ -138,23 +159,32 @@ function testCommonmark(idx: number, todoReason?: string) {
   });
 }
 
-function testCommonmarkSection(section: string, skips: Record<number, string> = {}, endAt?: number) {
+function testCommonmarkSection(section: string, skips: Record<number, string> = {}, endAt?: number, only?: number) {
   let count = 0;
   const finalIndex = endAt || commonmarkTests.length;
-  for (let i = 1; i < finalIndex; ++i) {
-    const spec = commonmarkTests[i];
-    if (spec.section !== section) {
-      // eslint-disable-next-line no-continue
-      continue;
-    }
 
-    testCommonmark(i, skips[i]);
-    ++count;
-  }
-  if (count === 0) {
-    throw Error(`no tests for section '${section}'`);
-  }
+  describe(section, () => {
+    for (let i = 1; i < finalIndex; ++i) {
+      const spec = commonmarkTests[i];
+      if (spec.section !== section) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      testCommonmark(i, skips[i], i === only);
+      ++count;
+    }
+    if (count === 0) {
+      throw Error(`no tests for section '${section}'`);
+    }
+  });
 }
+
+// 4.2 https://spec.commonmark.org/0.29/#atx-heading
+testCommonmarkSection('ATX headings', {
+  39: `TODO: code not implemented`,
+  47: `TODO: thematic break not implemented`,
+});
 
 // 4.8 https://spec.commonmark.org/0.29/#paragraphs
 testCommonmarkSection('Paragraphs', {

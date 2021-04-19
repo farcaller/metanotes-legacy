@@ -40,10 +40,10 @@ export default class Version {
   readonly versionID: VersionID;
 
   /** Version body if fetched, null otherwise. New versions are created with body set to an empty string. */
-  private $body: string | null = null;
+  private $body: string | null;
 
   /** Version metadata. */
-  private $meta: Map<string, string> = new Map();
+  private readonly $meta: Map<string, string>;
 
   /** Computed metadata. */
   private $computedMeta: ComputedMetadata;
@@ -53,12 +53,14 @@ export default class Version {
    *
    * @param versionID Version ID, defaults to a new ulid.
    */
-  constructor(versionID: VersionID = ulid()) {
+  constructor(versionID: VersionID = ulid(), meta: Map<string, string>, body?: string) {
     makeAutoObservable(this, {
       versionID: false,
     });
     this.versionID = versionID;
     this.$computedMeta = new ComputedMetadata(this);
+    this.$meta = meta;
+    this.$body = body || null;
   }
 
   /**
@@ -68,13 +70,11 @@ export default class Version {
    * @returns New version.
    */
   static fromCoreScribble(coreScribble: CoreScribble): Version {
-    const v = new Version(coreVersionForScribbleID(coreScribble.id));
-    v.$body = coreScribble.body;
     const m = new Map();
     for (const k of Object.keys(coreScribble.meta)) {
       m.set(k, coreScribble.meta[k]);
     }
-    v.$meta = m;
+    const v = new Version(coreVersionForScribbleID(coreScribble.id), m, coreScribble.body);
 
     return v;
   }
@@ -86,11 +86,9 @@ export default class Version {
    * @returns New version.
    */
   static fromProto(vpb: pb.Version): Version {
-    const v = new Version(vpb.getVersionId());
     const m = new Map();
     vpb.getMetaMap().forEach((val: string, key: string) => { m.set(key, val); });
-    v.$body = vpb.getTextBody();
-    v.$meta = m;
+    const v = new Version(vpb.getVersionId(), m, vpb.getTextBody());
     return v;
   }
 

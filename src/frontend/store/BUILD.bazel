@@ -31,3 +31,14 @@ ts_jest_test(
         "@npm//google-protobuf",
     ],
 )
+
+ts_jest_test(
+    name = "store_integration_test",
+    srcs = glob(["*.test.tsx"]),
+    deps = [
+        ":store",
+        "//src/common/api:api_web",
+        "@npm//@testing-library/react-native",
+        "@npm//google-protobuf",
+    ],
+)

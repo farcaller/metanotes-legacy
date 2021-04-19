@@ -18,7 +18,10 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
     ts_project(
         name = "%s_ts" % name,
         srcs = srcs,
-        deps = deps + ["@npm//@types/jest"],
+        deps = deps + [
+            "@npm//@types/jest",
+            "@npm//@types/react-native",
+        ],
         declaration = True,
         tsconfig = "//:tsconfig.json",
     )
@@ -38,10 +41,15 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
             ":%s_ts" % name,
             jest_config,
             "//:babel.config.json",
-            "@npm//babel-jest",
             "@npm//@babel/core",
+            "@npm//@babel/plugin-proposal-decorators",
             "@npm//@babel/preset-env",
+            "@npm//@types/react-native",
+            "@npm//babel-jest",
+            "@npm//babel-plugin-transform-typescript-metadata",
             "@npm//core-js",
+            "@npm//react-native",
+            "@npm//react-test-renderer",
         ] + deps,
         args = args,
         **kwargs

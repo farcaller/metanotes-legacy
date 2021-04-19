@@ -13,6 +13,7 @@
 // limitations under the License.
 
 module.exports = {
+  preset: 'react-native',
   testEnvironment: 'node',
   reporters: ['default'],
   testMatch: ['**/*.test.js'],

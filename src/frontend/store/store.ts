@@ -57,7 +57,7 @@ class ScribblesStore {
    */
   loadCoreScribbles(coreScribbles: CoreScribble[]): void {
     for (const coreScribble of coreScribbles) {
-      this.addScribble(Scribble.fromCoreScribble(coreScribble));
+      this.addScribble(Scribble.fromCoreScribble(this, coreScribble));
     }
   }
 
@@ -75,7 +75,7 @@ class ScribblesStore {
       const scribblePbs = await this.api.getAllMetadata();
       runInAction(() => {
         scribblePbs.forEach((spb) => {
-          const s = Scribble.fromProto(spb);
+          const s = Scribble.fromProto(this, spb);
           if (this.$scribblesByID.has(s.scribbleID)) {
             this.$scribblesByID.get(s.scribbleID)?.updateFrom(s);
           } else {

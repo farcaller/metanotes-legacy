@@ -129,6 +129,7 @@ export default class Scribble {
   JSModule = computedFn(function JSModule<T>(this: Scribble): T {
     return loadModule(this, {
       ...localsForScribble(this),
+      requireScribble: this.store.requireScribble.bind(this.store),
     });
   })
 

@@ -114,8 +114,12 @@ function expectParse(doc: string, expected: Node[]): void {
 function cleanupHtml(html: string): string {
   return beautify(html, { format: 'html' })
     .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
     .replace(/&#x3C;/g, '<')
-    .replace(/ \/>/g, '>');
+    .replace(/ \/>/g, '>')
+    // TODO: this one might be an artefact of remarkHTML.
+    .replace('\n\n</code>', '\n</code>');
 }
 
 function testCommonmark(idx: number, todoReason?: string, only = false) {
@@ -127,7 +131,7 @@ function testCommonmark(idx: number, todoReason?: string, only = false) {
   }
   const tf = only ? test.only : test;
   tf(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
-    const input = `${spec.markdown}\n\n`;
+    const input = `${spec.markdown}`;
     const expected = cleanupHtml(spec.html);
 
     const parser = unified()
@@ -137,14 +141,21 @@ function testCommonmark(idx: number, todoReason?: string, only = false) {
     const astParser = unified()
       .use(makeParser, { parserScribbles: mockStore.parserScribbles });
 
+    let outString: string;
+
     function logParsed() {
       const node = astParser.parse(input);
       const processedNode = parser.runSync(node);
-      // eslint-disable-next-line no-console
-      console.warn(`spec #${idx}: ${JSON.stringify(processedNode, null, 2)}`);
+      console.warn(`spec #${idx}:\n`
+        + `input:    ${JSON.stringify(input)}\n`
+        + `expected: ${JSON.stringify(expected)}\n`
+        + `received: ${JSON.stringify(outString)}\n`
+        + `node:     ${JSON.stringify(processedNode, null, 2)
+          .split('\n').map((l) => `          ${l}`)
+          .join('\n')
+          .trim()}\n`);
     }
 
-    let outString;
     try {
       const output = parser.processSync(input);
       outString = cleanupHtml(output.contents as string);
@@ -182,7 +193,7 @@ function testCommonmarkSection(section: string, skips: Record<number, string> = 
 
 // 4.1 https://spec.commonmark.org/0.29/#thematic-breaks
 testCommonmarkSection('Thematic breaks', {
-  18: `TODO: code not implemented`,
+  18: `TODO: indented code not implemented`,
   27: `TODO: list not implemented`,
   29: `TODO: header not implemented`,
   30: `TODO: list not implemented`,
@@ -191,21 +202,31 @@ testCommonmarkSection('Thematic breaks', {
 
 // 4.2 https://spec.commonmark.org/0.29/#atx-heading
 testCommonmarkSection('ATX headings', {
-  39: `TODO: code not implemented`,
+  39: `TODO: indented code not implemented`,
   47: `TODO: thematic break not implemented`,
+});
+
+// 4.5 https://spec.commonmark.org/0.29/#fenced-code-blocks
+testCommonmarkSection('Fenced code blocks', {
+  91: `TODO: inline code not implemented`,
+  98: `TODO: blockquote not implemented`,
+  104: `TODO: indented code not implemented`,
+  108: `TODO: inline code not implemented`,
+  111: `TODO: header not implemented`,
+  115: `TODO: inline code not implemented`,
 });
 
 // 4.8 https://spec.commonmark.org/0.29/#paragraphs
 testCommonmarkSection('Paragraphs', {
   // 193: TODO: not sure this WAI for react-native
-  195: `TODO: indented code blocks not implemented`,
+  195: `TODO: indented code not implemented`,
 });
 
 // 5.2 https://spec.commonmark.org/0.29/#list-items
 testCommonmarkSection('List items', {
-  223: `TODO: code & blockquote not implemented`,
-  224: `TODO: code & blockquote not implemented`,
-  227: `TODO: code not implemented`,
+  223: `TODO: indented code & blockquote not implemented`,
+  224: `TODO: indented code & blockquote not implemented`,
+  227: `TODO: indented code not implemented`,
 }, 229);
 
 // 6.4 https://spec.commonmark.org/0.29/#emphasis-and-strong-emphasis
@@ -218,8 +239,8 @@ testCommonmarkSection('Emphasis and strong emphasis', {
   473: `TODO: links not implemented`,
   475: `TODO: links not implemented`,
   476: `TODO: links not implemented`,
-  477: `TODO: code not implemented`,
-  478: `TODO: code not implemented`,
+  477: `TODO: inline code not implemented`,
+  478: `TODO: inline code not implemented`,
   474: `TODO: inline html isn't supported so WAI?`,
   479: `TODO: links not implemented`,
   480: `TODO: links not implemented`,
@@ -227,8 +248,8 @@ testCommonmarkSection('Emphasis and strong emphasis', {
 
 // 6.9 https://spec.commonmark.org/0.29/#hard-line-breaks
 testCommonmarkSection('Hard line breaks', {
-  637: `TODO: code not implemented`,
-  638: `TODO: code not implemented`,
+  637: `TODO: inline code not implemented`,
+  638: `TODO: inline code not implemented`,
   639: `TODO: links not implemented`,
   640: `TODO: links not implemented`,
   643: `TODO: headers not implemented`,

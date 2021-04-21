@@ -27,6 +27,7 @@ function PartialBlockContent(r) {
     r.AtxHeading,
     r.ThematicBreak,
     r.List,
+    r.FencedCodeBlock,
     r.PartialParagraph,
   );
 }

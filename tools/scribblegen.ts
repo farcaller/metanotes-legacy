@@ -31,11 +31,12 @@ function processScribble(sourceFile: string, source: string): string {
 
   // check the magic
   if (lines.shift() !== '/* attributes *') {
-    throw Error('magic not found');
+    throw Error(`${sourceFile}: magic not found`);
   }
 
   const meta = {} as { [key: string]: string };
   while (lines.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const l = lines.shift()!;
     if (l === ' */') {
       break;
@@ -43,16 +44,16 @@ function processScribble(sourceFile: string, source: string): string {
 
     const groups = l.match(/ \*\s+([^:]+)\s*:\s*(.*)/);
     if (!groups) {
-      throw Error(`cannot parse attibute from "${l}"`);
+      throw Error(`${sourceFile}: cannot parse attibute from "${l}"`);
     }
     const [_, k, v] = groups;
     meta[k] = v;
   }
   if (!meta.id) {
-    throw Error('"id" not found in the metadata');
+    throw Error(`${sourceFile}: "id" not found in the metadata`);
   }
   if (!meta['content-type']) {
-    throw Error('"content-type" not found in the metadata');
+    throw Error(`${sourceFile}: "content-type" not found in the metadata`);
   }
   const { id } = meta;
   delete meta.id;

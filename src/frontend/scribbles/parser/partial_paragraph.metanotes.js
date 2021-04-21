@@ -15,9 +15,9 @@
 /* attributes *
  * id: 01F3JX7YEA0KH4F1HT07KWE9A8
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Paragraph
+ * title: $:core/parser/PartialParagraph
  * tags: ['$:core/parser']
- * parser: Paragraph
+ * parser: PartialParagraph
  */
 
 const { string } = Parsimmon;
@@ -59,11 +59,17 @@ function generateBreaks(phrasingContents) {
   return phrasingContents;
 }
 
-function Paragraph(r) {
-  return r.PhrasingContent.many().skip(string('\n')).map((phrasingContents) => ({
-    type: 'paragraph',
-    children: removeWhitespace(generateBreaks(phrasingContents).flat()),
-  }));
+function PartialParagraph(r) {
+  return r.PhrasingContent.many().skip(string('\n')).map((phrasingContents) => {
+    const children = removeWhitespace(generateBreaks(phrasingContents).flat());
+    if (children.length > 0) {
+      return {
+        type: 'partial_paragraph',
+        children,
+      };
+    }
+    return { type: 'empty_line' };
+  });
 }
 
-export default Paragraph;
+export default PartialParagraph;

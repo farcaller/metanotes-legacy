@@ -17,6 +17,18 @@ import * as mdast from 'ts-mdast';
 import Parsimmon, { Language, Parser } from 'parsimmon';
 import { Scribble } from '../../store/interface/scribble';
 
+interface RebuildParserArgs {
+  indent: number;
+  rebuildParser?: (args: RebuildParserArgs) => Parsimmon.Language;
+}
+
+type ParserFunc = (r: Language) => Parser<never>;
+type ParserGeneratorFunc = (args: RebuildParserArgs) => ParserFunc;
+
+function isParserGenratorFunc(f: unknown): f is ParserGeneratorFunc {
+  return (f as Record<string, unknown>).generatorFunc === true;
+}
+
 /**
  * Builds the Parsimmon language from the passed in scribbles.
  *
@@ -25,18 +37,33 @@ import { Scribble } from '../../store/interface/scribble';
  * @returns Parsimmon Language.
  */
 export function buildLanguage(parserScribbles: Scribble[]): Parsimmon.Language {
-  type ParserFunc = (r: Language) => Parser<never>;
-
-  const parserFuncs = {} as { [key: string]: ParserFunc };
+  const parserFuncs = {} as { [key: string]: ParserFunc | ParserGeneratorFunc };
   for (const scribble of parserScribbles) {
     const parserName = scribble.latestStableVersion.getMeta('parser');
     if (parserName === undefined) {
       console.warn(`scribble ${scribble} doesn't have the parser name set, ignoring.`);
       continue;
     }
-    parserFuncs[parserName] = scribble.JSModule<ParserFunc>();
+    parserFuncs[parserName] = scribble.JSModule<ParserFunc | ParserGeneratorFunc>();
   }
-  return Parsimmon.createLanguage(parserFuncs);
+
+  function rebuildParser(args: RebuildParserArgs) {
+    const rebuildArgs = {
+      ...args,
+      rebuildParser,
+    };
+    const reParserFuncs = {} as { [key: string]: ParserFunc };
+    for (const k of Object.keys(parserFuncs)) {
+      const func = parserFuncs[k];
+      if (isParserGenratorFunc(func)) {
+        reParserFuncs[k] = func(rebuildArgs);
+      } else {
+        reParserFuncs[k] = func;
+      }
+    }
+    return Parsimmon.createLanguage(reParserFuncs);
+  }
+  return rebuildParser({ indent: 0 });
 }
 
 export interface ParseOptions {

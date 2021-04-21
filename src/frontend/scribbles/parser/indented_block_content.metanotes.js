@@ -13,20 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3JWKAJRFYYYX0AX5YQ25TAX
+ * id: 01F3NPY65KK505A2AYKGHDJHEN
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlockContent
+ * title: $:core/parser/IndentedBlockContent
  * tags: ['$:core/parser']
- * parser: BlockContent
+ * parser: IndentedBlockContent
  */
 
-const { alt } = Parsimmon;
+const { alt, seqMap, string } = Parsimmon;
 
 /**
  * Joins the adjascent paragraphs together.
  *
- * @param blocks Array of BlockContent blocks.
- * @returns Array of BlockContent blocks.
+ * @param blocks Array of IndentedBlockContent blocks.
+ * @returns Array of IndentedBlockContent blocks.
  */
 function collapseParagraphs(blocks) {
   return blocks.reduce((acc, curr) => {
@@ -72,14 +72,32 @@ function finalizeParagraphs(blocks) {
   return blocks;
 }
 
-function BlockContent(r) {
-  return alt(
-    r.AtxHeading,
-    r.ThematicBreak,
-    r.List,
-    r.Paragraph,
-  ).many().map((blocks) => finalizeParagraphs(collapseParagraphs(blocks))
-    .filter((block) => block.type));
+function IndentedBlockContentGeneratorFunc({ indent }) {
+  function IndentedBlockContent(r) {
+    return seqMap(
+      alt(
+        r.AtxHeading,
+        r.ThematicBreak,
+        r.List,
+        r.Paragraph,
+      ),
+      alt(
+        r.IndentSame.then(alt(
+          r.AtxHeading,
+          r.ThematicBreak,
+          r.List,
+          r.Paragraph,
+        )),
+        string('\n').map(() => ({
+          type: 'paragraph',
+          children: [],
+        })),
+      ).many(),
+      (first, rest) => finalizeParagraphs(collapseParagraphs([first, ...rest])).filter((block) => block.type),
+    );
+  }
+  return IndentedBlockContent;
 }
+IndentedBlockContentGeneratorFunc.generatorFunc = true;
 
-export default BlockContent;
+export default IndentedBlockContentGeneratorFunc;

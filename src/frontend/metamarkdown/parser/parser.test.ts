@@ -180,6 +180,15 @@ function testCommonmarkSection(section: string, skips: Record<number, string> = 
   });
 }
 
+// 4.1 https://spec.commonmark.org/0.29/#thematic-breaks
+testCommonmarkSection('Thematic breaks', {
+  18: `TODO: code not implemented`,
+  27: `TODO: list not implemented`,
+  29: `TODO: header not implemented`,
+  30: `TODO: list not implemented`,
+  31: `TODO: list not implemented`,
+});
+
 // 4.2 https://spec.commonmark.org/0.29/#atx-heading
 testCommonmarkSection('ATX headings', {
   39: `TODO: code not implemented`,
@@ -191,6 +200,13 @@ testCommonmarkSection('Paragraphs', {
   // 193: TODO: not sure this WAI for react-native
   195: `TODO: indented code blocks not implemented`,
 });
+
+// 5.2 https://spec.commonmark.org/0.29/#list-items
+testCommonmarkSection('List items', {
+  223: `TODO: code & blockquote not implemented`,
+  224: `TODO: code & blockquote not implemented`,
+  227: `TODO: code not implemented`,
+}, 229);
 
 // 6.4 https://spec.commonmark.org/0.29/#emphasis-and-strong-emphasis
 testCommonmarkSection('Emphasis and strong emphasis', {

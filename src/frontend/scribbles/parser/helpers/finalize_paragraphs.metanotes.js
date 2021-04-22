@@ -32,53 +32,60 @@ function removeParagraphTrailingBreak(block) {
 const balanceEmphasisChildren = requireScribble('$:core/parser-helpers/balanceEmphasisChildren');
 const collapseText = requireScribble('$:core/parser-helpers/collapseText');
 
-function finalizeParagraphs(blocks) {
+function finalizeParagraphs(r, blocks) {
   const newBlocks = [];
   let currParagraph = null;
   for (const block of blocks) {
-    if (block.type === 'partial_paragraph') {
-      if (currParagraph !== null) {
-        currParagraph.children = currParagraph.children.concat(
-          { type: 'text', value: '\n' },
-          block.children,
-        );
-      } else {
-        currParagraph = block;
-        currParagraph.type = 'paragraph';
-      }
-    } else if (block.type === 'partial_setext_heading') {
-      if (currParagraph !== null) {
-        removeParagraphTrailingBreak(currParagraph);
-        balanceEmphasisChildren(currParagraph);
-        collapseText(currParagraph);
-        newBlocks.push({
-          type: 'heading',
-          depth: block.depth,
-          children: currParagraph.children,
-        });
-        currParagraph = null;
-      } else if (block.originalValue
-        .match(/[^\S\r\n]{0,3}((\*[^\S\r\n]*){3,}|(-[^\S\r\n]*){3,}|(_[^\S\r\n]*){3,})\n/)) {
-        newBlocks.push({
-          type: 'thematicBreak',
-        });
-      } else {
-        currParagraph = {
-          type: 'paragraph',
-          children: [{ type: 'text', value: block.originalValue }],
-        };
-      }
-    } else {
-      if (currParagraph !== null) {
-        removeParagraphTrailingBreak(currParagraph);
-        balanceEmphasisChildren(currParagraph);
-        collapseText(currParagraph);
-        newBlocks.push(currParagraph);
-        currParagraph = null;
-      }
-      if (block.type !== 'empty_line') {
-        newBlocks.push(block);
-      }
+    switch (block.type) {
+      case 'partial_paragraph':
+        // concatenate paragraps together
+        if (currParagraph !== null) {
+          currParagraph.children = currParagraph.children.concat(
+            { type: 'text', value: '\n' },
+            block.children,
+          );
+        } else {
+          currParagraph = block;
+          currParagraph.type = 'paragraph';
+        }
+        break;
+      case 'partial_setext_heading':
+        if (currParagraph !== null) {
+          // a setext header is basically a paragraph with an underline, convert the
+          // currParagraph into a header
+          removeParagraphTrailingBreak(currParagraph);
+          balanceEmphasisChildren(currParagraph);
+          collapseText(currParagraph);
+          newBlocks.push({
+            type: 'heading',
+            depth: block.depth,
+            children: currParagraph.children,
+          });
+          currParagraph = null;
+        } else if (r.ThematicBreak.parse(block.originalValue).status === true) {
+          // if it fits a thematic break regexp then it's a thematic break
+          newBlocks.push({
+            type: 'thematicBreak',
+          });
+        } else {
+          // otheriwse it's text
+          currParagraph = {
+            type: 'paragraph',
+            children: [{ type: 'text', value: block.originalValue }],
+          };
+        }
+        break;
+      default:
+        if (currParagraph !== null) {
+          removeParagraphTrailingBreak(currParagraph);
+          balanceEmphasisChildren(currParagraph);
+          collapseText(currParagraph);
+          newBlocks.push(currParagraph);
+          currParagraph = null;
+        }
+        if (block.type !== 'empty_line') {
+          newBlocks.push(block);
+        }
     }
   }
   if (currParagraph !== null) {

@@ -131,7 +131,8 @@ function testCommonmark(idx: number, todoReason?: string, only = false) {
   }
   const tf = only ? test.only : test;
   tf(`it passes the commonmark spec #${idx}: ${JSON.stringify(spec.markdown)}`, () => {
-    const input = `${spec.markdown}`;
+    const input = `${spec.markdown}`
+      .replace(/→/g, '\t');
     const expected = cleanupHtml(spec.html);
 
     const parser = unified()
@@ -172,10 +173,10 @@ function testCommonmark(idx: number, todoReason?: string, only = false) {
 
 function testCommonmarkSection(section: string, skips: Record<number, string> = {}, endAt?: number, only?: number) {
   let count = 0;
-  const finalIndex = endAt || commonmarkTests.length;
+  const finalIndex = endAt || commonmarkTests.length - 1;
 
   describe(section, () => {
-    for (let i = 1; i < finalIndex; ++i) {
+    for (let i = 1; i <= finalIndex; ++i) {
       const spec = commonmarkTests[i];
       if (spec.section !== section) {
         // eslint-disable-next-line no-continue
@@ -206,6 +207,15 @@ testCommonmarkSection('ATX headings', {
   47: `TODO: thematic break not implemented`,
 });
 
+// 4.3 https://spec.commonmark.org/0.29/#setext-headings
+testCommonmarkSection('Setext headings', {
+  55: `TODO: indented code not implemented`,
+  62: `TODO: blockquote not implemented`,
+  63: `TODO: blockquote not implemented`,
+  70: `TODO: indented code not implemented`,
+  71: `TODO: blockquote not implemented`,
+});
+
 // 4.5 https://spec.commonmark.org/0.29/#fenced-code-blocks
 testCommonmarkSection('Fenced code blocks', {
   91: `TODO: inline code not implemented`,
@@ -227,7 +237,7 @@ testCommonmarkSection('List items', {
   223: `TODO: indented code & blockquote not implemented`,
   224: `TODO: indented code & blockquote not implemented`,
   227: `TODO: indented code not implemented`,
-}, 229);
+}, 228);
 
 // 6.4 https://spec.commonmark.org/0.29/#emphasis-and-strong-emphasis
 testCommonmarkSection('Emphasis and strong emphasis', {

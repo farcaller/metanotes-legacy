@@ -46,6 +46,28 @@ function finalizeParagraphs(blocks) {
         currParagraph = block;
         currParagraph.type = 'paragraph';
       }
+    } else if (block.type === 'partial_setext_heading') {
+      if (currParagraph !== null) {
+        removeParagraphTrailingBreak(currParagraph);
+        balanceEmphasisChildren(currParagraph);
+        collapseText(currParagraph);
+        newBlocks.push({
+          type: 'heading',
+          depth: block.depth,
+          children: currParagraph.children,
+        });
+        currParagraph = null;
+      } else if (block.originalValue
+        .match(/[^\S\r\n]{0,3}((\*[^\S\r\n]*){3,}|(-[^\S\r\n]*){3,}|(_[^\S\r\n]*){3,})\n/)) {
+        newBlocks.push({
+          type: 'thematicBreak',
+        });
+      } else {
+        currParagraph = {
+          type: 'paragraph',
+          children: [{ type: 'text', value: block.originalValue }],
+        };
+      }
     } else {
       if (currParagraph !== null) {
         removeParagraphTrailingBreak(currParagraph);

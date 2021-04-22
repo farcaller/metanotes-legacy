@@ -13,24 +13,21 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3STC4EYBK8A7CMRDHB526PZ
+ * id: 01F3TV18AEB64S2QVDQ4RABRRS
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/PartialBlockContent
+ * title: $:core/parser/SetextHeading
  * tags: ['$:core/parser']
- * parser: PartialBlockContent
+ * parser: SetextHeading
  */
 
-const { alt } = Parsimmon;
+const { regexp } = Parsimmon;
 
-function PartialBlockContent(r) {
-  return alt(
-    r.AtxHeading,
-    r.SetextHeading,
-    r.ThematicBreak,
-    r.List,
-    r.FencedCodeBlock,
-    r.PartialParagraph,
-  );
+function SetextHeading(r) {
+  return regexp(/ {0,3}/).then(regexp(/(=+|-+)[^\S\n\r]*\n/)).map((heading) => ({
+    type: 'partial_setext_heading',
+    depth: heading[0] === '=' ? 1 : 2,
+    originalValue: heading,
+  }));
 }
 
-export default PartialBlockContent;
+export default SetextHeading;

@@ -25,7 +25,7 @@ const { string, notFollowedBy, regexp, alt, eof, seq } = Parsimmon;
 function FencedCodeBlock(r) {
   return seq(regexp(/ {0,3}/), regexp(/~{3,}|`{3,}/), regexp(/[^\n]*/), string('\n'))
     .chain(([indent, delimeterRun, infoString]) => {
-      infoString = infoString.trim();
+      const trimmedInfoString = infoString.trim();
       const indentLength = indent.length;
       const delimeterChar = delimeterRun[0];
       const delimeterLength = delimeterRun.length;
@@ -47,13 +47,11 @@ function FencedCodeBlock(r) {
               regexp(/ {0,3}/).then(regexp(closingDelimeterRegex)),
             ),
           )
-          .map((lines) => {
-            return {
-              type: 'code',
-              value: lines.join(''),
-              lang: infoString.length > 0 ? infoString : undefined,
-            };
-          }),
+          .map((lines) => ({
+            type: 'code',
+            value: lines.join(''),
+            lang: trimmedInfoString.length > 0 ? trimmedInfoString : undefined,
+          })),
         eof.map(() => ({
           type: 'code',
           value: '',

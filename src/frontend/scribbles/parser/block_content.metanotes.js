@@ -23,7 +23,7 @@
 const finalizeParagraphs = requireScribble('$:core/parser-helpers/finalizeParagraphs');
 
 function BlockContent(r) {
-  return r.PartialBlockContent.many().map((blocks) => finalizeParagraphs(blocks));
+  return r.PartialBlockContent.many().map((blocks) => finalizeParagraphs(r, blocks));
 }
 
 export default BlockContent;

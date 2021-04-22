@@ -31,7 +31,7 @@ function IndentedBlockContent(r) {
       r.IndentSame.then(r.PartialBlockContent),
       string('\n').map(() => ({ type: 'empty_line' })),
     ).many(),
-    (first, rest) => finalizeParagraphs([first, ...rest]),
+    (first, rest) => finalizeParagraphs(r, [first, ...rest]),
   );
 }
 

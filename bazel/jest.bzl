@@ -23,7 +23,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
             "@npm//@types/react-native",
         ],
         declaration = True,
-        tsconfig = "//:tsconfig.json",
+        tsconfig = "//:tsconfig.jest.json",
     )
     args = [
         "--no-cache",

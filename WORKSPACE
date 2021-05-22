@@ -24,11 +24,17 @@ bazel_skylib_workspace()
 # nodejs
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "1134ec9b7baee008f1d54f0483049a97e53a57cd3913ec9d6db625549c98395a",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.4.0/rules_nodejs-3.4.0.tar.gz"],
+    sha256 = "10f534e1c80f795cffe1f2822becd4897754d18564612510c59b3c73544ae7c6",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.5.0/rules_nodejs-3.5.0.tar.gz"],
 )
 
-load("@build_bazel_rules_nodejs//:index.bzl", "yarn_install")
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
+
+node_repositories(
+    node_version = "16.1.0",
+    package_json = ["//:package.json"],
+    yarn_version = "1.22.10",
+)
 
 yarn_install(
     name = "npm",

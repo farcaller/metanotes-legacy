@@ -16,9 +16,15 @@ To run Metanotes locally in your browser you need to spin up 3 components: the f
 $ git clone https://github.com/farcaller/metanotes.git
 $ cd metanotes
 $ yarn                   # installs all the dependencies
-$ yarn watch:backend     # runs the backend with auto-reload
-$ yarn run:grpcwebproxy  # runs the gRPC-Web proxy
-$ yarn watch:web         # runs the frontend webserver
+$ yarn start             # start all components
+```
+
+You can start each component individually:
+
+```
+$ yarn start backend      # runs the backend with auto-reload
+$ yarn start grpcwebproxy # runs the gRPC-Web proxy
+$ yarn start web          # runs the frontend webserver
 ```
 
 You can access the dev instance at [http://127.0.0.1:8080/](http://127.0.0.1:8080/).

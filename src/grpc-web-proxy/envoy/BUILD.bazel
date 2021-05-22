@@ -3,7 +3,6 @@ load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_commit_la
 
 package(default_visibility = ["//visibility:public"])
 
-# TODO: this is broken under osx devcontainers
 container_run_and_commit_layer(
     name = "ca_certificates",
     commands = ["apk --no-cache add ca-certificates"],
@@ -12,6 +11,10 @@ container_run_and_commit_layer(
         "/usr/bin/env",
     ],
     image = "@envoy//image",
+    # TODO: only works on linux
+    target_compatible_with = [
+        "@platforms//os:linux",
+    ],
 )
 
 container_image(

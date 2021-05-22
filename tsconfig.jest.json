@@ -1,0 +1,35 @@
+{
+  // TODO: inherit from the main config somehow
+  "compilerOptions": {
+    "lib": ["ES2017"],
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "metanotes/*": [
+        "*",
+        "dist/bin/*"
+      ],
+    },
+    "declaration": true,
+    "inlineSourceMap": true,
+    "jsx": "react",
+    "rootDirs": [
+      ".",
+      "./bazel-out/darwin-fastbuild/bin",
+      "./bazel-out/k8-fastbuild/bin",
+      "./bazel-out/x64_windows-fastbuild/bin",
+      "./bazel-out/darwin-dbg/bin",
+      "./bazel-out/k8-dbg/bin",
+      "./bazel-out/x64_windows-dbg/bin",
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types",
+    ]
+  },
+}

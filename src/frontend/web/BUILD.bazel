@@ -58,6 +58,7 @@ live_server(
     tags = ["ibazel_notify_changes"],
     templated_args = [
         "./src/frontend/web",
+        "--port=8080",
         "--no-browser",
         "--wait=1000",
         "--entry-file=index-dev.html",

@@ -41,7 +41,7 @@ yarn_install(
     data = [
         # react-native-paper tries to be smart abot an optional react-native-vector-icons import.
         # Unfortunately that breaks rollup, so we replace the optional import with a concrete one.
-        "//:patches/react-native-paper+4.7.2.patch",
+        "//:patches/react-native-paper+4.8.1.patch",
 
         # live-server was last updated in 2018 :-(
         "//:patches/live-server+1.2.1.patch",

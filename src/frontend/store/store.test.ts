@@ -23,9 +23,10 @@ test('it returns core scribbles by id', () => {
 
   store.loadCoreScribbles([{
     id: '01F35516BMJFC42SGG5VTPSWJV',
-    title: 'test',
     body: 'hello',
-    meta: {},
+    meta: {
+      'mn-title': 'test',
+    },
   }]);
 
   expect(store.scribbleByID('01F35516BMJFC42SGG5VTPSWJV')?.title).toEqual('test');
@@ -36,9 +37,10 @@ test('it returns core scribbles by title', () => {
 
   store.loadCoreScribbles([{
     id: '01F35516BMJFC42SGG5VTPSWJV',
-    title: 'test',
     body: 'hello',
-    meta: {},
+    meta: {
+      'mn-title': 'test',
+    },
   }]);
 
   expect(store.scribbleByTitle('test')?.scribbleID).toEqual('01F35516BMJFC42SGG5VTPSWJV');
@@ -52,11 +54,11 @@ describe('fetchScribbles', () => {
       getAllMetadata(): Promise<pb.Scribble[]> {
         const spb = new pb.Scribble();
         spb.setScribbleId('01F35516BMJFC42SGG5VTPSWJV');
-        spb.setTitle('test');
         const vpb = new pb.Version();
         vpb.setVersionId('01F357DS7D3VKNQYB3EXJF265Q');
         vpb.setTextBody('hello');
         vpb.getMetaMap().set('abc', 'def');
+        vpb.getMetaMap().set('mn-title', 'remote title');
         spb.setVersionList([vpb]);
         return Promise.resolve([spb]);
       },
@@ -71,22 +73,23 @@ describe('fetchScribbles', () => {
 
     await store.fetchScribbles();
 
-    expect(store.scribbleByID('01F35516BMJFC42SGG5VTPSWJV')?.title).toEqual('test');
+    expect(store.scribbleByID('01F35516BMJFC42SGG5VTPSWJV')?.title).toEqual('remote title');
   });
 
   test('it shadows the core scribble version on fetch', async () => {
     const store = new ScribbleStore(api);
     store.loadCoreScribbles([{
       id: '01F35516BMJFC42SGG5VTPSWJV',
-      title: 'core',
       body: 'hello',
-      meta: {},
+      meta: {
+        'mn-title': 'core',
+      },
     }]);
 
     await store.fetchScribbles();
 
     expect((store.fetchStatus as FetchFailed).error).toBeUndefined();
-    expect(store.scribbleByID('01F35516BMJFC42SGG5VTPSWJV')?.title).toEqual('test');
+    expect(store.scribbleByID('01F35516BMJFC42SGG5VTPSWJV')?.title).toEqual('remote title');
   });
 });
 
@@ -98,9 +101,11 @@ describe('scribblesByTag', () => {
   });
 
   const makeScribble = (id: string, title?: string, meta: { [key: string]: string } = {}) => {
+    if (title) {
+      meta['mn-title'] = title;
+    }
     store.loadCoreScribbles([{
       id,
-      title,
       body: '',
       meta,
     }]);

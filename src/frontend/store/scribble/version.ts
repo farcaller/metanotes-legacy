@@ -20,6 +20,7 @@ import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import ComputedMetadata from './computed_metadata';
+import { Version as VersionInterface } from '../interface/version';
 
 /**
  * Generates a costant VersionID for the given ScribbleID.
@@ -35,7 +36,7 @@ function coreVersionForScribbleID(scribbleID: ScribbleID): VersionID {
 /**
  * Mobx model for the scribble version.
  */
-export default class Version {
+export default class Version implements VersionInterface {
   /** Version ID. */
   readonly versionID: VersionID;
 
@@ -52,6 +53,8 @@ export default class Version {
    * Creates a new scribble version.
    *
    * @param versionID Version ID, defaults to a new ulid.
+   * @param meta Version metadata.
+   * @param body Optional version body. If there's no body the version isn't fully fetched.
    */
   constructor(versionID: VersionID = ulid(), meta: Map<string, string>, body?: string) {
     makeAutoObservable(this, {
@@ -108,5 +111,9 @@ export default class Version {
 
   get computedMeta(): ComputedMetadata {
     return this.$computedMeta;
+  }
+
+  get title(): string {
+    return this.getMeta('mn-title') ?? '';
   }
 }

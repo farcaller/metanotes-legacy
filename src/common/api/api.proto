@@ -26,8 +26,7 @@ message Version {
 
 message Scribble {
   string scribble_id = 1;
-  string title = 2;
-  repeated Version version = 3;
+  repeated Version version = 2;
 }
 
 message GetScribbleRequest {

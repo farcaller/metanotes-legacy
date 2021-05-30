@@ -21,11 +21,12 @@ import { CoreScribble } from './interface/core_scribble';
 import { ScribbleID } from './interface/ids';
 import Scribble from './scribble/scribble';
 import scribblesByTag from './tagging';
+import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
 
 /**
  * The mobx store for scribbles, both core and remote.
  */
-class ScribblesStore {
+class ScribblesStore implements ScribblesStoreInterface {
   /** Backend API interface. */
   private api: StorageAPI;
 
@@ -145,12 +146,12 @@ class ScribblesStore {
     if (this.$scribblesByID.has(scribble.scribbleID)) {
       throw Error(`attempted to insert scribble ${scribble.scribbleID} when such id already exists`);
     }
-    if (title !== undefined && this.$scribblesByTitle.has(title)) {
+    if (title !== '' && this.$scribblesByTitle.has(title)) {
       throw Error(`attempted to insert scribble ${scribble.scribbleID} with title '${title}' `
                    + `when such title already exists`);
     }
     this.$scribblesByID.set(scribble.scribbleID, scribble);
-    if (title !== undefined) {
+    if (title !== '') {
       this.$scribblesByTitle.set(title, scribble);
     }
   }

@@ -26,6 +26,7 @@ import unified from 'unified';
 import makeParser from './parser';
 import coreScribbles from '../../scribbles';
 import Scribble from '../../store/scribble/scribble';
+import { ScribblesStore as ScribblesStoreInterface } from '../../store/interface/store';
 
 class ScribblesStore {
   readonly scribbles: Scribble[];
@@ -33,8 +34,8 @@ class ScribblesStore {
   constructor() {
     const resolvedScribbles = [];
     for (const coreScribble of coreScribbles) {
-      if (coreScribble.title?.startsWith('$:core/parser')) {
-        const scribble = Scribble.fromCoreScribble(this, coreScribble);
+      if (coreScribble.meta['mn-title']?.startsWith('$:core/parser')) {
+        const scribble = Scribble.fromCoreScribble(this as unknown as ScribblesStoreInterface, coreScribble);
         resolvedScribbles.push(scribble);
       }
     }

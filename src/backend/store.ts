@@ -37,7 +37,7 @@ export default class Store {
 
     this.getScribbleStmt = this.db.prepare(`
 SELECT
-    scribble_id, title
+    scribble_id
 FROM
     scribbles
 WHERE
@@ -54,9 +54,6 @@ WHERE
 
     const scribble = new pb.Scribble();
     scribble.setScribbleId(scribbleRow.scribble_id);
-    if (scribbleRow.title) {
-      scribble.setTitle(scribbleRow.title);
-    }
 
     const stmt = this.db.prepare(`
       SELECT
@@ -83,7 +80,7 @@ WHERE
     const scribbles = new Map<string, pb.Scribble>();
     for (const row of this.db.prepare(`
 SELECT
-    scribbles.scribble_id AS scribble_id, MAX(version_id) AS version_id, title AS title, meta AS meta
+    scribbles.scribble_id AS scribble_id, MAX(version_id) AS version_id, meta AS meta
 FROM
     scribbles
 INNER JOIN
@@ -94,7 +91,7 @@ GROUP BY
     scribbles.scribble_id
 UNION
 SELECT
-    scribbles.scribble_id AS scribble_id, MAX(version_id) AS version_id, title AS title, meta AS meta
+    scribbles.scribble_id AS scribble_id, MAX(version_id) AS version_id, meta AS meta
 FROM
     scribbles
 INNER JOIN
@@ -108,9 +105,6 @@ GROUP BY
       if (!scribble) {
         scribble = new pb.Scribble();
         scribble.setScribbleId(row.scribble_id);
-        if (row.title) {
-          scribble.setTitle(row.title);
-        }
         scribbles.set(row.scribble_id, scribble);
       }
       const version = new pb.Version();

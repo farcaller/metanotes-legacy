@@ -24,9 +24,8 @@ describe('fromCoreScribble', () => {
   beforeEach(() => {
     coreScribble = {
       id: '01F35516BMJFC42SGG5VTPSWJV',
-      title: 'test',
       body: 'hello',
-      meta: { abc: 'def' },
+      meta: { abc: 'def', 'mn-title': 'test' },
     };
   });
 
@@ -57,11 +56,11 @@ describe('fromProto', () => {
   beforeEach(() => {
     spb = new pb.Scribble();
     spb.setScribbleId('01F35516BMJFC42SGG5VTPSWJV');
-    spb.setTitle('test');
     const vpb = new pb.Version();
     vpb.setVersionId('01F357DS7D3VKNQYB3EXJF265Q');
     vpb.setTextBody('hello');
     vpb.getMetaMap().set('abc', 'def');
+    vpb.getMetaMap().set('mn-title', 'test');
     spb.setVersionList([vpb]);
   });
 
@@ -73,10 +72,10 @@ describe('fromProto', () => {
   });
 
   test('it unsets the scribble title if it came empty from the proto', () => {
-    spb.setTitle('');
+    spb.getVersionList()[0].getMetaMap().del('mn-title');
     const scribble = Scribble.fromProto(undefined as unknown as ScribblesStore, spb);
 
-    expect(scribble.title).toBeUndefined();
+    expect(scribble.title).toEqual('');
   });
 
   test('it builds a version from a proto', () => {
@@ -93,9 +92,8 @@ describe('JSModule', () => {
     const store = new ScribblesStore(undefined as unknown as StorageAPI);
     const scribble = Scribble.fromCoreScribble(store, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
-      title: 'test',
       body: 'export default function() { return 42; }',
-      meta: { abc: 'def' },
+      meta: { abc: 'def', 'mn-title': 'test' },
     });
 
     const jsmod = scribble.JSModule<() => number>();
@@ -108,9 +106,8 @@ describe('computedMetadata', () => {
   it('returns computed metadata for tags', () => {
     const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
-      title: 'test',
       body: '',
-      meta: { tags: '["hello", "world"]' },
+      meta: { tags: '["hello", "world"]', 'mn-title': 'test' },
     });
 
     expect(scribble.latestStableVersion.computedMeta.tags).toEqual(['hello', 'world']);
@@ -119,9 +116,10 @@ describe('computedMetadata', () => {
   it('returns empty tags if there is no source meta', () => {
     const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
-      title: 'test',
       body: '',
-      meta: {},
+      meta: {
+        'mn-title': 'test',
+      },
     });
 
     expect(scribble.latestStableVersion.computedMeta.tags).toEqual([]);
@@ -130,9 +128,8 @@ describe('computedMetadata', () => {
   it('returns empty tags if the source meta is malformed', () => {
     const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
-      title: 'test',
       body: '',
-      meta: { tags: 'broken json' },
+      meta: { tags: 'broken json', 'mn-title': 'test' },
     });
 
     expect(scribble.latestStableVersion.computedMeta.tags).toEqual([]);

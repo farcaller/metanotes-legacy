@@ -23,11 +23,12 @@ import Version from './version';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
 import localsForScribble from './module/locals';
+import { Scribble as ScribbleInterface } from '../interface/scribble';
 
 /**
  * Mobx model for the scribble.
  */
-export default class Scribble {
+export default class Scribble implements ScribbleInterface {
   /** Owning scribble store. */
   private readonly store: ScribblesStore;
 
@@ -36,9 +37,6 @@ export default class Scribble {
 
   /** All the versions keyed by {@link VersionID}. */
   private $versionsByID: Map<VersionID, Version> = new Map();
-
-  /** Scribble title. */
-  private $title?: string = undefined;
 
   /**
    * Creates a new scribble.
@@ -67,7 +65,6 @@ export default class Scribble {
     const v = Version.fromCoreScribble(coreScribble);
     const s = new Scribble(store, coreScribble.id);
     s.$versionsByID.set(v.versionID, v);
-    s.$title = coreScribble.title;
 
     return s;
   }
@@ -81,7 +78,6 @@ export default class Scribble {
    */
   static fromProto(store: ScribblesStore, spb: pb.Scribble): Scribble {
     const s = new Scribble(store, spb.getScribbleId());
-    s.$title = spb.getTitle() === '' ? undefined : spb.getTitle();
     spb.getVersionList().forEach((vpb) => {
       const v = Version.fromProto(vpb);
       s.$versionsByID.set(v.versionID, v);
@@ -90,8 +86,8 @@ export default class Scribble {
     return s;
   }
 
-  get title(): string | undefined {
-    return this.$title;
+  get title(): string {
+    return this.latestStableVersion.title;
   }
 
   /**
@@ -112,7 +108,6 @@ export default class Scribble {
    * @param otherScribble The fetched Scribble.
    */
   updateFrom(otherScribble: Scribble): void {
-    this.$title = otherScribble.$title;
     otherScribble.$versionsByID.forEach((v, versionID) => {
       if (!this.$versionsByID.has(versionID)) {
         this.$versionsByID.set(versionID, v);
@@ -135,8 +130,8 @@ export default class Scribble {
 
   toString(): string {
     let desc = `${this.scribbleID}`;
-    if (this.$title) {
-      desc += ` "${this.$title}"`;
+    if (this.title !== '') {
+      desc += ` "${this.title}"`;
     }
     return desc;
   }

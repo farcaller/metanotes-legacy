@@ -19,8 +19,8 @@ export interface Scribble {
   /** Scribble ID. */
   readonly scribbleID: ScribbleID;
 
-  /** Scribble title. */
-  readonly title?: string;
+  /** The title of the last stable version. */
+  readonly title: string;
 
   latestStableVersion: Version;
 

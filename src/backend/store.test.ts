@@ -41,14 +41,24 @@ describe('db', () => {
     let store: Store;
     beforeEach(() => {
       store = new Store(db);
-      db.exec(`INSERT INTO scribbles (scribble_id, title) VALUES
-        ('01F35ZYDZF1Y5BE6WHQWP463TX', 'hello'),
-        ('01F35ZZSFTSAJ7STW9ZB67W5B2', 'world')
+      db.exec(`INSERT INTO scribbles (scribble_id) VALUES
+        ('01F35ZYDZF1Y5BE6WHQWP463TX'),
+        ('01F35ZZSFTSAJ7STW9ZB67W5B2')
       `);
       db.exec(`INSERT INTO versions (scribble_id, version_id, body, meta) VALUES
-        ('01F35ZYDZF1Y5BE6WHQWP463TX', '01F3600GJKK5V3JBJ6E35HMWBG', 'body 1', '{"hello": "world"}'),
-        ('01F35ZYDZF1Y5BE6WHQWP463TX', '01F36018DC5WT42F4BDMZK6KHV', 'body 1.1', '{"hello": "new world"}'),
-        ('01F35ZZSFTSAJ7STW9ZB67W5B2', '01F3600VPVKZ14W5F6FMKTJHNK', 'body 2', '{}')
+        (
+          '01F35ZYDZF1Y5BE6WHQWP463TX',
+          '01F3600GJKK5V3JBJ6E35HMWBG',
+          'body 1',
+          '{"hello": "world", "mn-title": "hello"}'
+        ),
+        (
+          '01F35ZYDZF1Y5BE6WHQWP463TX',
+          '01F36018DC5WT42F4BDMZK6KHV',
+          'body 1.1',
+          '{"hello": "new world", "mn-title": "hello"}'
+        ),
+        ('01F35ZZSFTSAJ7STW9ZB67W5B2', '01F3600VPVKZ14W5F6FMKTJHNK', 'body 2', '{"mn-title": "world"}')
       `);
     });
 
@@ -111,11 +121,10 @@ describe('db', () => {
 
         expect(scribble.toObject()).toEqual({
           scribbleId: '01F35ZYDZF1Y5BE6WHQWP463TX',
-          title: 'hello',
           versionList: [{
             versionId: '01F36018DC5WT42F4BDMZK6KHV',
             textBody: 'body 1.1',
-            metaMap: [['hello', 'new world']],
+            metaMap: [['hello', 'new world'], ['mn-title', 'hello']],
           }],
         });
       });
@@ -128,16 +137,15 @@ describe('db', () => {
 
         expect(scribble.toObject()).toEqual({
           scribbleId: '01F35ZYDZF1Y5BE6WHQWP463TX',
-          title: 'hello',
           versionList: [{
             versionId: '01F3600GJKK5V3JBJ6E35HMWBG',
             textBody: 'body 1',
-            metaMap: [['hello', 'world']],
+            metaMap: [['hello', 'world'], ['mn-title', 'hello']],
           },
           {
             versionId: '01F36018DC5WT42F4BDMZK6KHV',
             textBody: 'body 1.1',
-            metaMap: [['hello', 'new world']],
+            metaMap: [['hello', 'new world'], ['mn-title', 'hello']],
           }],
         });
       });

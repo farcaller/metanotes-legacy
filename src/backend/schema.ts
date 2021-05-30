@@ -20,8 +20,7 @@ import { Database } from 'better-sqlite3';
 export default function syncDBSchema(db: Database): void {
   db.exec(`
     CREATE TABLE IF NOT EXISTS scribbles (
-        scribble_id TEXT PRIMARY KEY NOT NULL,
-        title       TEXT UNIQUE
+        scribble_id TEXT PRIMARY KEY NOT NULL
     );
   `);
 

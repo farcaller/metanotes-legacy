@@ -29,9 +29,10 @@ test('it renders a scribble', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   store.loadCoreScribbles([{
     id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
-    title: 'test',
     body: 'hello world',
-    meta: {},
+    meta: {
+      'mn-title': 'test',
+    },
   }]);
 
   function Element() {
@@ -47,9 +48,10 @@ test('it updates the element when the store updates', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   store.loadCoreScribbles([{
     id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
-    title: 'test',
     body: 'hello world',
-    meta: {},
+    meta: {
+      'mn-title': 'test',
+    },
   }]);
 
   function Element() {
@@ -70,14 +72,15 @@ test('it renders the scribble as a JSModule element', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   store.loadCoreScribbles([{
     id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
-    title: 'test',
     body: `
 const { Text } = ReactNative;
 function ScribbleElement({ value }) {
   return <Text>{value}</Text>;
 }
 export default ScribbleElement;`,
-    meta: {},
+    meta: {
+      'mn-title': 'test',
+    },
   }]);
 
   function Element() {
@@ -101,7 +104,6 @@ describe(`requireScribble`, () => {
     store = new ScribblesStore(undefined as unknown as StorageAPI);
     store.loadCoreScribbles([{
       id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
-      title: 'test',
       body: `
 const { Text } = ReactNative;
 const another = requireScribble('another');
@@ -109,16 +111,19 @@ function ScribbleElement() {
   return <Text>{another}</Text>;
 }
 export default ScribbleElement;`,
-      meta: {},
+      meta: {
+        'mn-title': 'test',
+      },
     }]);
   });
 
   test('it throws when trying to load a JSModule that depends on a non-compileable scribble', () => {
     store.loadCoreScribbles([{
       id: '01F3MN6PRT6MP3E836K6XBB1MN',
-      title: 'another',
       body: 'bad body',
-      meta: {},
+      meta: {
+        'mn-title': 'another',
+      },
     }]);
     const scribble = store.scribbleByTitle('test')!;
 
@@ -130,9 +135,10 @@ export default ScribbleElement;`,
   test('it throws when trying to load a JSModule that depends on a unloaded scribble', () => {
     store.loadCoreScribbles([{
       id: '01F3MN6PRT6MP3E836K6XBB1MN',
-      title: 'another',
       body: undefined as unknown as string,
-      meta: {},
+      meta: {
+        'mn-title': 'another',
+      },
     }]);
     const scribble = store.scribbleByTitle('test')!;
 
@@ -144,9 +150,10 @@ export default ScribbleElement;`,
   test('it renders the scribble as a JSModule element with child scribbles', () => {
     store.loadCoreScribbles([{
       id: '01F3MN6PRT6MP3E836K6XBB1MN',
-      title: 'another',
       body: 'export default 42;',
-      meta: {},
+      meta: {
+        'mn-title': 'another',
+      },
     }]);
 
     function Element() {
@@ -167,9 +174,10 @@ export default ScribbleElement;`,
   test('it re-renders the scribble as a JSModule element with child scribbles', () => {
     store.loadCoreScribbles([{
       id: '01F3MN6PRT6MP3E836K6XBB1MN',
-      title: 'another',
       body: 'export default 42;',
-      meta: {},
+      meta: {
+        'mn-title': 'another',
+      },
     }]);
 
     function Element() {

@@ -19,7 +19,7 @@ import reactLocals from './react';
 
 export default function localsForScribble(scribble: Scribble): Record<string, unknown> {
   const { title } = scribble;
-  if (title === undefined) {
+  if (title === '') {
     return {};
   }
   if (title.startsWith('$:core/parser/')) {

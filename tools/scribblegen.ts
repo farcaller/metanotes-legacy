@@ -59,6 +59,9 @@ function processScribble(sourceFile: string, source: string): string {
   delete meta.id;
   const { title } = meta;
   delete meta.title;
+  if (title !== undefined) {
+    meta['mn-title'] = title;
+  }
 
   let body = lines.join('\n').trim();
 
@@ -67,10 +70,9 @@ function processScribble(sourceFile: string, source: string): string {
   let output = '';
   output += `export default {\n`;
   output += `  id:    '${id}',\n`;
-  output += `  title: '${title}',\n`;
   output += `  meta:  ${JSON.stringify(meta)},\n`;
   output += `  body:  ${JSON.stringify(body)},\n`;
-  output += `} as { id: string, title: string|undefined, meta: { [key: string]: string }, body: string };\n`;
+  output += `} as { id: string, meta: { [key: string]: string }, body: string };\n`;
 
   return output;
 }

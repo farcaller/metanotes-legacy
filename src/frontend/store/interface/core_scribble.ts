@@ -16,7 +16,6 @@ import { ScribbleID } from './ids';
 
 export interface CoreScribble {
   readonly id: ScribbleID;
-  readonly title?: string;
   readonly meta: { [key: string]: string };
   readonly body: string;
 }

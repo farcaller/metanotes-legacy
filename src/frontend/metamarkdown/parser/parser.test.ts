@@ -56,7 +56,7 @@ class ScribblesStore {
 
   get parserScribbles(): Scribble[] {
     return this.scribbles.filter(
-      (scribble) => scribble.latestStableVersion.computedMeta.tags.includes('$:core/parser'),
+      (scribble) => scribble.latestStableVersion?.computedMeta.tags.includes('$:core/parser'),
     );
   }
 }
@@ -66,7 +66,7 @@ const mockStore = new ScribblesStore();
 autorun(() => {
   for (const scribble of Object.values(mockStore.parserScribbles)) {
     scribble.JSModule();
-    scribble.latestStableVersion.getMeta('parser');
+    scribble.latestStableVersion?.getMeta('parser');
   }
 });
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };

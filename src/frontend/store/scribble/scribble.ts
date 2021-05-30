@@ -87,16 +87,30 @@ export default class Scribble implements ScribbleInterface {
   }
 
   get title(): string {
-    return this.latestStableVersion.title;
+    return this.latestStableVersion?.title ?? '';
+  }
+
+  /**
+   * Returns the latest non-draft version (by ID).
+   * TODO: this is woefully ineffective.
+   */
+  get latestStableVersion(): Version | undefined {
+    const allVersions = Array.from(this.$versionsByID.keys()).sort().reverse();
+    for (const versionID of allVersions) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const version = this.$versionsByID.get(versionID)!;
+      if (!version.isDraft) {
+        return version;
+      }
+    }
+    return undefined;
   }
 
   /**
    * Returns the latest version (by ID).
    * TODO: this is woefully ineffective.
-   * TODO: this will fail if the scribble has no versions (and there's no check to enforce that).
-   * TODO: this should check for drafts and not return them.
    */
-  get latestStableVersion(): Version {
+  get latestVersion(): Version {
     const allVersions = Array.from(this.$versionsByID.keys()).sort();
     const latestVersionID = allVersions[allVersions.length - 1];
     return this.$versionsByID.get(latestVersionID) as Version;

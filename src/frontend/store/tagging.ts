@@ -24,7 +24,9 @@ import { ScribblesStore } from './interface/store';
  */
 export default function scribblesByTag(this: ScribblesStore, tag: string): Scribble[] {
   const matchingScribbles = this.scribbles.filter((scribble) => {
-    const { tags } = scribble.latestStableVersion.computedMeta;
+    const { latestStableVersion } = scribble;
+    if (!latestStableVersion) { return false; }
+    const { tags } = latestStableVersion.computedMeta;
     if (!tags) { return false; }
     if (tags.indexOf(tag) === -1) { return false; }
     return true;
@@ -43,7 +45,7 @@ export default function scribblesByTag(this: ScribblesStore, tag: string): Scrib
   const listedScribbles = [];
   if (tagScribble) {
     // TODO: should it match by ID too?
-    for (const title of tagScribble.latestStableVersion.computedMeta.list) {
+    for (const title of tagScribble.latestStableVersion?.computedMeta.list ?? []) {
       const scribbleIdx = matchingScribbles.findIndex((s) => s.title === title);
       if (scribbleIdx !== -1) {
         listedScribbles.push(matchingScribbles.splice(scribbleIdx, 1)[0]);
@@ -71,8 +73,8 @@ export default function scribblesByTag(this: ScribblesStore, tag: string): Scrib
     if (reordered.has(scribble.scribbleID)) { return; }
     reordered.add(scribble.scribbleID);
 
-    const before = scribble.latestStableVersion.getMeta('list-before');
-    const after = scribble.latestStableVersion.getMeta('list-after');
+    const before = scribble.latestStableVersion?.getMeta('list-before');
+    const after = scribble.latestStableVersion?.getMeta('list-after');
     let idx;
 
     if (before === '') {

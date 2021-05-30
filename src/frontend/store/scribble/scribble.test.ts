@@ -39,14 +39,14 @@ describe('fromCoreScribble', () => {
   test('it adds a core version for a scribble built from core scribble', () => {
     const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, coreScribble);
 
-    expect(scribble.latestStableVersion.versionID).toEqual('0000000000JFC42SGG5VTPCORE');
+    expect(scribble.latestStableVersion?.versionID).toEqual('0000000000JFC42SGG5VTPCORE');
   });
 
   test('it builds a version from core scribble', () => {
     const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, coreScribble);
 
-    expect(scribble.latestStableVersion.body).toEqual('hello');
-    expect(scribble.latestStableVersion.getMeta('abc')).toEqual('def');
+    expect(scribble.latestStableVersion?.body).toEqual('hello');
+    expect(scribble.latestStableVersion?.getMeta('abc')).toEqual('def');
   });
 });
 
@@ -81,9 +81,9 @@ describe('fromProto', () => {
   test('it builds a version from a proto', () => {
     const scribble = Scribble.fromProto(undefined as unknown as ScribblesStore, spb);
 
-    expect(scribble.latestStableVersion.versionID).toEqual('01F357DS7D3VKNQYB3EXJF265Q');
-    expect(scribble.latestStableVersion.body).toEqual('hello');
-    expect(scribble.latestStableVersion.getMeta('abc')).toEqual('def');
+    expect(scribble.latestStableVersion?.versionID).toEqual('01F357DS7D3VKNQYB3EXJF265Q');
+    expect(scribble.latestStableVersion?.body).toEqual('hello');
+    expect(scribble.latestStableVersion?.getMeta('abc')).toEqual('def');
   });
 });
 
@@ -110,7 +110,7 @@ describe('computedMetadata', () => {
       meta: { tags: '["hello", "world"]', 'mn-title': 'test' },
     });
 
-    expect(scribble.latestStableVersion.computedMeta.tags).toEqual(['hello', 'world']);
+    expect(scribble.latestStableVersion?.computedMeta.tags).toEqual(['hello', 'world']);
   });
 
   it('returns empty tags if there is no source meta', () => {
@@ -122,7 +122,7 @@ describe('computedMetadata', () => {
       },
     });
 
-    expect(scribble.latestStableVersion.computedMeta.tags).toEqual([]);
+    expect(scribble.latestStableVersion?.computedMeta.tags).toEqual([]);
   });
 
   it('returns empty tags if the source meta is malformed', () => {
@@ -132,6 +132,8 @@ describe('computedMetadata', () => {
       meta: { tags: 'broken json', 'mn-title': 'test' },
     });
 
-    expect(scribble.latestStableVersion.computedMeta.tags).toEqual([]);
+    expect(scribble.latestStableVersion?.computedMeta.tags).toEqual([]);
+  });
+});
   });
 });

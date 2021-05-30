@@ -47,7 +47,11 @@ function loadModule<T>(
   scribble: Scribble,
   locals: { [key: string]: unknown },
 ): T {
-  const { body } = scribble.latestStableVersion;
+  const { latestStableVersion } = scribble;
+  if (latestStableVersion === undefined) {
+    throw new ScribbleEvaluationError(scribble, Error('no stable version'));
+  }
+  const { body } = latestStableVersion;
   if (body === null) {
     throw new ScribbleEvaluationError(scribble, Error('body is missing'));
   }

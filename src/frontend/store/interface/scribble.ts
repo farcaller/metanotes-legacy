@@ -22,7 +22,7 @@ export interface Scribble {
   /** The title of the last stable version. */
   readonly title: string;
 
-  latestStableVersion: Version;
+  latestStableVersion: Version | undefined;
 
   JSModule<T>(): T;
 }

@@ -39,7 +39,7 @@ function isParserGenratorFunc(f: unknown): f is ParserGeneratorFunc {
 export function buildLanguage(parserScribbles: Scribble[]): Parsimmon.Language {
   const parserFuncs = {} as { [key: string]: ParserFunc | ParserGeneratorFunc };
   for (const scribble of parserScribbles) {
-    const parserName = scribble.latestStableVersion.getMeta('parser');
+    const parserName = scribble.latestStableVersion?.getMeta('parser');
     if (parserName === undefined) {
       console.warn(`scribble ${scribble} doesn't have the parser name set, ignoring.`);
       continue;

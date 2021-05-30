@@ -37,7 +37,7 @@ test('it renders a scribble', async () => {
 
   function Element() {
     const scribble = store.scribbleByTitle('test');
-    return <Text testID="text">{scribble?.latestStableVersion.body}</Text>;
+    return <Text testID="text">{scribble?.latestStableVersion?.body}</Text>;
   }
   const { getByTestId } = render(<Element />);
 
@@ -56,7 +56,7 @@ test('it updates the element when the store updates', async () => {
 
   function Element() {
     const scribble = store.scribbleByTitle('test');
-    return <Text testID="text">{scribble?.latestStableVersion.body}</Text>;
+    return <Text testID="text">{scribble?.latestStableVersion?.body}</Text>;
   }
   const ElementObserver = observer(Element);
   const { getByTestId } = render(<ElementObserver />);

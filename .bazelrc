@@ -90,4 +90,4 @@ build --workspace_status_command ./tools/status.sh
 build --flag_alias=ui_library=//src/frontend/app/ui:ui_library
 
 # Use UI-KItten by default, ibazel doesn't seem to understand the --//... flags
-build --ui_library=ui-kitten
+build --ui_library=react-native-paper

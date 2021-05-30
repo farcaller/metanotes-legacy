@@ -52,6 +52,11 @@ function Store({ children }: React.PropsWithChildren<Record<string, unknown>>): 
     const mobxStore = new ScribblesStore(api);
     mobxStore.loadCoreScribbles(coreScribbles);
     setStore(mobxStore);
+
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-underscore-dangle,@typescript-eslint/no-explicit-any
+      (window as any).__ScribblesStore = mobxStore;
+    }
   }, []);
 
   useEffect(() => {

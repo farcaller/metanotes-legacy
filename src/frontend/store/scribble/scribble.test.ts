@@ -135,5 +135,40 @@ describe('computedMetadata', () => {
     expect(scribble.latestStableVersion?.computedMeta.tags).toEqual([]);
   });
 });
+
+describe('versions', () => {
+  it('creates new draft versions', () => {
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      body: 'test body',
+      meta: { tags: '["hello", "world"]', 'mn-title': 'test' },
+    });
+
+    const draftID = scribble.createDraftVersion();
+
+    expect(scribble.versionByID(draftID)?.isDraft).toBe(true);
+    expect(scribble.versionByID(draftID)?.body).toBe('test body');
+  });
+
+  it('returns the non-draft version as a stable version', () => {
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      body: '',
+      meta: { tags: '["hello", "world"]', 'mn-title': 'test' },
+    });
+    scribble.createDraftVersion();
+
+    expect(scribble.latestStableVersion?.versionID).toBe('0000000000JFC42SGG5VTPCORE');
+  });
+
+  it('returns the latest draft version is there is a draft', () => {
+    const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      body: '',
+      meta: { tags: '["hello", "world"]', 'mn-title': 'test' },
+    });
+    const draftID = scribble.createDraftVersion();
+
+    expect(scribble.latestVersion.versionID).toBe(draftID);
   });
 });

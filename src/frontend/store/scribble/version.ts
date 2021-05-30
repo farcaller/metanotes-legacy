@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { makeAutoObservable } from 'mobx';
-import { ulid } from 'ulid';
+import { ulid, decodeTime } from 'ulid';
 import { computedFn } from 'mobx-utils';
 
 import { CoreScribble } from '../interface/core_scribble';
@@ -21,6 +21,7 @@ import { ScribbleID, VersionID } from '../interface/ids';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import ComputedMetadata from './computed_metadata';
 import { Version as VersionInterface } from '../interface/version';
+import { DraftKey, TitleKey } from '../interface/metadata';
 
 /**
  * Generates a costant VersionID for the given ScribbleID.
@@ -56,14 +57,18 @@ export default class Version implements VersionInterface {
    * @param meta Version metadata.
    * @param body Optional version body. If there's no body the version isn't fully fetched.
    */
-  constructor(versionID: VersionID = ulid(), meta: Map<string, string>, body?: string) {
+  constructor(versionID: VersionID = ulid(), meta: Map<string, string>, body: string | null = null) {
     makeAutoObservable(this, {
       versionID: false,
     });
     this.versionID = versionID;
     this.$computedMeta = new ComputedMetadata(this);
     this.$meta = meta;
-    this.$body = body || null;
+    this.$body = body;
+  }
+
+  get creationDate(): Date {
+    return new Date(decodeTime(this.versionID));
   }
 
   /**
@@ -113,7 +118,15 @@ export default class Version implements VersionInterface {
     return this.$computedMeta;
   }
 
+  get isDraft(): boolean {
+    return this.getMeta(DraftKey) === 'true';
+  }
+
   get title(): string {
-    return this.getMeta('mn-title') ?? '';
+    return this.getMeta(TitleKey) ?? '';
+  }
+
+  get clonedMetadata(): Map<string, string> {
+    return new Map(this.$meta);
   }
 }

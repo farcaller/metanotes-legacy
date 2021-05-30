@@ -23,6 +23,10 @@ export interface Version {
   readonly body: string | null;
 
   getMeta(key: string): string | undefined;
+  readonly isDraft: boolean;
+
+  readonly creationDate: Date;
 
   computedMeta: ComputedMetadata;
+  clonedMetadata: Map<string, string>;
 }

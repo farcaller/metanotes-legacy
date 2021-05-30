@@ -151,6 +151,17 @@ export default class Scribble implements ScribbleInterface {
   }
 
   /**
+   * Returns the Version for given ID.
+   *
+   * @param id Version id.
+   *
+   * @returns Version.
+   */
+  versionByID(id: VersionID): Version | undefined {
+    return this.$versionsByID.get(id);
+  }
+
+  /**
    * Creates a new scribble version with the given body and meta.
    *
    * @param body New version's body.
@@ -159,5 +170,30 @@ export default class Scribble implements ScribbleInterface {
   createVersion(body: string, meta: Map<string, string>): void {
     const version = new Version(undefined, meta, body);
     this.$versionsByID.set(version.versionID, version);
+  }
+
+  /**
+   * Creates a new draft version for scribble using the latest stable version.
+   *
+   * @throws Will throw if the latest version isn't fetched.
+   *
+   * @returns Created version ID.
+   */
+  createDraftVersion(): VersionID {
+    const { latestStableVersion } = this;
+    if (!latestStableVersion) {
+      throw Error(`cannot create a draft for scribble ${this.scribbleID} as `
+        + `there is no stable version`);
+    }
+    if (latestStableVersion.body === null) {
+      throw Error(`cannot create a draft for scribble ${this.scribbleID} as `
+        + `latest stable version ${latestStableVersion.versionID} has no body`);
+    }
+    const newMeta = latestStableVersion.clonedMetadata;
+    newMeta.set('mn-draft', 'true');
+    const version = new Version(undefined, newMeta, latestStableVersion.body);
+    this.$versionsByID.set(version.versionID, version);
+
+    return version.versionID;
   }
 }

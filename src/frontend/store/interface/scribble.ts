@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ScribbleID } from './ids';
+import { ScribbleID, VersionID } from './ids';
 import { Version } from './version';
 
 export interface Scribble {
@@ -23,6 +23,10 @@ export interface Scribble {
   readonly title: string;
 
   latestStableVersion: Version | undefined;
+  latestVersion: Version;
+  versionByID(id: VersionID): Version | undefined;
 
   JSModule<T>(): T;
+  createVersion(body: string, meta: Map<string, string>): void;
+  createDraftVersion(): VersionID;
 }

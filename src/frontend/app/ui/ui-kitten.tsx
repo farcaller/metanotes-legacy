@@ -19,7 +19,7 @@ import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
-function UIProvider({ children }: React.PropsWithChildren<{}>): JSX.Element {
+function UIProvider({ children }: React.PropsWithChildren<unknown>): JSX.Element {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />

@@ -27,7 +27,7 @@ const theme = {
   },
 };
 
-function UIProvider({ children }: React.PropsWithChildren<{}>): JSX.Element {
+function UIProvider({ children }: React.PropsWithChildren<unknown>): JSX.Element {
   return (
     <>
       <PaperProvider theme={theme}>

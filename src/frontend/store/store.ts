@@ -22,6 +22,7 @@ import { ScribbleID } from './interface/ids';
 import Scribble from './scribble/scribble';
 import scribblesByTag from './tagging';
 import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
+import { DraftKey } from './interface/metadata';
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -159,7 +160,7 @@ class ScribblesStore implements ScribblesStoreInterface {
   /**
    * Returns the JSModule for a scribble by title.
    *
-   * This API is re-exported into the scrubbles as `requireScribble`.
+   * This API is re-exported into the scribbles as `requireScribble`.
    *
    * @param title Scribble title.
    * @returns JSModule of the scribble.
@@ -172,6 +173,21 @@ class ScribblesStore implements ScribblesStoreInterface {
       throw Error(`failed to require scribble: '${title}': does not exist`);
     }
     return scribble.JSModule();
+  }
+
+  /**
+   * Creates a new scribble with an empty version.
+   *
+   * @returns New scribble.
+   */
+  createScribble(): Scribble {
+    const scribble = new Scribble(this);
+    const md = new Map();
+    md.set(DraftKey, 'true');
+    scribble.createVersion('', md);
+
+    this.addScribble(scribble);
+    return scribble;
   }
 }
 

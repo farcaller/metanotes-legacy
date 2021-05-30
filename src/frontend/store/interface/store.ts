@@ -19,4 +19,5 @@ export interface ScribblesStore {
   scribbleByTitle(title: string): Scribble | undefined;
 
   requireScribble<T>(title: string): T;
+  createScribble(): Scribble;
 }

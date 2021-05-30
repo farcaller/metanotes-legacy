@@ -20,9 +20,12 @@ ts_project(
         "//src/frontend/app/ui",
         "//src/frontend/scribbles",
         "//src/frontend/store",
+        "@npm//@monaco-editor/react",
         "@npm//@types/react",
         "@npm//@types/react-native",
+        "@npm//mobx-react-lite",
         "@npm//react",
         "@npm//react-native",
+        "@npm//use-debounce",
     ],
 )

@@ -13,25 +13,32 @@
 // limitations under the License.
 
 import React from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { IconButton, Colors } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
 
-import CommonUIProvider from '../ui';
-import Store from './Store';
-import ScribblesContainer from './ScribblesContainer';
-import SpreadStoreProvider from './SpreadStore';
+import colors from './colors';
 
-function Root() {
+const styles = StyleSheet.create({
+  separator: {
+    height: '100vh',
+    marginLeft: 15,
+    marginRight: 15,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  separatorInner: {
+    height: '90vh',
+    borderLeftColor: colors.separator,
+    borderLeftWidth: 1,
+  },
+});
+
+function Separator() {
   return (
-    <Store>
-      <CommonUIProvider>
-        <SpreadStoreProvider>
-          <ScribblesContainer />
-        </SpreadStoreProvider>
-      </CommonUIProvider>
-    </Store>
+    <View style={styles.separator}>
+      <View style={styles.separatorInner} />
+    </View>
   );
 }
 
-export default Root;
+export default React.memo(Separator);

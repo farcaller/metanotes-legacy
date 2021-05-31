@@ -14,6 +14,7 @@
 
 import { ComputedMetadata } from './computed_metadata';
 import { VersionID } from './ids';
+import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 
 export interface Version {
   /** Version ID. */
@@ -29,4 +30,5 @@ export interface Version {
 
   computedMeta: ComputedMetadata;
   clonedMetadata: Map<string, string>;
+  toProto(): pb.Version;
 }

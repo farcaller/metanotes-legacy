@@ -14,6 +14,7 @@
 
 import { ScribbleID, VersionID } from './ids';
 import { Version } from './version';
+import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 
 export interface Scribble {
   /** Scribble ID. */
@@ -24,9 +25,12 @@ export interface Scribble {
 
   latestStableVersion: Version | undefined;
   latestVersion: Version;
+  allVersions: Version[];
   versionByID(id: VersionID): Version | undefined;
 
   JSModule<T>(): T;
-  createVersion(body: string, meta: Map<string, string>): void;
+  createStableVersion(body: string, meta: Map<string, string>): void;
   createDraftVersion(): VersionID;
+  removeVersion(versionID: VersionID): void;
+  toProto(): pb.Scribble;
 }

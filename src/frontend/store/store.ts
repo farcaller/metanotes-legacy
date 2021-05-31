@@ -22,7 +22,6 @@ import { ScribbleID } from './interface/ids';
 import Scribble from './scribble/scribble';
 import scribblesByTag from './tagging';
 import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
-import { DraftKey } from './interface/metadata';
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -180,14 +179,44 @@ class ScribblesStore implements ScribblesStoreInterface {
    *
    * @returns New scribble.
    */
-  createScribble(): Scribble {
+  createDraftScribble(): Scribble {
     const scribble = new Scribble(this);
-    const md = new Map();
-    md.set(DraftKey, 'true');
-    scribble.createVersion('', md);
+    scribble.createDraftVersion();
 
     this.addScribble(scribble);
     return scribble;
+  }
+
+  /**
+   * Renames the scribble. This is @private api.
+   *
+   * @param scribble The scribble to rename.
+   * @param oldTitle The scribble's old title.
+   * @throws Will throw if the new title exists.
+   */
+  renameScribble(scribble: Scribble, oldTitle: string): void {
+    if (oldTitle !== '') {
+      this.$scribblesByTitle.delete(oldTitle);
+    }
+    const { title } = scribble;
+    if (title !== '') {
+      if (this.$scribblesByTitle.has(title)) {
+        throw Error(`tried to rename scribble ${scribble} from ${oldTitle} but title ${title} already exists`);
+      }
+      this.$scribblesByTitle.set(title, scribble);
+    }
+  }
+
+  /**
+   * Silently removes the scribble without recording it for sync.
+   *
+   * @param scribble The scribble to remove.
+   */
+  removeScribble(scribble: Scribble): void {
+    this.$scribblesByID.delete(scribble.scribbleID);
+    if (scribble.title !== '') {
+      this.$scribblesByTitle.delete(scribble.title);
+    }
   }
 }
 

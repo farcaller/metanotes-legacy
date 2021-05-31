@@ -17,6 +17,7 @@ import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import { CoreScribble } from '../interface/core_scribble';
 import ScribblesStore from '../store';
 import { StorageAPI } from '../client';
+import { TitleKey } from '../interface/metadata';
 
 describe('fromCoreScribble', () => {
   let coreScribble: CoreScribble;
@@ -137,6 +138,18 @@ describe('computedMetadata', () => {
 });
 
 describe('versions', () => {
+  it('creates a new draft version for scribble with no versions', () => {
+    const store = {
+      addScribble: () => true,
+    } as unknown as ScribblesStore;
+    const scribble = new Scribble(store);
+
+    const draftID = scribble.createDraftVersion();
+
+    expect(scribble.versionByID(draftID)?.isDraft).toBe(true);
+    expect(scribble.versionByID(draftID)?.body).toBe('');
+  });
+
   it('creates new draft versions', () => {
     const scribble = Scribble.fromCoreScribble(undefined as unknown as ScribblesStore, {
       id: '01F35516BMJFC42SGG5VTPSWJV',
@@ -170,5 +183,69 @@ describe('versions', () => {
     const draftID = scribble.createDraftVersion();
 
     expect(scribble.latestVersion.versionID).toBe(draftID);
+  });
+
+  describe('commit', () => {
+    it('commits the stable version', () => {
+      const store = new ScribblesStore(undefined as unknown as StorageAPI);
+      const scribble = store.createDraftScribble();
+
+      scribble.createStableVersion('body', new Map().set(TitleKey, 'hello'));
+
+      expect(store.scribbleByTitle('hello')?.latestStableVersion?.body).toEqual('body');
+    });
+
+    it('commits the stable version with empty title', () => {
+      const store = new ScribblesStore(undefined as unknown as StorageAPI);
+      const scribble = store.createDraftScribble();
+
+      scribble.createStableVersion('body', new Map().set(TitleKey, ''));
+
+      expect(store.scribbleByID(scribble.scribbleID)?.latestStableVersion?.body).toEqual('body');
+    });
+
+    it('throws if the commit has a title conflict', () => {
+      const store = new ScribblesStore(undefined as unknown as StorageAPI);
+      store.createDraftScribble().createStableVersion('body', new Map().set(TitleKey, 'hello'));
+
+      expect(() => {
+        store.createDraftScribble().createStableVersion('new body', new Map().set(TitleKey, 'hello'));
+      }).toThrow();
+    });
+
+    it(`keeps the old scribble accessible if there's a title conflict`, () => {
+      const store = new ScribblesStore(undefined as unknown as StorageAPI);
+      store.createDraftScribble().createStableVersion('body', new Map().set(TitleKey, 'hello'));
+
+      try {
+        store.createDraftScribble().createStableVersion('new body', new Map().set(TitleKey, 'hello'));
+      // eslint-disable-next-line no-empty
+      } catch {}
+
+      expect(store.scribbleByTitle('hello')?.latestStableVersion?.body).toEqual('body');
+    });
+
+    it(`doesn't retain the new version if it failed to commit`, () => {
+      const store = new ScribblesStore(undefined as unknown as StorageAPI);
+      store.createDraftScribble().createStableVersion('body', new Map().set(TitleKey, 'collision'));
+      const scribble = store.createDraftScribble();
+      scribble.createStableVersion('commit 1', new Map().set(TitleKey, 'old title'));
+
+      try {
+        store.createDraftScribble().createStableVersion('commit 2', new Map().set(TitleKey, 'collision'));
+        // eslint-disable-next-line no-empty
+      } catch { }
+
+      expect(store.scribbleByID(scribble.scribbleID)?.latestVersion?.body).toEqual('commit 1');
+    });
+
+    it.only(`doesn't allow to access the scribble by the old title after committing`, () => {
+      const store = new ScribblesStore(undefined as unknown as StorageAPI);
+      const scribble = store.createDraftScribble();
+      scribble.createStableVersion('body', new Map().set(TitleKey, 'first title'));
+      scribble.createStableVersion('body', new Map().set(TitleKey, 'second title'));
+
+      expect(store.scribbleByTitle('first title')).toBeUndefined();
+    });
   });
 });

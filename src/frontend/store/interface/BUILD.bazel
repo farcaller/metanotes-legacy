@@ -7,4 +7,7 @@ ts_project(
     srcs = glob(["*.ts"]),
     declaration = True,
     tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/common/api:api_web",
+    ],
 )

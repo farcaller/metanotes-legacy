@@ -24,6 +24,7 @@ import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
 import localsForScribble from './module/locals';
 import { Scribble as ScribbleInterface } from '../interface/scribble';
+import { DraftKey } from '../interface/metadata';
 
 /**
  * Mobx model for the scribble.
@@ -86,6 +87,18 @@ export default class Scribble implements ScribbleInterface {
     return s;
   }
 
+  /**
+   * Builds a protobuf message from the scribble.
+   *
+   * @returns Scribble proto.
+   */
+  toProto(): pb.Scribble {
+    const s = new pb.Scribble();
+    s.setScribbleId(this.scribbleID);
+    s.setVersionList([...this.allVersions.values()].map((v) => v.toProto()));
+    return s;
+  }
+
   get title(): string {
     return this.latestStableVersion?.title ?? '';
   }
@@ -114,6 +127,10 @@ export default class Scribble implements ScribbleInterface {
     const allVersions = Array.from(this.$versionsByID.keys()).sort();
     const latestVersionID = allVersions[allVersions.length - 1];
     return this.$versionsByID.get(latestVersionID) as Version;
+  }
+
+  get allVersions(): Version[] {
+    return [...this.$versionsByID.values()];
   }
 
   /**
@@ -166,10 +183,25 @@ export default class Scribble implements ScribbleInterface {
    *
    * @param body New version's body.
    * @param meta New version's meta.
+   * @throws Will throw if there's a title conflict.
    */
-  createVersion(body: string, meta: Map<string, string>): void {
+  createStableVersion(body: string, meta: Map<string, string>): void {
+    if (meta.get(DraftKey) === 'true') {
+      throw Error(`tried to create a stable version for scribble ${this.scribbleID} `
+        + `but it has the draft flag in the metadata`);
+    }
+
+    const oldTitle = this.title;
+
     const version = new Version(undefined, meta, body);
     this.$versionsByID.set(version.versionID, version);
+
+    try {
+      this.store.renameScribble(this, oldTitle);
+    } catch (e) {
+      this.$versionsByID.delete(version.versionID);
+      throw e;
+    }
   }
 
   /**
@@ -182,9 +214,14 @@ export default class Scribble implements ScribbleInterface {
   createDraftVersion(): VersionID {
     const { latestStableVersion } = this;
     if (!latestStableVersion) {
-      throw Error(`cannot create a draft for scribble ${this.scribbleID} as `
-        + `there is no stable version`);
+      const newMeta = new Map();
+      newMeta.set('mn-draft', 'true');
+      const version = new Version(undefined, newMeta, '');
+      this.$versionsByID.set(version.versionID, version);
+
+      return version.versionID;
     }
+
     if (latestStableVersion.body === null) {
       throw Error(`cannot create a draft for scribble ${this.scribbleID} as `
         + `latest stable version ${latestStableVersion.versionID} has no body`);
@@ -195,5 +232,24 @@ export default class Scribble implements ScribbleInterface {
     this.$versionsByID.set(version.versionID, version);
 
     return version.versionID;
+  }
+
+  /**
+   * Deletes the version by its id.
+   *
+   * @param versionID Version ID to remove.
+   *
+   * @throws Will throw if the scribble doesn't have the specified version.
+   */
+  removeVersion(versionID: VersionID): void {
+    const oldTitle = this.title;
+    const version = this.$versionsByID.get(versionID);
+    if (!version) {
+      throw Error(`cannot remove version ${versionID} from scribble ${this} as there's no such version`);
+    }
+    this.$versionsByID.delete(versionID);
+    if (this.title !== oldTitle) {
+      this.store.renameScribble(this, oldTitle);
+    }
   }
 }

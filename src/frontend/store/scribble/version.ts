@@ -100,6 +100,20 @@ export default class Version implements VersionInterface {
     return v;
   }
 
+  /**
+   * Builds a protobuf message from the version.
+   *
+   * @returns Version proto.
+   */
+  toProto(): pb.Version {
+    const v = new pb.Version();
+    v.setVersionId(this.versionID);
+    v.setTextBody(this.body!); // TODO: fail if null
+    const m = v.getMetaMap();
+    this.$meta.forEach((v, k) => m.set(k, v));
+    return v;
+  }
+
   get body(): string | null {
     return this.$body;
   }

@@ -62,7 +62,7 @@ test('it updates the element when the store updates', async () => {
   const { getByTestId } = render(<ElementObserver />);
 
   act(() => {
-    store.scribbleByTitle('test')?.createVersion('new body', new Map());
+    store.scribbleByTitle('test')?.createStableVersion('new body', new Map().set('mn-title', 'test'));
   });
 
   expect(getByTestId('text').props.children).toEqual('new body');
@@ -189,7 +189,7 @@ export default ScribbleElement;`,
     const { toJSON } = render(<ElementObserver />);
 
     act(() => {
-      store.scribbleByTitle('another')?.createVersion('export default 43;', new Map());
+      store.scribbleByTitle('another')?.createStableVersion('export default 43;', new Map().set('mn-title', 'another'));
     });
 
     expect(toJSON()).toMatchInlineSnapshot(`

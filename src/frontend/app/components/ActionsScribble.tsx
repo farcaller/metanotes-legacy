@@ -50,6 +50,7 @@ function ActionsScribble({ spread = false }: ActionsScribbleProps) {
     <View style={[styles.container, spread ? styles.spreadContainer : undefined]}>
       <IconButton
         icon="shape-square-plus"
+        accessibilityLabel="create new scribble"
         size={40}
         onPress={onCreate}
       />

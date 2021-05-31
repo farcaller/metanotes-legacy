@@ -37,8 +37,8 @@ export class SpreadStore {
   /**
    * Creates a new scribble and adds it to the spread.
    */
-  createScribble() {
-    const scribble = this.scribblesStore.createScribble();
+  createScribble(): void {
+    const scribble = this.scribblesStore.createDraftScribble();
     this.scribbles.push(scribble);
   }
 
@@ -47,11 +47,20 @@ export class SpreadStore {
    *
    * @param scribble The scribble to remove.
    */
-  removeScribble(scribble: Scribble) {
+  removeScribble(scribble: Scribble): void {
     const idx = this.scribbles.indexOf(scribble);
     if (idx === -1) {
       console.error(`the scribble isn't in the spread:`, scribble);
       return;
+    }
+
+    // clean up the scribble if we're closing it
+    if (scribble.latestVersion.isDraft) {
+      if (scribble.allVersions.length === 1) {
+        this.scribblesStore.removeScribble(scribble);
+      } else {
+        scribble.removeVersion(scribble.latestVersion.versionID);
+      }
     }
     this.scribbles.splice(idx, 1);
   }

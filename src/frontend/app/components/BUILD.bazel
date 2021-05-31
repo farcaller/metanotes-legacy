@@ -1,4 +1,5 @@
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:jest.bzl", "ts_jest_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -27,5 +28,20 @@ ts_project(
         "@npm//react",
         "@npm//react-native",
         "@npm//use-debounce",
+    ],
+)
+
+ts_jest_test(
+    name = "components_integration_test",
+    srcs = glob(["*.test.tsx"]) + [
+        "//src/types",
+    ],
+    deps = [
+        ":components",
+        "@npm//@testing-library/react-native",
+        "@npm//@types/react-test-renderer",
+        "@npm//google-protobuf",
+        "@npm//mobx-react-lite",
+        "@npm//react-dom",
     ],
 )

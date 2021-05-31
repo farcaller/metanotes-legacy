@@ -14,7 +14,7 @@
 
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useState } from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 import { Scribble } from '../../store/interface/scribble';
@@ -44,10 +44,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  input: {
-    // TODO: web only
+  input: Platform.OS === 'web' ? {
     outlineWidth: 0,
-  } as any,
+  } as never : {},
 });
 
 interface ScribbleHeaderProps {
@@ -79,6 +78,7 @@ function ScribbleHeader({ scribble, onSave, onEdit }: ScribbleHeaderProps) {
       placeholder="untitled"
       defaultValue={workTitle}
       onChangeText={onTitleChange}
+      accessibilityLabel="title"
     />
   ) : (
     <Text style={styles.title}>{scribble.title}</Text>
@@ -100,18 +100,21 @@ function ScribbleHeader({ scribble, onSave, onEdit }: ScribbleHeaderProps) {
               icon="close"
               size={20}
               onPress={onClose}
+              accessibilityLabel="close"
             />
             {isEditing ? (
               <IconButton
                 icon="check"
                 size={20}
                 onPress={onSaveWrapped}
+                accessibilityLabel="save"
               />
             ) : (
               <IconButton
                 icon="square-edit-outline"
                 size={20}
                 onPress={onEdit}
+                accessibilityLabel="edit"
               />
             )}
           </View>

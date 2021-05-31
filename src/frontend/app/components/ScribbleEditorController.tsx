@@ -92,16 +92,18 @@ function ScribbleEditorController({ scribble }: { scribble: Scribble }) {
   );
 
   const onSave = useCallback((title: string) => {
+    let value = '';
     if (editorRef === null || editorRef.current === null) {
-      console.error(`requested save when editorRef isn't ready`);
-      return;
+      console.warn(`requested save when editorRef isn't ready`);
+      value = workBody;
+    } else {
+      value = editorRef.current.getValue();
     }
-    const value = editorRef.current.getValue();
     const meta = workVersion.clonedMetadata;
     meta.delete('mn-draft');
     meta.set(TitleKey, title);
-    scribble.createVersion(value, meta);
-  }, [scribble, workVersion]);
+    scribble.createStableVersion(value, meta);
+  }, [scribble, workVersion, workBody]);
 
   return (
     <>

@@ -76,3 +76,18 @@ function SpreadStoreProvider({ children }: React.PropsWithChildren<unknown>) {
 }
 
 export default React.memo(SpreadStoreProvider);
+
+/**
+ * A testing store context.
+ */
+function ExternalSpreadStoreProviderImpl(
+  { store, children }: React.PropsWithChildren<{ store: SpreadStore }>,
+): JSX.Element {
+  return (
+    <SpreadStoreContext.Provider value={store}>
+      {store && children}
+    </SpreadStoreContext.Provider>
+  );
+}
+
+export const ExternalSpreadStoreProvider = React.memo(ExternalSpreadStoreProviderImpl);

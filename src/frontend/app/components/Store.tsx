@@ -73,3 +73,16 @@ function Store({ children }: React.PropsWithChildren<Record<string, unknown>>): 
 }
 
 export default Store;
+
+/**
+ * A testing store context.
+ */
+function ExternalStoreImpl({ store, children }: React.PropsWithChildren<{ store: ScribblesStore}>): JSX.Element {
+  return (
+    <ScribblesStoreContext.Provider value={store}>
+      {store && children}
+    </ScribblesStoreContext.Provider>
+  );
+}
+
+export const ExternalStore = React.memo(ExternalStoreImpl);

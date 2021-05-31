@@ -239,7 +239,7 @@ describe('versions', () => {
       expect(store.scribbleByID(scribble.scribbleID)?.latestVersion?.body).toEqual('commit 1');
     });
 
-    it.only(`doesn't allow to access the scribble by the old title after committing`, () => {
+    it(`doesn't allow to access the scribble by the old title after committing`, () => {
       const store = new ScribblesStore(undefined as unknown as StorageAPI);
       const scribble = store.createDraftScribble();
       scribble.createStableVersion('body', new Map().set(TitleKey, 'first title'));

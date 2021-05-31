@@ -47,6 +47,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
             "@npm//@types/react-native",
             "@npm//babel-jest",
             "@npm//babel-plugin-transform-typescript-metadata",
+            "@npm//@babel/plugin-transform-flow-strip-types",
             "@npm//core-js",
             "@npm//react-native",
             "@npm//react-test-renderer",

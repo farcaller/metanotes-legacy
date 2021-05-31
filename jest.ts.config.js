@@ -14,10 +14,13 @@
 
 module.exports = {
   preset: 'react-native',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   reporters: ['default'],
   testMatch: ['**/*.test.js'],
   transform: {
     '\\.jsx?$': 'babel-jest',
   },
+  transformIgnorePatterns: [
+    `/node_modules/(?!react-native-paper|@react-native/|react-native)`,
+  ],
 };

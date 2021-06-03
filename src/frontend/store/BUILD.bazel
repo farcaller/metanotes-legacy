@@ -24,17 +24,10 @@ ts_project(
 
 ts_jest_test(
     name = "store_test",
-    srcs = glob(["*.test.ts"]),
-    deps = [
-        ":store",
-        "//src/common/api:api_web",
-        "@npm//google-protobuf",
-    ],
-)
-
-ts_jest_test(
-    name = "store_integration_test",
-    srcs = glob(["*.test.tsx"]),
+    srcs = glob([
+        "*.test.ts",
+        "*.test.tsx",
+    ]),
     deps = [
         ":store",
         "//src/common/api:api_web",

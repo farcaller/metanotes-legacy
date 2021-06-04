@@ -58,8 +58,9 @@ export default class Version implements VersionInterface {
    * @param body Optional version body. If there's no body the version isn't fully fetched.
    */
   constructor(versionID: VersionID = ulid(), meta: Map<string, string>, body: string | null = null) {
-    makeAutoObservable(this, {
+    makeAutoObservable<Version, 'toString'>(this, {
       versionID: false,
+      toString: false as never,
     });
     this.versionID = versionID;
     this.$computedMeta = new ComputedMetadata(this);
@@ -69,6 +70,14 @@ export default class Version implements VersionInterface {
 
   get creationDate(): Date {
     return new Date(decodeTime(this.versionID));
+  }
+
+  toString(): string {
+    let desc = `${this.versionID}`;
+    if (this.title !== '') {
+      desc += ` "${this.title}"`;
+    }
+    return desc;
   }
 
   /**

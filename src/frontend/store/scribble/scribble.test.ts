@@ -232,7 +232,7 @@ describe('versions', () => {
       scribble.createStableVersion('commit 1', new Map().set(TitleKey, 'old title'));
 
       try {
-        store.createDraftScribble().createStableVersion('commit 2', new Map().set(TitleKey, 'collision'));
+        scribble.createStableVersion('commit 2', new Map().set(TitleKey, 'collision'));
         // eslint-disable-next-line no-empty
       } catch { }
 

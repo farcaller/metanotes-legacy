@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
 import { computedFn } from 'mobx-utils';
 
@@ -50,6 +50,8 @@ export default class Scribble implements ScribbleInterface {
       scribbleID: false,
       toString: false as never,
       store: false,
+      // TODO: why is this needed? seems that it makes the tests happy.
+      createStableVersion: action,
     });
     this.scribbleID = scribbleID;
     this.store = store;

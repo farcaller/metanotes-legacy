@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeAutoObservable, runInAction } from 'mobx';
 import { computedFn } from 'mobx-utils';
 
 import { StorageAPI } from './client';
@@ -47,6 +47,8 @@ class ScribblesStore implements ScribblesStoreInterface {
   constructor(api: StorageAPI) {
     makeAutoObservable<ScribblesStore, 'api'>(this, {
       api: false,
+      // TODO: why is this needed? seems that it makes the tests happy.
+      createDraftScribble: action,
     });
     this.api = api;
   }

@@ -24,14 +24,14 @@ bazel_skylib_workspace()
 # nodejs
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "10f534e1c80f795cffe1f2822becd4897754d18564612510c59b3c73544ae7c6",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.5.0/rules_nodejs-3.5.0.tar.gz"],
+    sha256 = "4a5d654a4ccd4a4c24eca5d319d85a88a650edf119601550c95bf400c8cc897e",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.5.1/rules_nodejs-3.5.1.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
 
 node_repositories(
-    node_version = "16.1.0",
+    node_version = "16.2.0",
     package_json = ["//:package.json"],
     yarn_version = "1.22.10",
 )
@@ -41,7 +41,7 @@ yarn_install(
     data = [
         # react-native-paper tries to be smart abot an optional react-native-vector-icons import.
         # Unfortunately that breaks rollup, so we replace the optional import with a concrete one.
-        "//:patches/react-native-paper+4.8.1.patch",
+        "//:patches/react-native-paper+4.9.1.patch",
 
         # live-server was last updated in 2018 :-(
         "//:patches/live-server+1.2.1.patch",

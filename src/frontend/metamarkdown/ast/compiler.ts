@@ -261,5 +261,5 @@ function emitNode(
 }
 
 export function metaCompiler(this: unified.Processor, options: Options): void {
-  this.Compiler = (root: ast.Node, _file: VFile) => emitNode(root, options) as unknown as string;
+  this.Compiler = (root: ast.Node) => emitNode(root, options) as unknown as string;
 }

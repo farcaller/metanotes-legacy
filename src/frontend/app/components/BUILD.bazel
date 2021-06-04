@@ -33,7 +33,10 @@ ts_project(
 
 ts_jest_test(
     name = "components_integration_test",
-    srcs = glob(["*.test.tsx"]) + [
+    srcs = glob([
+        "*.test.tsx",
+        "__mocks__/*.tsx",
+    ]) + [
         "//src/types",
     ],
     deps = [

@@ -160,7 +160,9 @@ function testCommonmark(idx: number, todoReason?: string, only = false) {
 
     try {
       const output = parser.processSync(input);
-      outString = cleanupHtml(output.contents as string);
+      console.warn('out:', JSON.stringify(output));
+      // TODO: despite this being renamed to `value` in VFile 5, someone (unified?) didn't get the note
+      outString = cleanupHtml((output as unknown as { contents: string }).contents);
       if (outString !== expected) {
         logParsed();
       }

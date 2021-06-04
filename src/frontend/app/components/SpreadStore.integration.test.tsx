@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-assertion,import/first */
 
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import TestRenderer from 'react-test-renderer';
+import { render, fireEvent, act } from '@testing-library/react-native';
+
+jest.mock('./ScribbleEditorController');
 
 import ScribblesStore from '../../store/store';
 import { StorageAPI } from '../../store/client';
@@ -25,9 +26,7 @@ import { ExternalStore } from './Store';
 import CommonUIProvider from '../ui';
 import ScribblesContainer from './ScribblesContainer';
 
-const { act } = TestRenderer;
-
-test('it adds a new scribble to the spread', () => {
+test('it adds a new scribble to the spread', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   const spreadStore = new SpreadStore(store);
 
@@ -42,17 +41,15 @@ test('it adds a new scribble to the spread', () => {
       </ExternalStore>
     );
   }
-  const { getByA11yLabel } = render(<Root />);
+  const { findByA11yLabel } = render(<Root />);
 
-  act(() => {
-    const createNewButton = getByA11yLabel('create new scribble');
-    fireEvent.press(createNewButton);
-  });
+  const createNewButton = await findByA11yLabel('create new scribble');
+  fireEvent.press(createNewButton);
 
   expect(spreadStore.scribbles).toHaveLength(1);
 });
 
-test('it commits the new scribble on save', () => {
+test('it commits the new scribble on save', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   const spreadStore = new SpreadStore(store);
 
@@ -67,27 +64,21 @@ test('it commits the new scribble on save', () => {
       </ExternalStore>
     );
   }
-  const { getByA11yLabel } = render(<Root />);
+  const { findByA11yLabel } = render(<Root />);
 
-  act(() => {
-    const createNewButton = getByA11yLabel('create new scribble');
-    fireEvent.press(createNewButton);
-  });
+  const createNewButton = await findByA11yLabel('create new scribble');
+  fireEvent.press(createNewButton);
 
-  act(() => {
-    const titleInput = getByA11yLabel('title');
-    fireEvent.changeText(titleInput, 'hello');
-  });
+  const titleInput = await findByA11yLabel('title');
+  fireEvent.changeText(titleInput, 'hello');
 
-  act(() => {
-    const saveButton = getByA11yLabel('save');
-    fireEvent.press(saveButton);
-  });
+  const saveButton = await findByA11yLabel('save');
+  fireEvent.press(saveButton);
 
   expect(store.scribbleByTitle('hello')?.allVersions).toHaveLength(2);
 });
 
-test('it removes the new scribble if closed before it was changed', () => {
+test('it removes the new scribble if closed before it was changed', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   const spreadStore = new SpreadStore(store);
 
@@ -102,24 +93,20 @@ test('it removes the new scribble if closed before it was changed', () => {
       </ExternalStore>
     );
   }
-  const { getByA11yLabel } = render(<Root />);
+  const { findByA11yLabel } = render(<Root />);
 
-  act(() => {
-    const createNewButton = getByA11yLabel('create new scribble');
-    fireEvent.press(createNewButton);
-  });
+  const createNewButton = await findByA11yLabel('create new scribble');
+  fireEvent.press(createNewButton);
 
   const scribble = spreadStore.scribbles[0];
 
-  act(() => {
-    const saveButton = getByA11yLabel('close');
-    fireEvent.press(saveButton);
-  });
+  const saveButton = await findByA11yLabel('close');
+  fireEvent.press(saveButton);
 
   expect(store.scribbleByID(scribble.scribbleID)).toBeUndefined();
 });
 
-test('it removes the new draft if closed before the scribble was changed', () => {
+test('it removes the new draft if closed before the scribble was changed', async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   const spreadStore = new SpreadStore(store);
 
@@ -138,22 +125,18 @@ test('it removes the new draft if closed before the scribble was changed', () =>
       </ExternalStore>
     );
   }
-  const { getByA11yLabel } = render(<Root />);
+  const { findByA11yLabel } = render(<Root />);
 
-  act(() => {
-    const createNewButton = getByA11yLabel('edit');
-    fireEvent.press(createNewButton);
-  });
+  const createNewButton = await findByA11yLabel('edit');
+  fireEvent.press(createNewButton);
 
-  act(() => {
-    const saveButton = getByA11yLabel('close');
-    fireEvent.press(saveButton);
-  });
+  const saveButton = await findByA11yLabel('close');
+  fireEvent.press(saveButton);
 
   expect(scribble.allVersions).toHaveLength(2);
 });
 
-test(`it removes the scribble from the spread if closed but doesn't mutate it`, () => {
+test(`it removes the scribble from the spread if closed but doesn't mutate it`, async () => {
   const store = new ScribblesStore(undefined as unknown as StorageAPI);
   const spreadStore = new SpreadStore(store);
 
@@ -174,12 +157,10 @@ test(`it removes the scribble from the spread if closed but doesn't mutate it`, 
       </ExternalStore>
     );
   }
-  const { getByA11yLabel } = render(<Root />);
+  const { findByA11yLabel } = render(<Root />);
 
-  act(() => {
-    const saveButton = getByA11yLabel('close');
-    fireEvent.press(saveButton);
-  });
+  const saveButton = await findByA11yLabel('close');
+  await act(() => fireEvent.press(saveButton));
 
   expect(spreadStore.scribbles).toHaveLength(0);
 

@@ -14,7 +14,7 @@
 
 module.exports = {
   preset: 'react-native',
-  testEnvironment: 'jsdom',
+  testEnvironment: 'node',
   reporters: ['default'],
   testMatch: ['**/*.test.js'],
   transform: {

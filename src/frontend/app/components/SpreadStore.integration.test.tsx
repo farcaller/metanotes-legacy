@@ -15,7 +15,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion,import/first */
 
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
 
 jest.mock('./ScribbleEditorController');
 
@@ -46,7 +46,7 @@ test('it adds a new scribble to the spread', async () => {
   const createNewButton = await findByA11yLabel('create new scribble');
   fireEvent.press(createNewButton);
 
-  expect(spreadStore.scribbles).toHaveLength(1);
+  await waitFor(() => expect(spreadStore.scribbles).toHaveLength(1));
 });
 
 test('it commits the new scribble on save', async () => {
@@ -75,7 +75,7 @@ test('it commits the new scribble on save', async () => {
   const saveButton = await findByA11yLabel('save');
   fireEvent.press(saveButton);
 
-  expect(store.scribbleByTitle('hello')?.allVersions).toHaveLength(2);
+  await waitFor(() => expect(store.scribbleByTitle('hello')?.allVersions).toHaveLength(2));
 });
 
 test('it removes the new scribble if closed before it was changed', async () => {
@@ -103,7 +103,7 @@ test('it removes the new scribble if closed before it was changed', async () => 
   const saveButton = await findByA11yLabel('close');
   fireEvent.press(saveButton);
 
-  expect(store.scribbleByID(scribble.scribbleID)).toBeUndefined();
+  await waitFor(() => expect(store.scribbleByID(scribble.scribbleID)).toBeUndefined());
 });
 
 test('it removes the new draft if closed before the scribble was changed', async () => {
@@ -133,7 +133,7 @@ test('it removes the new draft if closed before the scribble was changed', async
   const saveButton = await findByA11yLabel('close');
   fireEvent.press(saveButton);
 
-  expect(scribble.allVersions).toHaveLength(2);
+  await waitFor(() => expect(scribble.allVersions).toHaveLength(2));
 });
 
 test(`it removes the scribble from the spread if closed but doesn't mutate it`, async () => {
@@ -160,12 +160,12 @@ test(`it removes the scribble from the spread if closed but doesn't mutate it`, 
   const { findByA11yLabel } = render(<Root />);
 
   const saveButton = await findByA11yLabel('close');
-  await act(() => fireEvent.press(saveButton));
+  fireEvent.press(saveButton);
 
-  expect(spreadStore.scribbles).toHaveLength(0);
+  await waitFor(() => expect(spreadStore.scribbles).toHaveLength(0));
 
   const scribSnapshot2 = scribble.toProto().toObject();
-  expect(scribSnapshot).toEqual(scribSnapshot2);
+  await waitFor(() => expect(scribSnapshot).toEqual(scribSnapshot2));
 });
 
 test.todo('it shows the confirmation dialog if attempting to close a dirty edited scribble');

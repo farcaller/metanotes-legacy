@@ -100,8 +100,8 @@ test('it removes the new scribble if closed before it was changed', async () => 
 
   const scribble = spreadStore.scribbles[0];
 
-  const saveButton = await findByA11yLabel('close');
-  fireEvent.press(saveButton);
+  const closeButton = await findByA11yLabel('close');
+  fireEvent.press(closeButton);
 
   await waitFor(() => expect(store.scribbleByID(scribble.scribbleID)).toBeUndefined());
 });
@@ -127,11 +127,11 @@ test('it removes the new draft if closed before the scribble was changed', async
   }
   const { findByA11yLabel } = render(<Root />);
 
-  const createNewButton = await findByA11yLabel('edit');
-  fireEvent.press(createNewButton);
+  const editButton = await findByA11yLabel('edit');
+  fireEvent.press(editButton);
 
-  const saveButton = await findByA11yLabel('close');
-  fireEvent.press(saveButton);
+  const closeButton = await findByA11yLabel('close');
+  fireEvent.press(closeButton);
 
   await waitFor(() => expect(scribble.allVersions).toHaveLength(2));
 });
@@ -144,7 +144,7 @@ test(`it removes the scribble from the spread if closed but doesn't mutate it`, 
   scribble.createStableVersion('hello', new Map().set('mn-title', 'world'));
   spreadStore.scribbles.push(scribble);
 
-  const scribSnapshot = scribble.toProto().toObject();
+  const scribbleSnapshot = scribble.toProto().toObject();
 
   function Root() {
     return (
@@ -164,8 +164,8 @@ test(`it removes the scribble from the spread if closed but doesn't mutate it`, 
 
   await waitFor(() => expect(spreadStore.scribbles).toHaveLength(0));
 
-  const scribSnapshot2 = scribble.toProto().toObject();
-  await waitFor(() => expect(scribSnapshot).toEqual(scribSnapshot2));
+  const scribbleSnapshot2 = scribble.toProto().toObject();
+  await waitFor(() => expect(scribbleSnapshot).toEqual(scribbleSnapshot2));
 });
 
 test.todo('it shows the confirmation dialog if attempting to close a dirty edited scribble');

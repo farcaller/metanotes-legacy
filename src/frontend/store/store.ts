@@ -93,7 +93,7 @@ class ScribblesStore implements ScribblesStoreInterface {
         this.$fetchStatus = { type: 'failed', error: e };
       });
     }
-    return Promise.resolve(); // TODO: why isn't linter happy without this?
+    return Promise.resolve();
   }
 
   /**

@@ -83,4 +83,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
             "--coverageDirectory",
             "$(@D)",
         ],
+        tags = [
+            "manual",
+        ],
     )

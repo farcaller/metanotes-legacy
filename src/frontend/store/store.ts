@@ -215,7 +215,7 @@ class ScribblesStore implements ScribblesStoreInterface {
       // TODO: catch it?
       throw Error(`failed to require scribble: '${title}': does not exist`);
     }
-    return scribble.JSModule();
+    return scribble.JSModule as T;
   }
 
   /**

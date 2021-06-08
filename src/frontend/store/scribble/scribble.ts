@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { action, makeAutoObservable } from 'mobx';
+import { action, computed, makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
 import { computedFn } from 'mobx-utils';
 
@@ -54,6 +54,7 @@ export default class Scribble implements ScribbleInterface {
       store: false,
       // TODO: why is this needed? seems that it makes the tests happy.
       createStableVersion: action,
+      JSModule: computed({ keepAlive: true }),
     });
     this.scribbleID = scribbleID;
     this.store = store;
@@ -183,12 +184,12 @@ export default class Scribble implements ScribbleInterface {
    * @throws Will throw if failed to load.
    * @returns JS module for the scribble.
    */
-  JSModule = computedFn(function JSModule<T>(this: Scribble): T {
+  get JSModule(): unknown {
     return loadModule(this, {
       ...localsForScribble(this),
       requireScribble: this.store.requireScribble.bind(this.store),
     });
-  })
+  }
 
   toString(): string {
     let desc = `${this.scribbleID}`;

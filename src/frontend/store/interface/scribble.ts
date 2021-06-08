@@ -28,7 +28,7 @@ export interface Scribble {
   allVersions: Version[];
   versionByID(id: VersionID): Version | undefined;
 
-  JSModule<T>(): T;
+  readonly JSModule: unknown;
   createStableVersion(body: string, meta: Map<string, string>): void;
   createDraftVersion(): VersionID;
   removeVersion(versionID: VersionID): void;

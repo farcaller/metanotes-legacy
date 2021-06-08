@@ -23,6 +23,9 @@ export interface Scribble {
   /** The title of the last stable version. */
   readonly title: string;
 
+  /** The title for displaying. */
+  readonly titleForDisplay: string;
+
   latestStableVersion: Version | undefined;
   latestVersion: Version;
   allVersions: Version[];

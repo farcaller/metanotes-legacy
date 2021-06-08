@@ -110,6 +110,11 @@ export default class Scribble implements ScribbleInterface {
     return this.latestStableVersion?.title ?? '';
   }
 
+  get titleForDisplay(): string {
+    const version = this.latestVersion;
+    return version?.getMeta('display-title') ?? version?.title ?? '';
+  }
+
   get dirty(): boolean {
     return this.dirtyVersions.length > 0;
   }

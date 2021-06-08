@@ -3,16 +3,31 @@ load("@npm//@bazel/typescript:index.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
+package_group(
+    name = "store_pkg",
+    packages = [
+        "//src/frontend/store",
+    ],
+)
+
 ts_project(
     name = "store",
     srcs = glob(
-        ["*.ts"],
-        exclude = ["**/*.test.ts"],
+        [
+            "*.ts",
+            "*.tsx",
+        ],
+        exclude = [
+            "**/*.test.ts",
+            "**/*.test.tsx",
+        ],
     ),
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        "//src/frontend/scribbles",
         "//src/frontend/store/client",
+        "//src/frontend/store/context",
         "//src/frontend/store/interface",
         "//src/frontend/store/scribble",
         "@npm//@types/react",

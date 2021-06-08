@@ -12,77 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { createBackend } from '../../store/client';
-import ScribblesStore from '../../store/store';
-import coreScribbles from '../../scribbles';
-
-const ScribblesStoreContext = createContext<ScribblesStore>(null as unknown as ScribblesStore);
-
-export function useStore(): ScribblesStore {
-  return useContext(ScribblesStoreContext);
-}
-
-export function withStore(baseComponent: React.FC<{ store: ScribblesStore }>): React.FC {
-  const baseComponentName = baseComponent.displayName || baseComponent.name;
-
-  const WrappedComponent = (props: Record<string, unknown>, ref: unknown) => {
-    const store = useStore();
-    const newProps = { store, ...props };
-    return baseComponent(newProps, ref);
-  };
-  WrappedComponent.displayName = baseComponentName;
-
-  return WrappedComponent;
-}
+import { createBackend, StorageAPI } from '../../store/client';
+import StoreProvider from '../../store/provider';
 
 function Store({ children }: React.PropsWithChildren<Record<string, unknown>>): JSX.Element {
-  const [store, setStore] = useState<ScribblesStore>();
+  const [api, setAPI] = useState<StorageAPI>();
 
   useEffect(() => {
     const backendAddress = process.env.NODE_ENV === 'development'
       ? 'http://localhost:55080' : `${window.location.protocol}//${window.location.host}`;
 
-    const api = createBackend({
+    setAPI(createBackend({
       backend: 'metanotes-server',
       config: { hostname: backendAddress },
-    });
-
-    const mobxStore = new ScribblesStore(api);
-    mobxStore.loadCoreScribbles(coreScribbles);
-    setStore(mobxStore);
-
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-underscore-dangle,@typescript-eslint/no-explicit-any
-      (window as any).__ScribblesStore = mobxStore;
-    }
+    }));
   }, []);
 
-  useEffect(() => {
-    if (store) {
-      store.fetchScribbles();
-    }
-  }, [store]);
-
   return (
-    <ScribblesStoreContext.Provider value={store as ScribblesStore}>
-      {store && children}
-    </ScribblesStoreContext.Provider>
+    <StoreProvider api={api}>{children}</StoreProvider>
   );
 }
 
 export default Store;
-
-/**
- * A testing store context.
- */
-function ExternalStoreImpl({ store, children }: React.PropsWithChildren<{ store: ScribblesStore}>): JSX.Element {
-  return (
-    <ScribblesStoreContext.Provider value={store}>
-      {store && children}
-    </ScribblesStoreContext.Provider>
-  );
-}
-
-export const ExternalStore = React.memo(ExternalStoreImpl);

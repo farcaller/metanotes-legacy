@@ -81,7 +81,7 @@ function ScribbleHeader({ scribble, onSave, onEdit }: ScribbleHeaderProps) {
       accessibilityLabel="title"
     />
   ) : (
-    <Text style={styles.title}>{scribble.title}</Text>
+    <Text style={styles.title}>{scribble.titleForDisplay}</Text>
   );
 
   const onSaveWrapped = useCallback(() => {
@@ -96,12 +96,6 @@ function ScribbleHeader({ scribble, onSave, onEdit }: ScribbleHeaderProps) {
         </View>
         <View style={styles.iconContainer}>
           <View style={styles.iconContainerInner}>
-            <IconButton
-              icon="close"
-              size={20}
-              onPress={onClose}
-              accessibilityLabel="close"
-            />
             {isEditing ? (
               <IconButton
                 icon="check"
@@ -117,6 +111,12 @@ function ScribbleHeader({ scribble, onSave, onEdit }: ScribbleHeaderProps) {
                 accessibilityLabel="edit"
               />
             )}
+            <IconButton
+              icon="close"
+              size={20}
+              onPress={onClose}
+              accessibilityLabel="close"
+            />
           </View>
         </View>
       </View>

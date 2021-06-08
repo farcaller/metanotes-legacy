@@ -13,12 +13,15 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        "//src/frontend/store/context:use_context",
         "//src/frontend/store/interface",
         "@npm//@types/parsimmon",
         "@npm//@types/react",
         "@npm//@types/react-native",
+        "@npm//mobx-react-lite",
         "@npm//parsimmon",
         "@npm//react",
+        "@npm//react-dom",
         "@npm//react-native",
     ],
 )

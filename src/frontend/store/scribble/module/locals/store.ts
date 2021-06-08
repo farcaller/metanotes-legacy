@@ -12,25 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble } from '../../../interface/scribble';
-import parsimmonLocals from './parsimmon';
-import reactNativeLocals from './react_native';
-import reactLocals from './react';
-import storeLocals from './store';
+import useStore from '../../../context/use_context';
 
-export default function localsForScribble(scribble: Scribble): Record<string, unknown> {
-  const { title } = scribble;
-  if (title === '') {
-    return {};
-  }
-  if (title.startsWith('$:core/parser/')) {
-    return {
-      ...parsimmonLocals,
-    };
-  }
-  return {
-    ...reactLocals,
-    ...reactNativeLocals,
-    ...storeLocals,
-  };
-}
+export default {
+  useStore,
+};

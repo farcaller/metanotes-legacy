@@ -18,6 +18,7 @@ import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 export interface StorageAPI {
   getAllMetadata(): Promise<pb.Scribble[]>;
   getScribble(scribbleID: string, versionIDs: string[]): Promise<pb.Scribble>;
+  putScribble(scribble: pb.Scribble): Promise<void>;
 }
 
 export interface APIConfiguration {

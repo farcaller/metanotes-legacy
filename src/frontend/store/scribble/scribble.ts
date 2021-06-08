@@ -39,6 +39,8 @@ export default class Scribble implements ScribbleInterface {
   /** All the versions keyed by {@link VersionID}. */
   private $versionsByID: Map<VersionID, Version> = new Map();
 
+  private $uploading = false;
+
   /**
    * Creates a new scribble.
    *
@@ -92,17 +94,40 @@ export default class Scribble implements ScribbleInterface {
   /**
    * Builds a protobuf message from the scribble.
    *
+   * @param dirtyOnly Serializes only the dirty versions if true.
    * @returns Scribble proto.
    */
-  toProto(): pb.Scribble {
+  toProto(dirtyOnly = false): pb.Scribble {
     const s = new pb.Scribble();
     s.setScribbleId(this.scribbleID);
-    s.setVersionList([...this.allVersions.values()].map((v) => v.toProto()));
+    const versions = dirtyOnly ? this.dirtyVersions : this.allVersions;
+    s.setVersionList(versions.map((v) => v.toProto()));
     return s;
   }
 
   get title(): string {
     return this.latestStableVersion?.title ?? '';
+  }
+
+  get dirty(): boolean {
+    return this.dirtyVersions.length > 0;
+  }
+
+  set dirty(isDirty: boolean) {
+    if (isDirty !== false) {
+      throw Error(`cannot mark scribble as dirty`);
+    }
+    for (const v of this.dirtyVersions) {
+      v.dirty = false;
+    }
+  }
+
+  get uploading(): boolean {
+    return this.$uploading;
+  }
+
+  set uploading(isUploading: boolean) {
+    this.$uploading = isUploading;
   }
 
   /**
@@ -133,6 +158,10 @@ export default class Scribble implements ScribbleInterface {
 
   get allVersions(): Version[] {
     return [...this.$versionsByID.values()];
+  }
+
+  get dirtyVersions(): Version[] {
+    return [...this.$versionsByID.values()].filter((version) => version.dirty);
   }
 
   /**
@@ -196,6 +225,7 @@ export default class Scribble implements ScribbleInterface {
     const oldTitle = this.title;
 
     const version = new Version(undefined, meta, body);
+    version.dirty = true;
     this.$versionsByID.set(version.versionID, version);
 
     try {

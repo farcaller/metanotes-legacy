@@ -50,6 +50,9 @@ export default class Version implements VersionInterface {
   /** Computed metadata. */
   private $computedMeta: ComputedMetadata;
 
+  /** True when the version needs to be uploaded. */
+  private $dirty = false;
+
   /**
    * Creates a new scribble version.
    *
@@ -119,7 +122,7 @@ export default class Version implements VersionInterface {
     v.setVersionId(this.versionID);
     v.setTextBody(this.body!); // TODO: fail if null
     const m = v.getMetaMap();
-    this.$meta.forEach((v, k) => m.set(k, v));
+    this.$meta.forEach((vv, k) => m.set(k, vv));
     return v;
   }
 
@@ -151,5 +154,13 @@ export default class Version implements VersionInterface {
 
   get clonedMetadata(): Map<string, string> {
     return new Map(this.$meta);
+  }
+
+  get dirty(): boolean {
+    return this.$dirty;
+  }
+
+  set dirty(isDirty: boolean) {
+    this.$dirty = isDirty;
   }
 }

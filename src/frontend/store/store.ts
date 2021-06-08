@@ -22,6 +22,7 @@ import { ScribbleID } from './interface/ids';
 import Scribble from './scribble/scribble';
 import scribblesByTag from './tagging';
 import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
+import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -38,6 +39,9 @@ class ScribblesStore implements ScribblesStoreInterface {
 
   /** Remote pull status. */
   private $fetchStatus: FetchStatus = { type: 'idle' };
+
+  /** Remote push status. */
+  private $uploadStatus: UploadStatus = { type: 'idle' };
 
   /**
    * Creates a new store.
@@ -94,6 +98,44 @@ class ScribblesStore implements ScribblesStoreInterface {
       });
     }
     return Promise.resolve();
+  }
+
+  async uploadScribbles(): Promise<void> {
+    if (isPendingUpload(this.$uploadStatus)) {
+      this.$uploadStatus = { type: 'pending-queued' };
+      return;
+    }
+    if (isPendingQueuedUpload(this.$uploadStatus)) {
+      return;
+    }
+
+    this.$uploadStatus = { type: 'pending' };
+    const scribblesToUpload = [...this.$scribblesByID.values()].filter((scribble) => scribble.dirty);
+
+    const uploadPromises = scribblesToUpload.map((scribble) => {
+      const scribblePb = scribble.toProto(true /* dirtyOnly */);
+      scribble.uploading = true;
+      return this.api.putScribble(scribblePb).then(() => {
+        scribble.uploading = false;
+        scribble.dirty = false;
+      }).catch((e) => {
+        scribble.uploading = false;
+        throw e;
+      });
+    });
+
+    try {
+      await Promise.all(uploadPromises);
+
+      if (isPendingQueuedUpload(this.$uploadStatus)) {
+        // TODO: is this dangerously stacked?
+        await this.uploadScribbles();
+      } else {
+        this.$uploadStatus = { type: 'idle' };
+      }
+    } catch (e) {
+      this.$uploadStatus = { type: 'failed', error: e };
+    }
   }
 
   /**

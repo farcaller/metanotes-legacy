@@ -42,8 +42,12 @@ message GetAllMetadataReply {
   repeated Scribble scribble = 1;
 }
 
+message PutScribbleRequest {
+  Scribble scribble = 1;
+}
+
 service Metanotes {
   rpc GetScribble(GetScribbleRequest) returns (GetScribbleReply) {}
-
   rpc GetAllMetadata(google.protobuf.Empty) returns (GetAllMetadataReply) {}
+  rpc PutScribble(PutScribbleRequest) returns (google.protobuf.Empty) {}
 }

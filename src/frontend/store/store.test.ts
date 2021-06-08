@@ -16,7 +16,8 @@ import { StorageAPI } from './client';
 import ScribbleStore from './store';
 import * as pb from '../../common/api/api_web_pb/src/common/api/api_pb';
 import { FetchFailed } from './fetch_status';
-import { Scribble } from './interface/scribble';
+import Scribble from './scribble/scribble';
+import { Scribble as ScribbleInterface } from './interface/scribble';
 
 test('it returns core scribbles by id', () => {
   const store = new ScribbleStore(undefined as unknown as StorageAPI);
@@ -62,9 +63,8 @@ describe('fetchScribbles', () => {
         spb.setVersionList([vpb]);
         return Promise.resolve([spb]);
       },
-      getScribble(_scribbleID: string, _versionIDs: string[]): Promise<pb.Scribble> {
-        return Promise.reject(Error('not implemented'));
-      },
+      getScribble: undefined as never,
+      putScribble: undefined as never,
     };
   });
 
@@ -93,6 +93,60 @@ describe('fetchScribbles', () => {
   });
 });
 
+describe('uploadScribbles', () => {
+  let api: StorageAPI & { putScribbles: pb.Scribble[], shouldFail: boolean };
+  let store: ScribbleStore;
+
+  beforeEach(() => {
+    api = {
+      putScribbles: [],
+      shouldFail: false,
+      getAllMetadata: undefined as never,
+      getScribble: undefined as never,
+      putScribble(scribble: pb.Scribble): Promise<void> {
+        this.putScribbles.push(scribble);
+        return this.shouldFail ? Promise.reject(Error()) : Promise.resolve();
+      },
+    };
+    store = new ScribbleStore(api);
+  });
+
+  test('it only uploads the dirty scribbles', async () => {
+    const cleanScribble = store.createDraftScribble();
+    cleanScribble.createStableVersion('v1', new Map());
+    cleanScribble.dirty = false;
+    const dirtyScribble = store.createDraftScribble();
+    dirtyScribble.createStableVersion('v1', new Map());
+    dirtyScribble.dirty = false;
+    dirtyScribble.createStableVersion('v2', new Map());
+    dirtyScribble.createStableVersion('v3', new Map());
+
+    await store.uploadScribbles();
+
+    expect(api.putScribbles).toHaveLength(1);
+    expect(api.putScribbles[0].getVersionList()).toHaveLength(2);
+  });
+
+  test('it clears the dirty state on successful upload', async () => {
+    const dirtyScribble = store.createDraftScribble();
+    dirtyScribble.createStableVersion('v2', new Map());
+
+    await store.uploadScribbles();
+
+    expect(dirtyScribble.dirty).toBeFalsy();
+  });
+
+  test('it keeps the dirty state if upload fails', async () => {
+    api.shouldFail = true;
+    const dirtyScribble = store.createDraftScribble();
+    dirtyScribble.createStableVersion('v2', new Map());
+
+    await store.uploadScribbles();
+
+    expect(dirtyScribble.dirty).toBeTruthy();
+  });
+});
+
 describe('scribblesByTag', () => {
   let store: ScribbleStore;
 
@@ -111,7 +165,7 @@ describe('scribblesByTag', () => {
     }]);
   };
 
-  const getIDs = (scribbles: Scribble[]) => scribbles.map((s) => s.scribbleID);
+  const getIDs = (scribbles: ScribbleInterface[]) => scribbles.map((s) => s.scribbleID);
 
   test('it sorts tags by title', () => {
     makeScribble('3', '3', { tags: '["hello"]' });

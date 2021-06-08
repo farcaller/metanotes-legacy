@@ -50,4 +50,13 @@ export class MetanotesServerAPI {
     }
     throw Error('scribble not found');
   }
+
+  async putScribble(scribble: pb.Scribble): Promise<void> {
+    const req = new pb.PutScribbleRequest();
+    req.setScribble(scribble);
+
+    await this.client.putScribble(req);
+
+    return Promise.resolve();
+  }
 }

@@ -17,7 +17,7 @@ interface FetchIdle {
 }
 
 interface FetchPending {
-  type: 'pending'
+  type: 'pending';
 }
 
 export interface FetchFailed {

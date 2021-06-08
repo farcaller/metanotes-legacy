@@ -85,7 +85,7 @@ export default ScribbleElement;`,
 
   function Element() {
     const scribble = store.scribbleByTitle('test')!;
-    const ScribbleEl = scribble.JSModule<React.FC<{value: string}>>();
+    const ScribbleEl = scribble.JSModule as React.FC<{value: string}>;
     return <ScribbleEl value="42" />;
   }
   const ElementObserver = observer(Element);
@@ -127,7 +127,7 @@ export default ScribbleElement;`,
     }]);
     const scribble = store.scribbleByTitle('test')!;
 
-    expect(scribble.JSModule.bind(scribble)).toThrowError(
+    expect(() => scribble.JSModule).toThrowError(
       'failed to evaluate scribble 01F3MK7KSKWY5ZCVA84HAVBAXD "test": SyntaxError: unknown: Missing semicolon',
     );
   });
@@ -142,7 +142,7 @@ export default ScribbleElement;`,
     }]);
     const scribble = store.scribbleByTitle('test')!;
 
-    expect(scribble.JSModule.bind(scribble)).toThrowError(
+    expect(() => scribble.JSModule).toThrowError(
       'failed to evaluate scribble 01F3MN6PRT6MP3E836K6XBB1MN "another": Error: body is missing',
     );
   });
@@ -158,7 +158,7 @@ export default ScribbleElement;`,
 
     function Element() {
       const scribble = store.scribbleByTitle('test')!;
-      const ScribbleEl = scribble.JSModule<React.FC>();
+      const ScribbleEl = scribble.JSModule as React.FC;
       return <ScribbleEl />;
     }
     const ElementObserver = observer(Element);
@@ -182,7 +182,7 @@ export default ScribbleElement;`,
 
     function Element() {
       const scribble = store.scribbleByTitle('test')!;
-      const ScribbleEl = scribble.JSModule<React.FC>();
+      const ScribbleEl = scribble.JSModule as React.FC;
       return <ScribbleEl />;
     }
     const ElementObserver = observer(Element);

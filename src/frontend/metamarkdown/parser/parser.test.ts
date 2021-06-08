@@ -51,7 +51,7 @@ class ScribblesStore {
     if (!scribble) {
       throw Error(`failed to require scribble: '${title}': does not exist`);
     }
-    return scribble.JSModule();
+    return scribble.JSModule as T;
   }
 
   get parserScribbles(): Scribble[] {
@@ -65,7 +65,7 @@ const mockStore = new ScribblesStore();
 
 autorun(() => {
   for (const scribble of Object.values(mockStore.parserScribbles)) {
-    scribble.JSModule();
+    const _ = scribble.JSModule;
     scribble.latestStableVersion?.getMeta('parser');
   }
 });

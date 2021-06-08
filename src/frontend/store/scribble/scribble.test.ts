@@ -97,7 +97,7 @@ describe('JSModule', () => {
       meta: { abc: 'def', 'mn-title': 'test' },
     });
 
-    const jsmod = scribble.JSModule<() => number>();
+    const jsmod = scribble.JSModule as () => number;
 
     expect(jsmod()).toEqual(42);
   });

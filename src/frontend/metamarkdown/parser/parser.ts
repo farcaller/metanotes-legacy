@@ -44,7 +44,7 @@ export function buildLanguage(parserScribbles: Scribble[]): Parsimmon.Language {
       console.warn(`scribble ${scribble} doesn't have the parser name set, ignoring.`);
       continue;
     }
-    parserFuncs[parserName] = scribble.JSModule<ParserFunc | ParserGeneratorFunc>();
+    parserFuncs[parserName] = scribble.JSModule as ParserFunc | ParserGeneratorFunc;
   }
 
   function rebuildParser(args: RebuildParserArgs) {

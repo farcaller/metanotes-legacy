@@ -19,8 +19,8 @@ ts_project(
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/app/ui",
-        "//src/frontend/scribbles",
         "//src/frontend/store",
+        "//src/frontend/store/context:use_context",
         "@npm//@monaco-editor/react",
         "@npm//@types/react",
         "@npm//@types/react-native",

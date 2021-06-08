@@ -17,6 +17,7 @@ import React, { useCallback } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
 import { Scribble } from '../../store/interface/scribble';
+import { Version } from '../../store/interface/version';
 import ScribbleEditorController from './ScribbleEditorController';
 import ScribbleHeader from './ScribbleHeader';
 
@@ -28,6 +29,39 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 });
+
+function MarkdownBody({ scribble }: { scribble: Scribble }) {
+  return (
+    <Text>
+      {scribble.latestVersion.body}
+    </Text>
+  );
+}
+
+function JSModuleBodyEl({ scribble }: { scribble: Scribble }) {
+  const El = scribble.JSModule as React.FC;
+  return <El />;
+}
+
+const JSModuleBody = observer(JSModuleBodyEl);
+
+function ScribbleBodyEl({ scribble }: { scribble: Scribble }) {
+  switch (scribble.latestVersion.getMeta('content-type')) {
+    case 'text/markdown':
+      return <MarkdownBody scribble={scribble} />;
+    case 'application/vnd.metanotes.component-jsmodule':
+      return <JSModuleBody scribble={scribble} />;
+    default:
+      return (
+        <Text>
+          unknown content type
+          {scribble.latestVersion.getMeta('content-type')}
+        </Text>
+      );
+  }
+}
+
+const ScribbleBody = observer(ScribbleBodyEl);
 
 function ScribbleContainer({ scribble }: { scribble: Scribble}) {
   const version = scribble.latestVersion;
@@ -48,7 +82,7 @@ function ScribbleContainer({ scribble }: { scribble: Scribble}) {
     <View style={styles.container}>
       <ScribbleHeader scribble={scribble} onEdit={onEdit} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text>{version.body}</Text>
+        <ScribbleBody scribble={scribble} />
       </ScrollView>
     </View>
   );

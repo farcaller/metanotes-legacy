@@ -46,6 +46,8 @@ function ActionsScribble({ spread = false }: ActionsScribbleProps) {
 
   const onCreate = useCallback(() => spreadStore.createScribble(), [spreadStore]);
 
+  const onOpen = useCallback(() => spreadStore.openScribble('$:ui/scribbles/open'), [spreadStore]);
+
   return (
     <View style={[styles.container, spread ? styles.spreadContainer : undefined]}>
       <IconButton
@@ -58,6 +60,7 @@ function ActionsScribble({ spread = false }: ActionsScribbleProps) {
       <IconButton
         icon="feature-search-outline"
         size={40}
+        onPress={onOpen}
       />
     </View>
   );

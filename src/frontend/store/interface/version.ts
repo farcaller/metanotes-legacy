@@ -31,4 +31,5 @@ export interface Version {
   computedMeta: ComputedMetadata;
   clonedMetadata: Map<string, string>;
   toProto(): pb.Version;
+  readonly isCore: boolean;
 }

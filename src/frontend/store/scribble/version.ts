@@ -169,4 +169,8 @@ export default class Version implements VersionInterface {
   set dirty(isDirty: boolean) {
     this.$dirty = isDirty;
   }
+
+  get isCore(): boolean {
+    return this.versionID.endsWith('CORE');
+  }
 }

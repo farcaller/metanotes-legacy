@@ -19,41 +19,16 @@
  * display-title: Open Scribble
  */
 
-import React, { useCallback } from '@metascribbles/react';
-import { useStore, observer, Scribble } from '@metascribbles/store';
-import { Text, View, StyleSheet } from '@metascribbles/react-native';
+import React from '@metascribbles/react';
+import { observer } from '@metascribbles/store';
+import { View } from '@metascribbles/react-native';
 
-const styles = StyleSheet.create({
-  link: {
-    textDecorationStyle: 'solid',
-    textDecorationLine: 'underline',
-  },
-});
-
-function ScribbleButtonEL({ scribble }: { scribble: Scribble }) {
-  const openScribble = useCallback(() => {
-    console.log(scribble);
-  }, [scribble]);
-
-  return (
-    <Text onPress={openScribble} style={styles.link}>
-      {scribble.toString()}
-    </Text>
-  );
-}
-
-const ScribbleButton = observer(ScribbleButtonEL);
+import OpenAll from '$:ui/scribbles/open/all';
 
 function Open() {
-  const store = useStore();
-
   return (
     <View>
-      {store.scribbles.map((scribble) => (
-        <View key={scribble.scribbleID}>
-          <ScribbleButton scribble={scribble} />
-        </View>
-      ))}
+      <OpenAll />
     </View>
   );
 }

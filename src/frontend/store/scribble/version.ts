@@ -126,6 +126,12 @@ export default class Version implements VersionInterface {
     return v;
   }
 
+  toJSON(): unknown {
+    return {
+      versionID: this.versionID,
+    };
+  }
+
   get body(): string | null {
     return this.$body;
   }

@@ -199,6 +199,12 @@ export default class Scribble implements ScribbleInterface {
     return desc;
   }
 
+  toJSON(): unknown {
+    return {
+      scribbeID: this.scribbleID,
+    };
+  }
+
   /**
    * Returns the Version for given ID.
    *

@@ -7,5 +7,6 @@ scribbles_library(
     srcs = glob([
         "**/*.metanotes.ts",
         "**/*.metanotes.tsx",
+        "**/*.md",
     ]),
 )

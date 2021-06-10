@@ -20,7 +20,52 @@ const args = argv.slice(2);
 const src = args[0];
 const dst = args[1];
 
-function processScribble(sourceFile: string, source: string): string {
+function processMarkdownScribble(sourceFile: string, source: string): string {
+  const lines = source.split('\n');
+
+  const prelude = [] as string[];
+  while (lines[0] !== '---') {
+    prelude.push(lines.shift() as string);
+  }
+  lines.shift();
+
+  const meta = {} as { [key: string]: string };
+
+  for (const l of prelude) {
+    const groups = l.match(/([^:]+)\s*:\s*(.*)/);
+    if (!groups) {
+      throw Error(`${sourceFile}: cannot parse attribute from "${l}"`);
+    }
+    const [_, k, v] = groups;
+    meta[k] = v;
+  }
+
+  if (!meta.id) {
+    throw Error(`${sourceFile}: "id" not found in the metadata`);
+  }
+
+  const { id } = meta;
+  delete meta.id;
+  const { title } = meta;
+  delete meta.title;
+  if (title !== undefined) {
+    meta['mn-title'] = title;
+  }
+  meta['content-type'] = 'text/markdown';
+
+  const body = lines.join('\n').trim();
+
+  let output = '';
+  output += `export default {\n`;
+  output += `  id:    '${id}',\n`;
+  output += `  meta:  ${JSON.stringify(meta)},\n`;
+  output += `  body:  ${JSON.stringify(body)},\n`;
+  output += `} as { id: string, meta: { [key: string]: string }, body: string };\n`;
+
+  return output;
+}
+
+function processJSScribble(sourceFile: string, source: string): string {
   const lines = source.split('\n');
 
   // skip the license header
@@ -44,7 +89,7 @@ function processScribble(sourceFile: string, source: string): string {
 
     const groups = l.match(/ \*\s+([^:]+)\s*:\s*(.*)/);
     if (!groups) {
-      throw Error(`${sourceFile}: cannot parse attibute from "${l}"`);
+      throw Error(`${sourceFile}: cannot parse attribute from "${l}"`);
     }
     const [_, k, v] = groups;
     meta[k] = v;
@@ -75,6 +120,13 @@ function processScribble(sourceFile: string, source: string): string {
   output += `} as { id: string, meta: { [key: string]: string }, body: string };\n`;
 
   return output;
+}
+
+function processScribble(sourceFile: string, source: string): string {
+  if (sourceFile.endsWith('.md')) {
+    return processMarkdownScribble(sourceFile, source);
+  }
+  return processJSScribble(sourceFile, source);
 }
 
 const i = fs.readFileSync(src, { encoding: 'utf8' });

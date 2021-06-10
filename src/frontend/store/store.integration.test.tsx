@@ -73,7 +73,7 @@ test('it renders the scribble as a JSModule element', async () => {
   store.loadCoreScribbles([{
     id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
     body: `
-const { Text } = ReactNative;
+import { Text } from '@metascribbles/react-native';
 function ScribbleElement({ value }) {
   return <Text>{value}</Text>;
 }
@@ -98,15 +98,15 @@ export default ScribbleElement;`,
 `);
 });
 
-describe(`requireScribble`, () => {
+describe(`require scribble`, () => {
   let store: ScribblesStore;
   beforeEach(() => {
     store = new ScribblesStore(undefined as unknown as StorageAPI);
     store.loadCoreScribbles([{
       id: '01F3MK7KSKWY5ZCVA84HAVBAXD',
       body: `
-const { Text } = ReactNative;
-const another = requireScribble('another');
+import { Text } from '@metascribbles/react-native';
+const another = require('another');
 function ScribbleElement() {
   return <Text>{another}</Text>;
 }
@@ -117,7 +117,7 @@ export default ScribbleElement;`,
     }]);
   });
 
-  test('it throws when trying to load a JSModule that depends on a non-compileable scribble', () => {
+  test('it throws when trying to load a JSModule that depends on a non-compilable scribble', () => {
     store.loadCoreScribbles([{
       id: '01F3MN6PRT6MP3E836K6XBB1MN',
       body: 'bad body',
@@ -128,7 +128,7 @@ export default ScribbleElement;`,
     const scribble = store.scribbleByTitle('test')!;
 
     expect(() => scribble.JSModule).toThrowError(
-      'failed to evaluate scribble 01F3MK7KSKWY5ZCVA84HAVBAXD "test": SyntaxError: unknown: Missing semicolon',
+      /failed to evaluate scribble .+ Error: failed to transpile the body: SyntaxError: unknown: Missing semicolon/,
     );
   });
 

@@ -22,23 +22,6 @@ import { ScribblesStore } from '../../interface/store';
 import useStore from '../../context/use_context';
 
 /**
- * A require implementation that tries to resolve the scribble.
- *
- * TODO: This might return undefined in scenarios that weren't anticipated.
- *
- * @param name Scribble name.
- * @param store Scribble owning store.
- * @returns Scribble's JSModule or undefined if that failed.
- */
-function requireScribble(name: string, store: ScribblesStore): unknown | undefined {
-  try {
-    return store.requireScribble(name);
-  } catch (e) {
-    return undefined;
-  }
-}
-
-/**
  * A require implementation for scribbles.
  *
  * @param mod Module to load.
@@ -48,11 +31,6 @@ function requireScribble(name: string, store: ScribblesStore): unknown | undefin
  * @throws Throws if module cannot be resolved.
  */
 export default function scribbleRequire(mod: string, _scribble: Scribble, store: ScribblesStore): unknown {
-  const scribble = requireScribble(mod, store);
-  if (scribble !== undefined) {
-    return scribble;
-  }
-
   switch (mod) {
     case '@metascribbles/parsimmon':
       return ParsimmonModule;
@@ -66,6 +44,6 @@ export default function scribbleRequire(mod: string, _scribble: Scribble, store:
         observer,
       };
     default:
-      throw Error(`cannot require '${mod}': not found`);
+      return store.requireScribble(mod);
   }
 }

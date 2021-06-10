@@ -45,6 +45,9 @@ yarn_install(
 
         # live-server was last updated in 2018 :-(
         "//:patches/live-server+1.2.1.patch",
+
+        # react-native seems to screw up the promises in the tests somehow
+        "//:patches/react-native+0.64.2.patch",
     ],
     package_json = "//:package.json",
     yarn_lock = "//:yarn.lock",

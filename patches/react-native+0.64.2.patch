@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-native/jest/setup.js b/node_modules/react-native/jest/setup.js
+index bc27b00..11c8013 100644
+--- a/node_modules/react-native/jest/setup.js
++++ b/node_modules/react-native/jest/setup.js
+@@ -21,7 +21,8 @@ global.performance = {
+   now: jest.fn(Date.now),
+ };
+ 
+-global.Promise = jest.requireActual('promise');
++// https://github.com/callstack/react-native-testing-library/issues/379#issuecomment-762597260
++global.Promise = require('promise-polyfill');  // jest.requireActual('promise');
+ global.regeneratorRuntime = jest.requireActual('regenerator-runtime/runtime');
+ 
+ global.requestAnimationFrame = function(callback) {

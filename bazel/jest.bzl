@@ -53,6 +53,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
             "@npm//core-js",
             "@npm//react-native",
             "@npm//react-test-renderer",
+            "@npm//promise-polyfill",
         ] + deps,
         args = args,
         **kwargs

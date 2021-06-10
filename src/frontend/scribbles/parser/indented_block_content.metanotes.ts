@@ -13,21 +13,26 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3TV18AEB64S2QVDQ4RABRRS
+ * id: 01F3NPY65KK505A2AYKGHDJHEN
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/SetextHeading
+ * title: $:core/parser/IndentedBlockContent
  * tags: ['$:core/parser']
- * parser: SetextHeading
+ * parser: IndentedBlockContent
  */
 
-const { regexp } = Parsimmon;
+import { alt, seqMap, string } from '@metascribbles/parsimmon';
 
-function SetextHeading(r) {
-  return regexp(/ {0,3}/).then(regexp(/(=+|-+)[^\S\n\r]*\n/)).map((heading) => ({
-    type: 'partial_setext_heading',
-    depth: heading[0] === '=' ? 1 : 2,
-    originalValue: heading,
-  }));
+const finalizeParagraphs = require('$:core/parser-helpers/finalizeParagraphs');
+
+function IndentedBlockContent(r) {
+  return seqMap(
+    r.PartialBlockContent,
+    alt(
+      r.IndentSame.then(r.PartialBlockContent),
+      string('\n').map(() => ({ type: 'empty_line' })),
+    ).many(),
+    (first, rest) => finalizeParagraphs(r, [first, ...rest]),
+  );
 }
 
-export default SetextHeading;
+export default IndentedBlockContent;

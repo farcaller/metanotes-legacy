@@ -29,8 +29,8 @@ function removeParagraphTrailingBreak(block) {
   }
 }
 
-const balanceEmphasisChildren = requireScribble('$:core/parser-helpers/balanceEmphasisChildren');
-const collapseText = requireScribble('$:core/parser-helpers/collapseText');
+const balanceEmphasisChildren = require('$:core/parser-helpers/balanceEmphasisChildren');
+const collapseText = require('$:core/parser-helpers/collapseText');
 
 function finalizeParagraphs(r, blocks) {
   const newBlocks = [];

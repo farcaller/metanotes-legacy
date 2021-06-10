@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { useEffect, useCallback } from 'react';
+
 import Scribble from './scribble';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import { CoreScribble } from '../interface/core_scribble';
@@ -100,6 +102,23 @@ describe('JSModule', () => {
     const jsmod = scribble.JSModule as () => number;
 
     expect(jsmod()).toEqual(42);
+  });
+
+  test('it handles the imports', () => {
+    const store = new ScribblesStore(undefined as unknown as StorageAPI);
+    const scribble = Scribble.fromCoreScribble(store, {
+      id: '01F35516BMJFC42SGG5VTPSWJV',
+      body: `
+        import React, { useCallback } from '@metascribbles/react';
+        export default function Test() {
+          return [React.useEffect, useCallback];
+        }`,
+      meta: { 'mn-title': 'test' },
+    });
+
+    const jsmod = scribble.JSModule as () => unknown;
+
+    expect(jsmod()).toEqual([useEffect, useCallback]);
   });
 });
 

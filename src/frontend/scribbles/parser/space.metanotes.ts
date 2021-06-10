@@ -12,8 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as ReactNative from 'react-native';
+/* attributes *
+ * id: 01F3MT5DR8EPEFQVT085053KC3
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Space
+ * tags: ['$:core/parser']
+ * parser: Space
+ */
 
-export default {
-  ReactNative,
-};
+import { regexp } from '@metascribbles/parsimmon';
+
+function Space() {
+  return regexp(/[^\S\r\n]+/).map((value) => ({
+    type: 'text',
+    value,
+  }));
+}
+
+export default Space;

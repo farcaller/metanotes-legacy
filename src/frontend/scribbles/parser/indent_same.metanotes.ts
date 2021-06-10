@@ -13,22 +13,21 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01EY0ZZDQG0HRZMYFCF2TQN5E9
+ * id: 01F3NQ553FNF2VR0BCE5S0Z36X
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/EscapedChar
+ * title: $:core/parser/IndentSame
  * tags: ['$:core/parser']
- * parser: EscapedChar
+ * parser: IndentSame
  */
 
-const { string, oneOf } = Parsimmon;
+import { regexp } from '@metascribbles/parsimmon';
 
-const EscapedChars = '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-';
-
-function EscapedChar(r) {
-  return string('\\').then(oneOf(EscapedChars).fallback('\\')).map((c) => ({
-    type: 'text',
-    value: c,
-  }));
+function IndentSameGeneratorFunc({ indent }) {
+  function IndentSame() {
+    return regexp(/[^\S\r\n]/).times(indent);
+  }
+  return IndentSame;
 }
+IndentSameGeneratorFunc.generatorFunc = true;
 
-export default EscapedChar;
+export default IndentSameGeneratorFunc;

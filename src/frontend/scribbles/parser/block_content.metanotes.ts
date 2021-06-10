@@ -13,27 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3NN8Q6JQS6B9HDSDKNKRKBA
+ * id: 01F3JWKAJRFYYYX0AX5YQ25TAX
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/ListItem
+ * title: $:core/parser/BlockContent
  * tags: ['$:core/parser']
- * parser: ListItem
+ * parser: BlockContent
  */
 
-const { regexp } = Parsimmon;
+const finalizeParagraphs = require('$:core/parser-helpers/finalizeParagraphs');
 
-function ListItemGeneratorFunc({ rebuildParser }) {
-  function ListItem() {
-    return regexp(/[^\S\r\n]{0,3}-[^\S\r\n]+/).chain((indentString) => {
-      const indent = indentString.trimStart().length;
-      return rebuildParser({ indent }).IndentedBlockContent.map((children) => ({
-        type: 'listItem',
-        children,
-      }));
-    });
-  }
-  return ListItem;
+function BlockContent(r) {
+  return r.PartialBlockContent.many().map((blocks) => finalizeParagraphs(r, blocks));
 }
-ListItemGeneratorFunc.generatorFunc = true;
 
-export default ListItemGeneratorFunc;
+export default BlockContent;

@@ -20,9 +20,11 @@
  * parser: FencedCodeBlock
  */
 
-const { string, notFollowedBy, regexp, alt, eof, seq } = Parsimmon;
+import {
+  string, notFollowedBy, regexp, alt, eof, seq,
+} from '@metascribbles/parsimmon';
 
-function FencedCodeBlock(r) {
+function FencedCodeBlock() {
   return seq(regexp(/ {0,3}/), regexp(/~{3,}|`{3,}/), regexp(/[^\n]*/), string('\n'))
     .chain(([indent, delimeterRun, infoString]) => {
       const trimmedInfoString = infoString.trim();

@@ -19,8 +19,9 @@
  * display-title: Open Scribble
  */
 
-const { Text, View, Button, StyleSheet } = ReactNative;
-const { useCallback } = React;
+import React, { useCallback } from '@metascribbles/react';
+import { useStore, observer, Scribble } from '@metascribbles/store';
+import { Text, View, StyleSheet } from '@metascribbles/react-native';
 
 const styles = StyleSheet.create({
   link: {
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function ScribbleButtonEL({ scribble }) {
+function ScribbleButtonEL({ scribble }: { scribble: Scribble }) {
   const openScribble = useCallback(() => {
     console.log(scribble);
   }, [scribble]);

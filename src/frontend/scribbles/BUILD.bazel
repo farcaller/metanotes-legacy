@@ -5,7 +5,7 @@ package(default_visibility = ["//visibility:public"])
 scribbles_library(
     name = "scribbles",
     srcs = glob([
-        "**/*.metanotes.js",
-        "**/*.metanotes.jsx",
+        "**/*.metanotes.ts",
+        "**/*.metanotes.tsx",
     ]),
 )

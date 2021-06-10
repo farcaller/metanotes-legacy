@@ -13,20 +13,17 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3JXEXM8TGWWRQBZ5VK4MJVT
+ * id: 01F3JWC67WQ6K742HDRZ5WFDCR
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Text
+ * title: $:core/parser/DocumentContent
  * tags: ['$:core/parser']
- * parser: Text
+ * parser: DocumentContent
  */
 
-const { regexp } = Parsimmon;
+import { alt } from '@metascribbles/parsimmon';
 
-function Text() {
-  return regexp(/[^#_*\s\\]+/).map((value) => ({
-    type: 'text',
-    value,
-  }));
+function DocumentContent(r) {
+  return alt(r.BlockContent); // , r.PhrasingContent);
 }
 
-export default Text;
+export default DocumentContent;

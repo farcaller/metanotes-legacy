@@ -12,22 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* attributes *
- * id: 01F3NQ553FNF2VR0BCE5S0Z36X
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/IndentSame
- * tags: ['$:core/parser']
- * parser: IndentSame
- */
+import * as Parsimmon from 'parsimmon';
 
-const { regexp } = Parsimmon;
-
-function IndentSameGeneratorFunc({ indent }) {
-  function IndentSame() {
-    return regexp(/[^\S\r\n]/).times(indent);
-  }
-  return IndentSame;
-}
-IndentSameGeneratorFunc.generatorFunc = true;
-
-export default IndentSameGeneratorFunc;
+export = Parsimmon;
+export as namespace Parsimmon;

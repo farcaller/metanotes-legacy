@@ -13,20 +13,20 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3MT5DR8EPEFQVT085053KC3
+ * id: 01F3MQK8Y5DK3YM84ZPPH6NYAC
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Space
+ * title: $:core/parser/Symbol
  * tags: ['$:core/parser']
- * parser: Space
+ * parser: Symbol
  */
 
-const { regexp } = Parsimmon;
+import { regexp } from '@metascribbles/parsimmon';
 
-function Space() {
-  return regexp(/[^\S\r\n]+/).map((value) => ({
+function Symbol() {
+  return regexp(/[#]+/).map((value) => ({
     type: 'text',
     value,
   }));
 }
 
-export default Space;
+export default Symbol;

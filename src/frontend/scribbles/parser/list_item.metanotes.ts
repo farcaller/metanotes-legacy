@@ -13,26 +13,27 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3NPY65KK505A2AYKGHDJHEN
+ * id: 01F3NN8Q6JQS6B9HDSDKNKRKBA
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/IndentedBlockContent
+ * title: $:core/parser/ListItem
  * tags: ['$:core/parser']
- * parser: IndentedBlockContent
+ * parser: ListItem
  */
 
-const { alt, seqMap, string } = Parsimmon;
+import { regexp } from '@metascribbles/parsimmon';
 
-const finalizeParagraphs = requireScribble('$:core/parser-helpers/finalizeParagraphs');
-
-function IndentedBlockContent(r) {
-  return seqMap(
-    r.PartialBlockContent,
-    alt(
-      r.IndentSame.then(r.PartialBlockContent),
-      string('\n').map(() => ({ type: 'empty_line' })),
-    ).many(),
-    (first, rest) => finalizeParagraphs(r, [first, ...rest]),
-  );
+function ListItemGeneratorFunc({ rebuildParser }) {
+  function ListItem() {
+    return regexp(/[^\S\r\n]{0,3}-[^\S\r\n]+/).chain((indentString) => {
+      const indent = indentString.trimStart().length;
+      return rebuildParser({ indent }).IndentedBlockContent.map((children) => ({
+        type: 'listItem',
+        children,
+      }));
+    });
+  }
+  return ListItem;
 }
+ListItemGeneratorFunc.generatorFunc = true;
 
-export default IndentedBlockContent;
+export default ListItemGeneratorFunc;

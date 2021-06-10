@@ -13,20 +13,24 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3MQK8Y5DK3YM84ZPPH6NYAC
+ * id: 01F3STC4EYBK8A7CMRDHB526PZ
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/Symbol
+ * title: $:core/parser/PartialBlockContent
  * tags: ['$:core/parser']
- * parser: Symbol
+ * parser: PartialBlockContent
  */
 
-const { regexp } = Parsimmon;
+import { alt } from '@metascribbles/parsimmon';
 
-function Symbol() {
-  return regexp(/[#]+/).map((value) => ({
-    type: 'text',
-    value,
-  }));
+function PartialBlockContent(r) {
+  return alt(
+    r.AtxHeading,
+    r.SetextHeading,
+    r.ThematicBreak,
+    r.List,
+    r.FencedCodeBlock,
+    r.PartialParagraph,
+  );
 }
 
-export default Symbol;
+export default PartialBlockContent;

@@ -12,24 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* attributes *
- * id: 01F3K3RT1CVR9184EAXM730JFW
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/StaticPhrasingContent
- * tags: ['$:core/parser']
- * parser: StaticPhrasingContent
- */
+import { observer as observer_ } from 'mobx-react-lite';
 
-const { alt } = Parsimmon;
+import useStore_ from '../../frontend/store/context/use_context';
+import { Scribble as Scribble_ } from '../../frontend/store/interface/scribble';
 
-function StaticPhrasingContent(r) {
-  return alt(
-    r.Emphasis,
-    r.Text,
-    r.EscapedChar,
-    r.Space,
-    r.Symbol,
-  );
-}
-
-export default StaticPhrasingContent;
+export const useStore = useStore_;
+export type Scribble = Scribble_;
+export const observer = observer_;

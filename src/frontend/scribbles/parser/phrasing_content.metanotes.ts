@@ -13,24 +13,19 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3STC4EYBK8A7CMRDHB526PZ
+ * id: 01F3JXCM0W6GZT3NB9Z1E2PWY9
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/PartialBlockContent
+ * title: $:core/parser/PhrasingContent
  * tags: ['$:core/parser']
- * parser: PartialBlockContent
+ * parser: PhrasingContent
  */
 
-const { alt } = Parsimmon;
+import { alt } from '@metascribbles/parsimmon';
 
-function PartialBlockContent(r) {
+function PhrasingContent(r) {
   return alt(
-    r.AtxHeading,
-    r.SetextHeading,
-    r.ThematicBreak,
-    r.List,
-    r.FencedCodeBlock,
-    r.PartialParagraph,
+    r.StaticPhrasingContent,
   );
 }
 
-export default PartialBlockContent;
+export default PhrasingContent;

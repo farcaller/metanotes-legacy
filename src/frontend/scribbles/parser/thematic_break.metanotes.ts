@@ -13,17 +13,19 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3JWC67WQ6K742HDRZ5WFDCR
+ * id: 01F3NGG14854C7V2TZE81RRA77
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/DocumentContent
+ * title: $:core/parser/ThematicBreak
  * tags: ['$:core/parser']
- * parser: DocumentContent
+ * parser: ThematicBreak
  */
 
-const { alt } = Parsimmon;
+import { regexp } from '@metascribbles/parsimmon';
 
-function DocumentContent(r) {
-  return alt(r.BlockContent); // , r.PhrasingContent);
+function ThematicBreak() {
+  return regexp(/[^\S\r\n]{0,3}((\*[^\S\r\n]*){3,}|(-[^\S\r\n]*){3,}|(_[^\S\r\n]*){3,})\n/).map(() => ({
+    type: 'thematicBreak',
+  }));
 }
 
-export default DocumentContent;
+export default ThematicBreak;

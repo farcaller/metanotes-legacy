@@ -12,25 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble } from '../../../interface/scribble';
-import parsimmonLocals from './parsimmon';
-import reactNativeLocals from './react_native';
-import reactLocals from './react';
-import storeLocals from './store';
+/* attributes *
+ * id: 01F3TV18AEB64S2QVDQ4RABRRS
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/SetextHeading
+ * tags: ['$:core/parser']
+ * parser: SetextHeading
+ */
 
-export default function localsForScribble(scribble: Scribble): Record<string, unknown> {
-  const { title } = scribble;
-  if (title === '') {
-    return {};
-  }
-  if (title.startsWith('$:core/parser/')) {
-    return {
-      ...parsimmonLocals,
-    };
-  }
-  return {
-    ...reactLocals,
-    ...reactNativeLocals,
-    ...storeLocals,
-  };
+import { regexp } from '@metascribbles/parsimmon';
+
+function SetextHeading() {
+  return regexp(/ {0,3}/).then(regexp(/(=+|-+)[^\S\n\r]*\n/)).map((heading) => ({
+    type: 'partial_setext_heading',
+    depth: heading[0] === '=' ? 1 : 2,
+    originalValue: heading,
+  }));
 }
+
+export default SetextHeading;

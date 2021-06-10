@@ -20,7 +20,7 @@
  * parser: PartialParagraph
  */
 
-const { string } = Parsimmon;
+import { string } from '@metascribbles/parsimmon';
 
 function removeWhitespace(phrasingContents) {
   const len = phrasingContents.length;

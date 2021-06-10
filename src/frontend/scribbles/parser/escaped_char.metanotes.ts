@@ -13,19 +13,22 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3NGG14854C7V2TZE81RRA77
+ * id: 01EY0ZZDQG0HRZMYFCF2TQN5E9
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/ThematicBreak
+ * title: $:core/parser/EscapedChar
  * tags: ['$:core/parser']
- * parser: ThematicBreak
+ * parser: EscapedChar
  */
 
-const { regexp } = Parsimmon;
+import { string, oneOf } from '@metascribbles/parsimmon';
 
-function ThematicBreak() {
-  return regexp(/[^\S\r\n]{0,3}((\*[^\S\r\n]*){3,}|(-[^\S\r\n]*){3,}|(_[^\S\r\n]*){3,})\n/).map(() => ({
-    type: 'thematicBreak',
+const EscapedChars = '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-';
+
+function EscapedChar() {
+  return string('\\').then(oneOf(EscapedChars).fallback('\\')).map((c) => ({
+    type: 'text',
+    value: c,
   }));
 }
 
-export default ThematicBreak;
+export default EscapedChar;

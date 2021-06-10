@@ -20,10 +20,12 @@
  * parser: AtxHeading
  */
 
-const { alt, seqMap, regexp, Parser, makeSuccess, makeFailure } = Parsimmon;
+import {
+  alt, seqMap, regexp, Parser, makeSuccess, makeFailure,
+} from '@metascribbles/parsimmon';
 
-const balanceEmphasisChildren = requireScribble('$:core/parser-helpers/balanceEmphasisChildren');
-const collapseText = requireScribble('$:core/parser-helpers/collapseText');
+const balanceEmphasisChildren = require('$:core/parser-helpers/balanceEmphasisChildren');
+const collapseText = require('$:core/parser-helpers/collapseText');
 
 const peekPrevWhitespace = Parser((input, i) => {
   if (input[i - 1].match(/[^\S\r\n]/)) {
@@ -47,19 +49,15 @@ function AtxHeading(r) {
       };
       balanceEmphasisChildren(el);
 
-      let hasChildren = el.children.length > 0;
-      let lastChild = hasChildren ? el.children[el.children.length - 1] : undefined;
-      if (hasChildren && lastChild.type === 'text' && lastChild.closingRun) {
+      let lastChild = el.children[el.children.length - 1];
+      if (lastChild && lastChild.type === 'text' && lastChild.closingRun) {
         el.children.pop();
       }
       collapseText(el);
 
-      hasChildren = el.children.length > 0;
-      lastChild = hasChildren ? el.children[el.children.length - 1] : undefined;
-      if (hasChildren) {
-        if (lastChild.type === 'text') {
-          lastChild.value = lastChild.value.trimEnd();
-        }
+      lastChild = el.children[el.children.length - 1];
+      if (lastChild && lastChild.type === 'text') {
+        lastChild.value = lastChild.value.trimEnd();
       }
       return el;
     }),

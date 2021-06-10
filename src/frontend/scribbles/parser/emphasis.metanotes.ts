@@ -20,7 +20,7 @@
  * parser: Emphasis
  */
 
-const { seqMap, regexp, Parser, makeSuccess } = Parsimmon;
+import { seqMap, regexp, Parser, makeSuccess } from '@metascribbles/parsimmon';
 
 const PunctuationRegex = new RegExp(
   // eslint-disable-next-line max-len,no-useless-escape
@@ -54,7 +54,7 @@ function Emphasis() {
       canClose = rightFlanking && (!leftFlanking || afterIsPunct);
     }
 
-    const emphDelims = [];
+    const emphDelims = [] as unknown[];
     for (let i = 0; i < delim.length; ++i) {
       emphDelims.push({
         type: 'delimiter_run',

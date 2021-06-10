@@ -146,20 +146,12 @@ module.exports = {
   overrides: [
     {
       files: ['src/frontend/scribbles/**/*.metanotes.*'],
-      extends: [
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-      ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': ['off'],
-        'react/react-in-jsx-scope': ['off'],
-        'no-undef': ['error'],
+        'import/named': ['off'],
+        'import/no-unresolved': ['off'],
+        '@typescript-eslint/no-var-requires': ['off'],
         'jsdoc/require-jsdoc': ['off'],
-      },
-      globals: {
-        React: 'readonly',
-        Parsimmon: 'readonly',
-        requireScribble: 'readonly',
       },
     },
     {

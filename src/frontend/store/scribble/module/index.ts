@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { transform } from '@babel/standalone';
+import { transform, availablePlugins } from '@babel/standalone';
 
 import { Scribble } from '../../interface/scribble';
+import { ScribblesStore } from '../../interface/store';
+import scribbleRequire from './require';
 
 /**
  * ScribbleEvaluationError is thrown if the scribble JS module fails to eval.
@@ -40,12 +42,12 @@ interface Exports {
  * Loads the JS module from a scribble. There's no caching so it's extremely slow.
  *
  * @param scribble A scribble with body.
- * @param locals Locals to pass to the scribble context.
+ * @param store Scribble's owning store.
  * @returns The exported default if set, all the exports otherwise.
  */
 function loadModule<T>(
   scribble: Scribble,
-  locals: { [key: string]: unknown },
+  store: ScribblesStore,
 ): T {
   const { latestStableVersion } = scribble;
   if (latestStableVersion === undefined) {
@@ -55,18 +57,29 @@ function loadModule<T>(
   if (body === null) {
     throw new ScribbleEvaluationError(scribble, Error('body is missing'));
   }
-  const modBody = transform(body, { presets: ['env', 'react'] }).code;
+  let modBody;
+  try {
+    modBody = transform(body, {
+      comments: false,
+      compact: true,
+      presets: ['env', 'react'],
+      plugins: [
+        [availablePlugins['transform-typescript'], { isTSX: true }],
+      ],
+    }).code;
+  } catch (e) {
+    throw Error(`failed to transpile the body: ${e}`);
+  }
   if (modBody === null || modBody === undefined) {
     throw Error('failed to transpile the body');
   }
   const exports = {} as Exports;
 
-  const localKeys = Object.keys(locals);
-  const localValues = localKeys.map((k) => locals[k]);
+  const storeRequire = (mod: string) => scribbleRequire(mod, scribble, store);
 
   try {
     // eslint-disable-next-line no-new-func
-    new Function('exports', ...localKeys, modBody)(exports, ...localValues);
+    new Function('exports', 'require', modBody)(exports, storeRequire);
   } catch (e) {
     throw new ScribbleEvaluationError(scribble, e);
   }

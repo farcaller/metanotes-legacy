@@ -12,6 +12,9 @@
         "*",
         "dist/bin/*"
       ],
+      "*": [
+        "./src/types/*",
+      ],
     },
     "declaration": true,
     "inlineSourceMap": true,

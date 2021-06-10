@@ -12,8 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import useStore from '../../../context/use_context';
+/* attributes *
+ * id: 01F3JXEXM8TGWWRQBZ5VK4MJVT
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/parser/Text
+ * tags: ['$:core/parser']
+ * parser: Text
+ */
 
-export default {
-  useStore,
-};
+import { regexp } from '@metascribbles/parsimmon';
+
+function Text() {
+  return regexp(/[^#_*\s\\]+/).map((value) => ({
+    type: 'text',
+    value,
+  }));
+}
+
+export default Text;

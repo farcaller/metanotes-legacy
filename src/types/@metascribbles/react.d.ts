@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as Parsimmon from 'parsimmon';
+import * as React from 'react';
 
-export default {
-  Parsimmon,
-};
+export = React;
+export as namespace React;
+
+export const { useCallback, useState } = React;

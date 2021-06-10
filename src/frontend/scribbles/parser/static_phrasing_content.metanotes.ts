@@ -13,17 +13,23 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3JWKAJRFYYYX0AX5YQ25TAX
+ * id: 01F3K3RT1CVR9184EAXM730JFW
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/BlockContent
+ * title: $:core/parser/StaticPhrasingContent
  * tags: ['$:core/parser']
- * parser: BlockContent
+ * parser: StaticPhrasingContent
  */
 
-const finalizeParagraphs = requireScribble('$:core/parser-helpers/finalizeParagraphs');
+import { alt } from '@metascribbles/parsimmon';
 
-function BlockContent(r) {
-  return r.PartialBlockContent.many().map((blocks) => finalizeParagraphs(r, blocks));
+function StaticPhrasingContent(r) {
+  return alt(
+    r.Emphasis,
+    r.Text,
+    r.EscapedChar,
+    r.Space,
+    r.Symbol,
+  );
 }
 
-export default BlockContent;
+export default StaticPhrasingContent;

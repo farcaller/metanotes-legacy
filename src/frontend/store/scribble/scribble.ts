@@ -14,7 +14,6 @@
 
 import { action, computed, makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
-import { computedFn } from 'mobx-utils';
 
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
@@ -22,7 +21,6 @@ import { ScribblesStore } from '../interface/store';
 import Version from './version';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
-import localsForScribble from './module/locals';
 import { Scribble as ScribbleInterface } from '../interface/scribble';
 import { DraftKey } from '../interface/metadata';
 
@@ -190,10 +188,7 @@ export default class Scribble implements ScribbleInterface {
    * @returns JS module for the scribble.
    */
   get JSModule(): unknown {
-    return loadModule(this, {
-      ...localsForScribble(this),
-      requireScribble: this.store.requireScribble.bind(this.store),
-    });
+    return loadModule(this, this.store);
   }
 
   toString(): string {

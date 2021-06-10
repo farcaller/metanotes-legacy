@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import React from 'react';
 import { transform, availablePlugins } from '@babel/standalone';
 
 import { Scribble } from '../../interface/scribble';
@@ -79,7 +80,7 @@ function loadModule<T>(
 
   try {
     // eslint-disable-next-line no-new-func
-    new Function('exports', 'require', modBody)(exports, storeRequire);
+    new Function('exports', 'React', 'require', modBody)(exports, React, storeRequire);
   } catch (e) {
     throw new ScribbleEvaluationError(scribble, e);
   }

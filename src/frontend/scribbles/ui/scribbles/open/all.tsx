@@ -47,7 +47,7 @@ function ScribbleButtonEL({ scribble }: { scribble: Scribble }) {
 
   return (
     <Text style={styles.title} onPress={openScribble}>
-      {scribble.title ? scribble.title : `untitled scribble \$\$${scribble.scribbleID}`}
+      {scribble.title ? scribble.title : `untitled scribble $$${scribble.scribbleID}`}
     </Text>
   );
 }

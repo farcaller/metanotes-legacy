@@ -145,7 +145,10 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['src/frontend/scribbles/**/*.metanotes.*'],
+      files: [
+        'src/frontend/scribbles/**/*.ts',
+        'src/frontend/scribbles/**/*.tsx',
+      ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': ['off'],
         'import/named': ['off'],

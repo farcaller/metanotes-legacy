@@ -4,17 +4,15 @@ load("@npm//@bazel/typescript:index.bzl", "ts_project")
 package(default_visibility = ["//visibility:public"])
 
 ts_project(
-    name = "metamarkdown",
+    name = "parser",
     srcs = glob(
-        ["**/*.ts"],
-        exclude = [
-            "**/*.test.ts",
-        ],
-    ) + ["//src/types"],
+        ["*.ts"],
+        exclude = ["*.test.ts"],
+    ),
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/frontend/store",
+        "//src/frontend/store/interface",
         "@npm//@types/parsimmon",
         "@npm//mdast-util-compact",
         "@npm//parsimmon",
@@ -25,16 +23,16 @@ ts_project(
 )
 
 ts_jest_test(
-    name = "metamarkdown_test",
-    srcs = glob(["**/*.test.ts"]) + [
-        "//src/types",
-    ],
+    name = "parser_test",
+    srcs = glob(["*.test.ts"]) + ["//src/types"],
     deps = [
-        ":metamarkdown",
+        ":parser",
         "//src/frontend/scribbles",
+        "//src/frontend/store/scribble",
         "@npm//beautify",
         "@npm//commonmark-spec",
         "@npm//mdast-util-compact",
+        "@npm//mobx",
         "@npm//remark-html",
     ],
 )

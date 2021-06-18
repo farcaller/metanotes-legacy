@@ -13,9 +13,6 @@
 // limitations under the License.
 
 import React from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { IconButton, Colors } from 'react-native-paper';
 
 import CommonUIProvider from '../ui';
 import Store from './Store';

@@ -16,10 +16,14 @@ import { observer } from 'mobx-react-lite';
 import React, { useCallback } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
+import useStore from '../../store/context/use_context';
 import { Scribble } from '../../store/interface/scribble';
-import { Version } from '../../store/interface/version';
 import ScribbleEditorController from './ScribbleEditorController';
 import ScribbleHeader from './ScribbleHeader';
+import render from '../../metamarkdown/renderer/renderer';
+import components from '../../metamarkdown/renderer/react_native_components';
+import Components from '../../metamarkdown/renderer/components';
+import { ScribblesStore } from '../../store/interface/store';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,12 +34,24 @@ const styles = StyleSheet.create({
   },
 });
 
+function useComponents(store: ScribblesStore): Components {
+  return {
+    ...components,
+    paragraph: store.requireScribble('$:core/markdown/paragraph'),
+    text: store.requireScribble('$:core/markdown/text'),
+    strong: store.requireScribble('$:core/markdown/strong'),
+    emphasis: store.requireScribble('$:core/markdown/emphasis'),
+  };
+}
+
 function MarkdownBody({ scribble }: { scribble: Scribble }) {
-  return (
-    <Text>
-      {scribble.latestVersion.body}
-    </Text>
-  );
+  const store = useStore();
+
+  const parserScribbles = store.scribblesByTag('$:core/parser');
+  const comps = useComponents(store);
+
+  // TODO: load
+  return render(scribble.latestVersion.body! + '\n', false, parserScribbles, comps);
 }
 
 function JSModuleBodyEl({ scribble }: { scribble: Scribble }) {

@@ -255,6 +255,7 @@ export default class Scribble implements ScribbleInterface {
     if (!latestStableVersion) {
       const newMeta = new Map();
       newMeta.set('mn-draft', 'true');
+      newMeta.set('content-type', 'text/markdown');
       const version = new Version(undefined, newMeta, '');
       this.$versionsByID.set(version.versionID, version);
 

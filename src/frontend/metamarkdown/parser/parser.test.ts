@@ -14,7 +14,6 @@
 
 /* eslint-disable jsdoc/require-jsdoc */
 
-import { autorun } from 'mobx';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Node } from 'unist';
 import * as commonmarkSpec from 'commonmark-spec';
@@ -24,51 +23,8 @@ import remarkHTML from 'remark-html';
 import unified from 'unified';
 
 import makeParser from './parser';
-import coreScribbles from '../../scribbles';
-import Scribble from '../../store/scribble/scribble';
-import { ScribblesStore as ScribblesStoreInterface } from '../../store/interface/store';
+import mockStore from './mocks/store';
 
-class ScribblesStore {
-  readonly scribbles: Scribble[];
-
-  constructor() {
-    const resolvedScribbles = [];
-    for (const coreScribble of coreScribbles) {
-      if (coreScribble.meta['mn-title']?.startsWith('$:core/parser')) {
-        const scribble = Scribble.fromCoreScribble(this as unknown as ScribblesStoreInterface, coreScribble);
-        resolvedScribbles.push(scribble);
-      }
-    }
-    this.scribbles = resolvedScribbles;
-  }
-
-  scribbleByTitle(title: string): Scribble | undefined {
-    return this.scribbles.find((scribble) => scribble.title === title);
-  }
-
-  requireScribble<T>(title: string): T {
-    const scribble = this.scribbleByTitle(title);
-    if (!scribble) {
-      throw Error(`failed to require scribble: '${title}': does not exist`);
-    }
-    return scribble.JSModule as T;
-  }
-
-  get parserScribbles(): Scribble[] {
-    return this.scribbles.filter(
-      (scribble) => scribble.latestStableVersion?.computedMeta.tags.includes('$:core/parser'),
-    );
-  }
-}
-
-const mockStore = new ScribblesStore();
-
-autorun(() => {
-  for (const scribble of Object.values(mockStore.parserScribbles)) {
-    const _ = scribble.JSModule;
-    scribble.latestStableVersion?.getMeta('parser');
-  }
-});
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 
 function doParse(doc: string, rootNode = 'Document'): mdast.Node {

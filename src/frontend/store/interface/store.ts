@@ -17,6 +17,7 @@ import { Scribble } from './scribble';
 export interface ScribblesStore {
   scribbles: Scribble[];
   scribbleByTitle(title: string): Scribble | undefined;
+  scribblesByTag(tag: string): Scribble[];
 
   requireScribble<T>(title: string): T;
   createDraftScribble(): Scribble;

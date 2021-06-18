@@ -15,12 +15,11 @@
 import React from 'react';
 
 import * as ast from 'ts-mdast';
-import { VFile } from 'vfile';
 import unified from 'unified';
 
-import { Components } from './components';
+import Components from './components';
 
-export interface Options {
+export interface CompileOptions {
   components: Components;
   inline?: boolean;
 }
@@ -34,7 +33,7 @@ export interface ChildrenOptions {
 
 function emitChildren(
   nodes: ast.Content[],
-  options: Options,
+  options: CompileOptions,
   parent?: ast.Node,
   childrenOptions?: ChildrenOptions,
 ): JSX.Element[] {
@@ -45,7 +44,7 @@ function emitChildren(
   return nodes.map((n) => emitNode(n, options, parent, childrenOptions) as JSX.Element);
 }
 
-function emitRoot(node: ast.Root, options: Options): JSX.Element|undefined {
+function emitRoot(node: ast.Root, options: CompileOptions): JSX.Element|undefined {
   if (options.inline) {
     if (node.children.length !== 1) {
       return undefined;
@@ -62,7 +61,7 @@ function emitRoot(node: ast.Root, options: Options): JSX.Element|undefined {
 function emitSimpleComponent(
   node: ast.Parent,
   component: React.FunctionComponent<React.PropsWithChildren<unknown>>,
-  options: Options,
+  options: CompileOptions,
 ): JSX.Element {
   return React.createElement(component, null, ...emitChildren(node.children, options));
 }
@@ -74,12 +73,12 @@ function emitSimpleComponentNoChildren(
   return React.createElement(component, null);
 }
 
-function emitHeading(node: ast.Heading, options: Options): JSX.Element {
+function emitHeading(node: ast.Heading, options: CompileOptions): JSX.Element {
   const { components } = options;
   return React.createElement(components.heading, { depth: node.depth }, ...emitChildren(node.children, options));
 }
 
-function emitList(node: ast.List, options: Options): JSX.Element {
+function emitList(node: ast.List, options: CompileOptions): JSX.Element {
   const { components } = options;
 
   // a list is loose if it's not spread and no child is spread
@@ -94,7 +93,7 @@ function emitList(node: ast.List, options: Options): JSX.Element {
 
 function emitListItem(
   node: ast.ListItem,
-  options: Options,
+  options: CompileOptions,
   _parent: ast.List,
   childrenOptions?: ChildrenOptions,
 ): JSX.Element {
@@ -133,14 +132,14 @@ function emitListItem(
   }, ...emitChildren(shakenChildren, options));
 }
 
-function emitTable(node: ast.Table, options: Options): JSX.Element {
+function emitTable(node: ast.Table, options: CompileOptions): JSX.Element {
   const { components } = options;
   return React.createElement(components.table, {
     align: node.align,
   }, ...emitChildren(node.children, options));
 }
 
-function emitCode(node: ast.Code, options: Options): JSX.Element {
+function emitCode(node: ast.Code, options: CompileOptions): JSX.Element {
   const { components } = options;
   return React.createElement(components.code, {
     lang: node.lang,
@@ -149,18 +148,18 @@ function emitCode(node: ast.Code, options: Options): JSX.Element {
   });
 }
 
-function emitInlineCode(node: ast.InlineCode, options: Options): JSX.Element {
+function emitInlineCode(node: ast.InlineCode, options: CompileOptions): JSX.Element {
   const { components } = options;
   return React.createElement(components.inlineCode, {
     value: node.value,
   });
 }
 
-function emitText(node: ast.Text, { components }: Options): JSX.Element {
+function emitText(node: ast.Text, { components }: CompileOptions): JSX.Element {
   return React.createElement(components.text, null, node.value);
 }
 
-function emitImage(node: ast.Image, { components }: Options): JSX.Element {
+function emitImage(node: ast.Image, { components }: CompileOptions): JSX.Element {
   return React.createElement(components.image, {
     url: node.url,
     title: node.title,
@@ -168,7 +167,7 @@ function emitImage(node: ast.Image, { components }: Options): JSX.Element {
   });
 }
 
-function emitLink(node: ast.Link, options: Options): JSX.Element {
+function emitLink(node: ast.Link, options: CompileOptions): JSX.Element {
   const { components } = options;
   return React.createElement(components.link, {
     url: node.url,
@@ -178,7 +177,7 @@ function emitLink(node: ast.Link, options: Options): JSX.Element {
 
 function emitNode(
   node: ast.Node,
-  options: Options,
+  options: CompileOptions,
   parent?: ast.Node,
   childrenOptions?: ChildrenOptions,
 ): JSX.Element | undefined {
@@ -260,6 +259,6 @@ function emitNode(
   return React.createElement(React.Fragment);
 }
 
-export function metaCompiler(this: unified.Processor, options: Options): void {
+export default function makeCompiler(this: unified.Processor, options: CompileOptions): void {
   this.Compiler = (root: ast.Node) => emitNode(root, options) as unknown as string;
 }

@@ -61,7 +61,7 @@ type ComponentWithChildrenAndProps<T> = React.FunctionComponent<React.PropsWithC
 type ComponentWithNoChildren = React.FunctionComponent<unknown>;
 type ComponentWithNoChildrenAndProps<T> = React.FunctionComponent<T>;
 
-export interface Components {
+export default interface Components {
   paragraph: ComponentWithChildren;
   heading: ComponentWithChildrenAndProps<HeadingProps>;
   thematicBreak: ComponentWithNoChildren;

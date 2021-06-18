@@ -1,0 +1,44 @@
+load("//bazel:jest.bzl", "ts_jest_test")
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "renderer",
+    srcs = glob(
+        [
+            "*.ts",
+            "*.tsx",
+        ],
+        exclude = [
+            "*.test.ts",
+            "*.test.tsx",
+        ],
+    ),
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/frontend/metamarkdown/parser",
+        "//src/frontend/store/interface",
+        "@npm//@types/react",
+        "@npm//@types/react-native",
+        "@npm//ts-mdast",
+        "@npm//unified",
+    ],
+)
+
+ts_jest_test(
+    name = "renderer_test",
+    srcs = glob([
+        "*.test.ts",
+        "*.test.tsx",
+    ]),
+    deps = [
+        ":renderer",
+        "//src/frontend/metamarkdown/parser/mocks:mock_store",
+        "@npm//@testing-library/react-native",
+        "@npm//@types/react-test-renderer",
+        "@npm//mobx-react-lite",
+        "@npm//react-dom",
+    ],
+)

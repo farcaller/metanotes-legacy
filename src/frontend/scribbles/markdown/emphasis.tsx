@@ -12,9 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import compact from 'mdast-util-compact';
+/* attributes *
+ * id: 01F7XEF2K82F01MDC1SRS9V337
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/markdown/emphasis
+ */
 
-// eslint-disable-next-line import/prefer-default-export
-export function concatTransformer(): (node: Node) => Node {
-  return compact;
+import React from '@metascribbles/react';
+import { Text, StyleSheet } from '@metascribbles/react-native';
+
+const styles = StyleSheet.create({
+  strong: {
+    fontStyle: 'italic',
+  },
+});
+
+function Emphasis({ children }: React.PropsWithChildren<unknown>) {
+  return (
+    <Text style={styles.strong}>
+      {children}
+    </Text>
+  );
 }
+
+export default React.memo(Emphasis);

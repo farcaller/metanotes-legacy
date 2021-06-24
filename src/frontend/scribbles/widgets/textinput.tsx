@@ -13,24 +13,28 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3K3RT1CVR9184EAXM730JFW
+ * id: 01F8Z0CWW19AYCW7SR597H6EA0
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/StaticPhrasingContent
- * tags: ['$:core/parser']
- * parser: StaticPhrasingContent
+ * title: $:core/widget/textinput
  */
 
-import { alt } from '@metascribbles/parsimmon';
+import React, { useCallback } from '@metascribbles/react';
+import { TextInput } from '@metascribbles/react-native';
+import { useEvalStore } from '@metascribbles/store';
 
-function StaticPhrasingContent(r) {
-  return alt(
-    r.Emphasis,
-    r.InlineEchoTag,
-    r.Text,
-    r.EscapedChar,
-    r.Space,
-    r.Symbol,
+function TextInputWidget({ label, bind }) {
+  const evalStore = useEvalStore();
+
+  const onInputChanged = useCallback((text: string) => {
+    evalStore.set(bind, text);
+  }, [evalStore, bind]);
+
+  return (
+    <TextInput
+      placeholder={label}
+      onChangeText={onInputChanged}
+    />
   );
 }
 
-export default StaticPhrasingContent;
+export default React.memo(TextInputWidget);

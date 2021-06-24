@@ -61,7 +61,7 @@ type ComponentWithChildrenAndProps<T> = React.FunctionComponent<React.PropsWithC
 type ComponentWithNoChildren = React.FunctionComponent<unknown>;
 type ComponentWithNoChildrenAndProps<T> = React.FunctionComponent<T>;
 
-export default interface Components {
+interface Components {
   paragraph: ComponentWithChildren;
   heading: ComponentWithChildrenAndProps<HeadingProps>;
   thematicBreak: ComponentWithNoChildren;
@@ -83,6 +83,8 @@ export default interface Components {
 
   link: ComponentWithNoChildrenAndProps<LinkProps>;
 
-  metanotesTag: (tagname: string) => React.FunctionComponent<unknown>;
+  widget: (name: string) => React.FunctionComponent<unknown>;
   wikiLink: ComponentWithNoChildrenAndProps<WikiLinkProps>;
 }
+
+export default Components;

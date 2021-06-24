@@ -12,25 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* attributes *
- * id: 01F3K3RT1CVR9184EAXM730JFW
- * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/StaticPhrasingContent
- * tags: ['$:core/parser']
- * parser: StaticPhrasingContent
- */
+import * as ast from 'ts-mdast';
 
-import { alt } from '@metascribbles/parsimmon';
+interface Widget {
+  type: 'widget';
+  name: string;
+  props: Record<string, string>;
+  children: ast.BlockContent[];
 
-function StaticPhrasingContent(r) {
-  return alt(
-    r.Emphasis,
-    r.InlineEchoTag,
-    r.Text,
-    r.EscapedChar,
-    r.Space,
-    r.Symbol,
-  );
+  [key: string]: unknown;
 }
 
-export default StaticPhrasingContent;
+export default Widget;
+
+export function isWidget(node: ast.Node): node is Widget {
+  return node.type === 'widget';
+}

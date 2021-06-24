@@ -39,7 +39,7 @@ const Components: ComponentsInterface = {
 
   link: () => <View />,
 
-  metanotesTag: () => () => <View />,
+  widget: (_name: string) => () => <View />,
   wikiLink: () => <View />,
 };
 

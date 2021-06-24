@@ -13,30 +13,25 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3STC4EYBK8A7CMRDHB526PZ
+ * id: 01F8Z0Q73BHV45988VFH2P8GMY
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/PartialBlockContent
+ * title: $:core/parser/InlineEchoTag
  * tags: ['$:core/parser']
- * parser: PartialBlockContent
+ * parser: InlineEchoTag
  */
 
-import { notFollowedBy, seq, string } from '@metascribbles/parsimmon';
+import { string, regexp, seqMap } from '@metascribbles/parsimmon';
 
-function PartialBlockContentGeneratorFunc({ currentBlockTag }) {
-  function NonTagClosing(r) {
-    return notFollowedBy(seq(
-      string('<'),
-      string('/'),
-      string(currentBlockTag),
-      string('>'),
-    )).then(r.NonTagPartialBlockContent);
-  }
-  function Closing(r) {
-    return r.NonTagPartialBlockContent;
-  }
-  return currentBlockTag === undefined ? Closing : NonTagClosing;
+function InlineEchoTag() {
+  return seqMap(
+    string('<$'),
+    regexp(/[a-zA-Z]\w*/),
+    string('>'),
+    (_, name) => ({
+      type: 'widget',
+      name: 'echo',
+      props: { name },
+    }),
+  );
 }
-
-PartialBlockContentGeneratorFunc.generatorFunc = true;
-
-export default PartialBlockContentGeneratorFunc;
+export default InlineEchoTag;

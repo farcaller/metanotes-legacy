@@ -169,6 +169,7 @@ testCommonmarkSection('ATX headings', {
 // 4.3 https://spec.commonmark.org/0.29/#setext-headings
 testCommonmarkSection('Setext headings', {
   55: `TODO: indented code not implemented`,
+  61: `TODO: somehow broken by tags`,
   62: `TODO: blockquote not implemented`,
   63: `TODO: blockquote not implemented`,
   70: `TODO: indented code not implemented`,
@@ -240,5 +241,152 @@ test('break parser only triggers at line ends', () => {
         ],
       },
     ],
+  });
+});
+
+describe('widget tags', () => {
+  describe('block level', () => {
+    describe('no arguments', () => {
+      it('parses a self-closing tag', () => {
+        const n = doParse('<Tag/>\n');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'tag',
+              props: {},
+            },
+          ],
+        });
+      });
+
+      it('parses a self-closing tag (closing tag with spaces)', () => {
+        const n = doParse('<Tag />\n');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'tag',
+              props: {},
+            },
+          ],
+        });
+      });
+
+      it('parses a self-closing tag (closing tag with newlines)', () => {
+        const n = doParse('<Tag\n\n/>\n');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'tag',
+              props: {},
+            },
+          ],
+        });
+      });
+
+      it('parses an empty tag', () => {
+        const n = doParse('<Tag>\n</Tag>\n');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'tag',
+              children: [],
+              props: {},
+            },
+          ],
+        });
+      });
+    });
+    describe('arguments', () => {
+      it('parses a tag with props', () => {
+        const n = doParse('<Tag key="a" other="b"/>\n');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'tag',
+              props: {
+                key: 'a',
+                other: 'b',
+              },
+            },
+          ],
+        });
+      });
+    });
+    describe('children', () => {
+      it('parses a tag with nested markdown', () => {
+        const n = doParse('<Tag>\nhello\n</Tag>');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'tag',
+              props: {},
+              children: [{
+                type: 'paragraph',
+                children: [{
+                  type: 'text',
+                  value: 'hello',
+                }],
+              }],
+            },
+          ],
+        });
+      });
+      it('parses nested tags with nested markdown', () => {
+        const n = doParse('<Hey k="1"><Tag>\nhello\n</Tag>\n</Hey>');
+        expect(n).toEqual({
+          type: 'root',
+          children: [
+            {
+              type: 'widget',
+              name: 'hey',
+              props: { k: '1' },
+              children: [{
+                type: 'widget',
+                name: 'tag',
+                props: {},
+                children: [{
+                  type: 'paragraph',
+                  children: [{
+                    type: 'text',
+                    value: 'hello',
+                  }],
+                }],
+              }],
+            },
+          ],
+        });
+      });
+    });
+  });
+
+  describe('inline level', () => {
+    it('parses an inline echo tag', () => {
+      const n = doParse('<$hello>\n');
+      expect(n).toEqual({
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [{
+              type: 'widget',
+              name: 'echo',
+              props: { name: 'hello' },
+            }],
+          },
+        ],
+      });
+    });
   });
 });

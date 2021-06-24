@@ -43,6 +43,7 @@ function useComponents(store: ScribblesStore): Components {
     text: store.requireScribble('$:core/markdown/text'),
     strong: store.requireScribble('$:core/markdown/strong'),
     emphasis: store.requireScribble('$:core/markdown/emphasis'),
+    widget: (name: string) => store.requireScribble(`$:core/widget/${name}`),
   };
 }
 
@@ -104,7 +105,7 @@ function ScribbleContainer({ scribble }: { scribble: Scribble}) {
       <ScribbleHeader scribble={scribble} onEdit={onEdit} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <EvalStoreContext.Provider value={evalStore}>
-        <ScribbleBody scribble={scribble} />
+          <ScribbleBody scribble={scribble} />
         </EvalStoreContext.Provider>
       </ScrollView>
     </View>

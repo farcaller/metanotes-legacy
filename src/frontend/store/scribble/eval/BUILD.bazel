@@ -11,9 +11,9 @@ ts_project(
     # visibility = ["//src/frontend/store:store_pkg"],
     deps = [
         "@npm//@types/react",
-        "@npm//react",
         "@npm//mobx",
         "@npm//mobx-utils",
+        "@npm//react",
     ],
 )
 

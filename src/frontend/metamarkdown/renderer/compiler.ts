@@ -18,6 +18,7 @@ import * as ast from 'ts-mdast';
 import unified from 'unified';
 
 import Components from './components';
+import Widget, { isWidget } from '../parser/widget';
 
 export interface CompileOptions {
   components: Components;
@@ -175,6 +176,11 @@ function emitLink(node: ast.Link, options: CompileOptions): JSX.Element {
   }, ...emitChildren(node.children, options));
 }
 
+function emitWidget(node: Widget, options: CompileOptions): JSX.Element {
+  const { components } = options;
+  return React.createElement(components.widget(node.name), node.props, ...emitChildren(node.children, options));
+}
+
 function emitNode(
   node: ast.Node,
   options: CompileOptions,
@@ -220,9 +226,11 @@ function emitNode(
   if (ast.isTableCell(node)) {
     return emitSimpleComponent(node, components.tableCell, options);
   }
-  // nb: html parser is disabled in index.ts
   if (ast.isCode(node)) {
     return emitCode(node, options);
+  }
+  if (isWidget(node)) {
+    return emitWidget(node, options);
   }
 
   // PhrasingContent = StaticPhrasingContent | Link | LinkReference

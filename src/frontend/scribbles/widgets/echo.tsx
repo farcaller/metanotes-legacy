@@ -13,24 +13,21 @@
 // limitations under the License.
 
 /* attributes *
- * id: 01F3K3RT1CVR9184EAXM730JFW
+ * id: 01F8Z0Y2SZ6A6QN4JAX3T28Z97
  * content-type: application/vnd.metanotes.component-jsmodule
- * title: $:core/parser/StaticPhrasingContent
- * tags: ['$:core/parser']
- * parser: StaticPhrasingContent
+ * title: $:core/widget/echo
  */
 
-import { alt } from '@metascribbles/parsimmon';
+import React from '@metascribbles/react';
+import { Text } from '@metascribbles/react-native';
+import { useEvalStore, observer } from '@metascribbles/store';
 
-function StaticPhrasingContent(r) {
-  return alt(
-    r.Emphasis,
-    r.InlineEchoTag,
-    r.Text,
-    r.EscapedChar,
-    r.Space,
-    r.Symbol,
+function EchoWidget({ name }) {
+  const evalStore = useEvalStore();
+
+  return (
+    <Text>{evalStore.get(name)}</Text>
   );
 }
 
-export default StaticPhrasingContent;
+export default observer(EchoWidget);

@@ -19,6 +19,7 @@ ts_project(
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/metamarkdown/parser",
+        "//src/frontend/metamarkdown/parser:widget",
         "//src/frontend/store/interface",
         "@npm//@types/react",
         "@npm//@types/react-native",

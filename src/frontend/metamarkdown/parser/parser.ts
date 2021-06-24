@@ -18,6 +18,7 @@ import Parsimmon, { Language, Parser } from 'parsimmon';
 import { Scribble } from '../../store/interface/scribble';
 
 interface RebuildParserArgs {
+  currentBlockTag?: string;
   indent: number;
   rebuildParser?: (args: RebuildParserArgs) => Parsimmon.Language;
 }
@@ -25,7 +26,7 @@ interface RebuildParserArgs {
 type ParserFunc = (r: Language) => Parser<never>;
 type ParserGeneratorFunc = (args: RebuildParserArgs) => ParserFunc;
 
-function isParserGenratorFunc(f: unknown): f is ParserGeneratorFunc {
+function isParserGeneratorFunc(f: unknown): f is ParserGeneratorFunc {
   return (f as Record<string, unknown>).generatorFunc === true;
 }
 
@@ -55,7 +56,7 @@ export function buildLanguage(parserScribbles: Scribble[]): Parsimmon.Language {
     const reParserFuncs = {} as { [key: string]: ParserFunc };
     for (const k of Object.keys(parserFuncs)) {
       const func = parserFuncs[k];
-      if (isParserGenratorFunc(func)) {
+      if (isParserGeneratorFunc(func)) {
         reParserFuncs[k] = func(rebuildArgs);
       } else {
         reParserFuncs[k] = func;
@@ -63,6 +64,7 @@ export function buildLanguage(parserScribbles: Scribble[]): Parsimmon.Language {
     }
     return Parsimmon.createLanguage(reParserFuncs);
   }
+
   return rebuildParser({ indent: 0 });
 }
 

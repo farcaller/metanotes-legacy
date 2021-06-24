@@ -5,10 +5,7 @@ package(default_visibility = ["//visibility:public"])
 
 ts_project(
     name = "parser",
-    srcs = glob(
-        ["*.ts"],
-        exclude = ["*.test.ts"],
-    ),
+    srcs = ["parser.ts"],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
@@ -19,6 +16,16 @@ ts_project(
         "@npm//ts-mdast",
         "@npm//unified",
         "@npm//vfile",
+    ],
+)
+
+ts_project(
+    name = "widget",
+    srcs = ["widget.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//ts-mdast",
     ],
 )
 

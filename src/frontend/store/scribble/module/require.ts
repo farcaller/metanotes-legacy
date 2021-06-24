@@ -20,6 +20,7 @@ import { observer } from 'mobx-react-lite';
 import { Scribble } from '../../interface/scribble';
 import { ScribblesStore } from '../../interface/store';
 import useStore from '../../context/use_context';
+import useEvalStore from '../eval/use_context';
 
 /**
  * A require implementation for scribbles.
@@ -41,6 +42,7 @@ export default function scribbleRequire(mod: string, _scribble: Scribble, store:
     case '@metascribbles/store':
       return {
         useStore,
+        useEvalStore,
         observer,
       };
     default:

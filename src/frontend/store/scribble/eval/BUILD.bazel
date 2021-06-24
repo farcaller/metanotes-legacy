@@ -1,0 +1,30 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "context",
+    srcs = ["context.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    # TODO: tighten
+    # visibility = ["//src/frontend/store:store_pkg"],
+    deps = [
+        "@npm//@types/react",
+        "@npm//react",
+        "@npm//mobx",
+        "@npm//mobx-utils",
+    ],
+)
+
+ts_project(
+    name = "use_context",
+    srcs = ["use_context.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":context",
+        "@npm//@types/react",
+        "@npm//react",
+    ],
+)

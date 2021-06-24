@@ -24,6 +24,8 @@ import render from '../../metamarkdown/renderer/renderer';
 import components from '../../metamarkdown/renderer/react_native_components';
 import Components from '../../metamarkdown/renderer/components';
 import { ScribblesStore } from '../../store/interface/store';
+import EvalStoreContext, { EvalStore } from '../../store/scribble/eval/context';
+import useEvalStore from '../../store/scribble/eval/use_context';
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +88,9 @@ function ScribbleContainer({ scribble }: { scribble: Scribble}) {
     scribble.createDraftVersion();
   }, [scribble]);
 
+  const parentEvalStore = useEvalStore();
+  const evalStore = new EvalStore(parentEvalStore);
+
   if (version.isDraft) {
     return (
       <View style={styles.container}>
@@ -98,7 +103,9 @@ function ScribbleContainer({ scribble }: { scribble: Scribble}) {
     <View style={styles.container}>
       <ScribbleHeader scribble={scribble} onEdit={onEdit} />
       <ScrollView showsVerticalScrollIndicator={false}>
+        <EvalStoreContext.Provider value={evalStore}>
         <ScribbleBody scribble={scribble} />
+        </EvalStoreContext.Provider>
       </ScrollView>
     </View>
   );

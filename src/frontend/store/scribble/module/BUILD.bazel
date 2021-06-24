@@ -10,6 +10,7 @@ ts_project(
     deps = [
         "//src/frontend/store/context:use_context",
         "//src/frontend/store/interface",
+        "//src/frontend/store/scribble/eval:use_context",
         "@npm//@babel/standalone",
         "@npm//@types/babel__standalone",
         "@npm//@types/parsimmon",

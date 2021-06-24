@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { observer as observer_ } from 'mobx-react-lite';
+import { useContext } from 'react';
 
-import useStore_ from '../../frontend/store/context/use_context';
-import useEvalStore_ from '../../frontend/store/scribble/eval/use_context';
-import { Scribble as Scribble_ } from '../../frontend/store/interface/scribble';
+import EvalStoreContext, { EvalStore } from './context';
 
-export const useStore = useStore_;
-export const useEvalStore = useEvalStore_;
-export type Scribble = Scribble_;
-export const observer = observer_;
+export default function useEvalStore(): EvalStore {
+  return useContext(EvalStoreContext)!;
+}

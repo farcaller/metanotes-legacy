@@ -34,7 +34,7 @@ export class EvalStore {
     if (this.parentStore) {
       return this.parentStore.get(key);
     }
-    return '';
+    return undefined;
   })
 
   set(key: string, value: unknown) {
@@ -44,4 +44,5 @@ export class EvalStore {
 
 const EvalStoreContext = createContext<EvalStore | undefined>(undefined);
 
+// TODO: export the provider
 export default EvalStoreContext;

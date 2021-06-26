@@ -21,6 +21,8 @@ import { Scribble } from '../../interface/scribble';
 import { ScribblesStore } from '../../interface/store';
 import useStore from '../../context/use_context';
 import useEvalStore from '../eval/use_context';
+import EvalStoreContext, { EvalStore } from '../eval/context';
+import Pipeline, { evalCmdlet } from '../../../filter';
 
 /**
  * A require implementation for scribbles.
@@ -44,6 +46,13 @@ export default function scribbleRequire(mod: string, _scribble: Scribble, store:
         useStore,
         useEvalStore,
         observer,
+        EvalStore,
+        EvalStoreContext,
+      };
+    case '@metascribbles/filter':
+      return {
+        Pipeline,
+        evalCmdlet,
       };
     default:
       return store.requireScribble(mod);

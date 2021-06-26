@@ -81,7 +81,7 @@ interface Components {
   break: ComponentWithNoChildren;
   image: ComponentWithNoChildrenAndProps<ImageProps>;
 
-  link: ComponentWithNoChildrenAndProps<LinkProps>;
+  link: ComponentWithChildrenAndProps<LinkProps>;
 
   widget: (name: string) => React.FunctionComponent<unknown>;
   wikiLink: ComponentWithNoChildrenAndProps<WikiLinkProps>;

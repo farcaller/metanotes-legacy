@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Lang from './parser';
+/* attributes *
+ * id: 01F8ZJE62F5VBK333NYB46W96E
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/filters/get-scribbles
+ */
 
-export { evalCmdlet } from './eval';
-
-export { CmdletCallType as CmdletCall } from './parser';
-const { Pipeline } = Lang;
-
-export default Pipeline;
+export default function GetScribbles(store) {
+  return store.scribbles;
+}

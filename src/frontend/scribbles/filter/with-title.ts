@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Lang from './parser';
+/* attributes *
+ * id: 01F8ZRSTD27D9BDP2MHWN2TGZW
+ * content-type: application/vnd.metanotes.component-jsmodule
+ * title: $:core/filters/with-title
+ */
 
-export { evalCmdlet } from './eval';
-
-export { CmdletCallType as CmdletCall } from './parser';
-const { Pipeline } = Lang;
-
-export default Pipeline;
+export default function WithTitle(store, { args }, input) {
+  return input.filter((scribble) => scribble.title.toUpperCase().indexOf(args[0].toUpperCase()) !== -1);
+}

@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Lang from './parser';
+import { ScribblesStore } from '../store/interface/store';
+import { CmdletCallType } from './parser';
 
-export { evalCmdlet } from './eval';
-
-export { CmdletCallType as CmdletCall } from './parser';
-const { Pipeline } = Lang;
-
-export default Pipeline;
+// eslint-disable-next-line import/prefer-default-export
+export function evalCmdlet(store: ScribblesStore, cmdlet: CmdletCallType, input: unknown): unknown {
+  const cmdletFunc = store.requireScribble(`$:core/filters/${cmdlet.name.toLowerCase()}`) as
+    (store: ScribblesStore, cmdlet: CmdletCallType, input: unknown) => unknown;
+  return cmdletFunc(store, cmdlet, input);
+}

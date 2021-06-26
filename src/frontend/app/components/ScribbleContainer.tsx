@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { observer } from 'mobx-react-lite';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
 import useStore from '../../store/context/use_context';
@@ -41,21 +41,30 @@ function useComponents(store: ScribblesStore): Components {
     ...components,
     paragraph: store.requireScribble('$:core/markdown/paragraph'),
     text: store.requireScribble('$:core/markdown/text'),
+    link: store.requireScribble('$:core/markdown/link'),
     strong: store.requireScribble('$:core/markdown/strong'),
     emphasis: store.requireScribble('$:core/markdown/emphasis'),
     widget: (name: string) => store.requireScribble(`$:core/widget/${name}`),
   };
 }
 
-function MarkdownBody({ scribble }: { scribble: Scribble }) {
+function MarkdownBodyEl({ scribble }: { scribble: Scribble }) {
   const store = useStore();
+  const evalStore = useEvalStore();
 
   const parserScribbles = store.scribblesByTag('$:core/parser');
   const comps = useComponents(store);
 
+  useEffect(() => {
+    // TODO: I should feel bad about doing this.
+    evalStore.set('components', comps);
+  }, [evalStore, comps]);
+
   // TODO: load
   return render(scribble.latestVersion.body! + '\n', false, parserScribbles, comps);
 }
+
+const MarkdownBody = observer(MarkdownBodyEl);
 
 function JSModuleBodyEl({ scribble }: { scribble: Scribble }) {
   const El = scribble.JSModule as React.FC;

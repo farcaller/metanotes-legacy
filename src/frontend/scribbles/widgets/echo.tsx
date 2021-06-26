@@ -25,8 +25,11 @@ import { useEvalStore, observer } from '@metascribbles/store';
 function EchoWidget({ name }) {
   const evalStore = useEvalStore();
 
+  const val = evalStore.get(name) as any ?? '';
+  const render = typeof val.toMarkdown === 'function' ? val.toMarkdown(evalStore.get('components')) : val;
+
   return (
-    <Text>{evalStore.get(name)}</Text>
+    <Text>{render}</Text>
   );
 }
 

@@ -6,13 +6,17 @@ package(default_visibility = ["//visibility:public"])
 ts_project(
     name = "scribble",
     srcs = glob(
-        ["*.ts"],
+        [
+            "*.ts",
+            "*.tsx",
+        ],
         exclude = ["**/*.test.ts"],
     ),
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/api:api_web",
+        "//src/frontend/metamarkdown/renderer",
         "//src/frontend/store/interface",
         "//src/frontend/store/scribble/module",
         "@npm//@types/js-yaml",

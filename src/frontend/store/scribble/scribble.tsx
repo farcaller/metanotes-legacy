@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import React from 'react';
+import { Text } from 'react-native';
 import { action, computed, makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
 
@@ -23,6 +25,7 @@ import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
 import { Scribble as ScribbleInterface } from '../interface/scribble';
 import { DraftKey } from '../interface/metadata';
+import Components from '../../metamarkdown/renderer/components';
 
 /**
  * Mobx model for the scribble.
@@ -203,6 +206,17 @@ export default class Scribble implements ScribbleInterface {
     return {
       scribbeID: this.scribbleID,
     };
+  }
+
+  toMarkdown(components: Components): JSX.Element {
+    return (
+      <components.link
+        url={`scribbleid://${this.scribbleID}`}
+        title={`$${this.scribbleID}`}
+      >
+        <Text>{this.latestStableVersion?.title ?? `$${this.scribbleID}`}</Text>
+      </components.link>
+    );
   }
 
   /**

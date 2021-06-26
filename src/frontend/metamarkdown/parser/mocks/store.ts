@@ -24,14 +24,7 @@ class ScribblesStore {
   readonly scribbles: Scribble[];
 
   constructor() {
-    const resolvedScribbles = [];
-    for (const coreScribble of coreScribbles) {
-      if (coreScribble.meta['mn-title']?.startsWith('$:core/parser')) {
-        const scribble = Scribble.fromCoreScribble(this as unknown as ScribblesStoreInterface, coreScribble);
-        resolvedScribbles.push(scribble);
-      }
-    }
-    this.scribbles = resolvedScribbles;
+    this.scribbles = coreScribbles.map((coreScribble) => Scribble.fromCoreScribble(this as unknown as ScribblesStoreInterface, coreScribble));
   }
 
   scribbleByTitle(title: string): Scribble | undefined {
@@ -50,6 +43,10 @@ class ScribblesStore {
     return this.scribbles.filter(
       (scribble) => scribble.latestStableVersion?.computedMeta.tags.includes('$:core/parser'),
     );
+  }
+
+  toJSON(): unknown {
+    return `<mockstore ${this.scribbles.length} scribbles>`;
   }
 }
 

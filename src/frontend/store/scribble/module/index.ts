@@ -85,7 +85,9 @@ function loadModule<T>(
     throw new ScribbleEvaluationError(scribble, e);
   }
 
-  console.log(`loadModule("${scribble}")`);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`loadModule("${scribble}")`);
+  }
 
   return (exports.default !== undefined ? exports.default : exports) as T;
 }

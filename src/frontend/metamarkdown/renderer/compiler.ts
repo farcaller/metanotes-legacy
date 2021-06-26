@@ -268,5 +268,8 @@ function emitNode(
 }
 
 export default function makeCompiler(this: unified.Processor, options: CompileOptions): void {
-  this.Compiler = (root: ast.Node) => emitNode(root, options) as unknown as string;
+  this.Compiler = (root: ast.Node) => ({
+    ast: root,
+    jsx: emitNode(root, options),
+  }) as unknown as string;
 }

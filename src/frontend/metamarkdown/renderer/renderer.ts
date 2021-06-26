@@ -30,5 +30,5 @@ export default function render(
     .use(makeCompiler, { components, inline });
 
   const f = parser.processSync({ contents });
-  return f.result as JSX.Element;
+  return (f.result as any).jsx as JSX.Element;
 }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {
-  alt, any, createLanguage, noneOf, oneOf, regexp, seq, seqMap, string, succeed, whitespace,
+  alt, any, createLanguage, noneOf, oneOf, optWhitespace, regexp, seq, seqMap, string, succeed, whitespace,
 } from 'parsimmon';
 
 export type CmdletCallType = { name: string, flags: { [key: string]: string }, args: (string | number)[] };
@@ -85,7 +85,7 @@ const Lang = createLanguage<{
   },
 
   Pipeline(r) {
-    return r.CmdletCall.sepBy1(string('|').trim(whitespace));
+    return r.CmdletCall.sepBy1(string('|').trim(optWhitespace));
   },
 });
 

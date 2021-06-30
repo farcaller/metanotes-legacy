@@ -19,7 +19,6 @@ import { ulid } from 'ulid';
 
 import { CoreScribble } from '../interface/core_scribble';
 import { ScribbleID, VersionID } from '../interface/ids';
-import { ScribblesStore } from '../interface/store';
 import Version from './version';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
@@ -27,12 +26,18 @@ import { Scribble as ScribbleInterface } from '../interface/scribble';
 import { DraftKey } from '../interface/metadata';
 import Components from '../../metamarkdown/renderer/components';
 
+interface ScribblesStoreInterface {
+  useStore(): unknown;
+  requireScribble(mod: string): unknown;
+  renameScribble(scribble: Scribble, oldTitle: string): void;
+}
+
 /**
  * Mobx model for the scribble.
  */
 export default class Scribble implements ScribbleInterface {
   /** Owning scribble store. */
-  private readonly store: ScribblesStore;
+  private readonly store: ScribblesStoreInterface;
 
   /** Scribble ID. */
   readonly scribbleID: ScribbleID;
@@ -48,7 +53,7 @@ export default class Scribble implements ScribbleInterface {
    * @param store Owning store.
    * @param scribbleID Scribble ID, defaults to a new ulid.
    */
-  constructor(store: ScribblesStore, scribbleID: ScribbleID = ulid()) {
+  constructor(store: ScribblesStoreInterface, scribbleID: ScribbleID = ulid()) {
     makeAutoObservable<Scribble, 'toString'|'store'>(this, {
       scribbleID: false,
       toString: false as never,
@@ -68,7 +73,7 @@ export default class Scribble implements ScribbleInterface {
    * @param coreScribble Source core scribble.
    * @returns New scribble.
    */
-  static fromCoreScribble(store: ScribblesStore, coreScribble: CoreScribble): Scribble {
+  static fromCoreScribble(store: ScribblesStoreInterface, coreScribble: CoreScribble): Scribble {
     const v = Version.fromCoreScribble(coreScribble);
     const s = new Scribble(store, coreScribble.id);
     s.$versionsByID.set(v.versionID, v);
@@ -83,7 +88,7 @@ export default class Scribble implements ScribbleInterface {
    * @param spb Source protobuf message.
    * @returns New scribble.
    */
-  static fromProto(store: ScribblesStore, spb: pb.Scribble): Scribble {
+  static fromProto(store: ScribblesStoreInterface, spb: pb.Scribble): Scribble {
     const s = new Scribble(store, spb.getScribbleId());
     spb.getVersionList().forEach((vpb) => {
       const v = Version.fromProto(vpb);

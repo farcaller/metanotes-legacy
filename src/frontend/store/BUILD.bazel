@@ -28,6 +28,7 @@ ts_project(
         "//src/frontend/scribbles",
         "//src/frontend/store/client",
         "//src/frontend/store/context",
+        "//src/frontend/store/context:use_context",
         "//src/frontend/store/interface",
         "//src/frontend/store/scribble",
         "@npm//@types/react",

@@ -10,7 +10,7 @@ ts_project(
     deps = [
         "//src/frontend/scribbles",
         "//src/frontend/store",
-        "//src/frontend/store/interface",
+        "//src/frontend/store/context:use_context",
         "@npm//@types/parsimmon",
         "@npm//mobx",
     ],

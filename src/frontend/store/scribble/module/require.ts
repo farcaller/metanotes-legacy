@@ -18,11 +18,10 @@ import * as ReactNativeModule from 'react-native';
 import { observer } from 'mobx-react-lite';
 
 import { Scribble } from '../../interface/scribble';
-import { ScribblesStore } from '../../interface/store';
-import useStore from '../../context/use_context';
 import useEvalStore from '../eval/use_context';
 import EvalStoreContext, { EvalStore } from '../eval/context';
 import Pipeline, { evalCmdlet } from '../../../filter';
+import ScribblesStoreInterface from './scribbles_store_interface';
 
 /**
  * A require implementation for scribbles.
@@ -33,7 +32,7 @@ import Pipeline, { evalCmdlet } from '../../../filter';
  * @returns Resolved module.
  * @throws Throws if module cannot be resolved.
  */
-export default function scribbleRequire(mod: string, _scribble: Scribble, store: ScribblesStore): unknown {
+export default function scribbleRequire(mod: string, _scribble: Scribble, store: ScribblesStoreInterface): unknown {
   switch (mod) {
     case '@metascribbles/parsimmon':
       return ParsimmonModule;
@@ -43,7 +42,7 @@ export default function scribbleRequire(mod: string, _scribble: Scribble, store:
       return ReactNativeModule;
     case '@metascribbles/store':
       return {
-        useStore,
+        useStore: store.useStore,
         useEvalStore,
         observer,
         EvalStore,

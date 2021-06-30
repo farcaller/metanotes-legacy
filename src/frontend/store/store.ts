@@ -23,6 +23,7 @@ import Scribble from './scribble/scribble';
 import scribblesByTag from './tagging';
 import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
 import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
+import useStore from './context/use_context';
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -49,8 +50,9 @@ class ScribblesStore implements ScribblesStoreInterface {
    * @param api Backend API.
    */
   constructor(api: StorageAPI) {
-    makeAutoObservable<ScribblesStore, 'api'>(this, {
+    makeAutoObservable<ScribblesStore, 'api' | 'useStore'>(this, {
       api: false,
+      useStore: false,
       // TODO: why is this needed? seems that it makes the tests happy.
       createDraftScribble: action,
     });
@@ -262,6 +264,8 @@ class ScribblesStore implements ScribblesStoreInterface {
       this.$scribblesByTitle.delete(scribble.title);
     }
   }
+
+  useStore = useStore;
 }
 
 export default ScribblesStore;

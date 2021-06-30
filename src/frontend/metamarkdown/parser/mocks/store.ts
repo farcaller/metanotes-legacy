@@ -18,13 +18,13 @@ import { autorun } from 'mobx';
 
 import coreScribbles from '../../../scribbles';
 import Scribble from '../../../store/scribble/scribble';
-import { ScribblesStore as ScribblesStoreInterface } from '../../../store/interface/store';
+import useStore from '../../../store/context/use_context';
 
 class ScribblesStore {
   readonly scribbles: Scribble[];
 
   constructor() {
-    this.scribbles = coreScribbles.map((coreScribble) => Scribble.fromCoreScribble(this as unknown as ScribblesStoreInterface, coreScribble));
+    this.scribbles = coreScribbles.map((coreScribble) => Scribble.fromCoreScribble(this, coreScribble));
   }
 
   scribbleByTitle(title: string): Scribble | undefined {
@@ -47,6 +47,14 @@ class ScribblesStore {
 
   toJSON(): unknown {
     return `<mockstore ${this.scribbles.length} scribbles>`;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  useStore = useStore;
+
+  // eslint-disable-next-line class-methods-use-this
+  renameScribble(_s: Scribble, _n: string) {
+    throw Error('not implemented');
   }
 }
 

@@ -170,6 +170,7 @@ class ScribblesStore {
    * @returns Sorted array of matched scribbles.
    */
   scribblesByTag(tag: string): Scribble[] {
+    // TODO: this isn't computed anymore. Make it like `store.tag('tag').scribbles`?
     const matchingScribbles = this.scribbles.filter((scribble) => {
       const { latestStableVersion } = scribble;
       if (!latestStableVersion) { return false; }

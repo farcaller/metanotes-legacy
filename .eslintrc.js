@@ -29,7 +29,7 @@ module.exports = {
         alwaysTryTypes: true,
         project: './tsconfig.eslint.json',
       },
-      [path.resolve('./tools/ts-resolver')]: {},
+      [path.resolve('./tools/ts_resolver')]: {},
     },
   },
   env: {

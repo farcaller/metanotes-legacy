@@ -10,7 +10,7 @@
     "lint:scribbles": "eslint -c .eslintrc.scribbles.js src/frontend/scribbles/",
     "lint": "eslint src/ tools/",
     "postinstall": "husky install && patch-package",
-    "run:grpcwebproxy": "bazel run //src/grpc-web-proxy/devproxy:grpcwebproxy -- --backend_addr=localhost:50010 --backend_tls=false --run_tls_server=false --server_http_debug_port=55080 --allow_all_origins",
+    "run:grpcwebproxy": "bazel run //src/grpc_web_proxy/devproxy:grpcwebproxy -- --backend_addr=localhost:50010 --backend_tls=false --run_tls_server=false --server_http_debug_port=55080 --allow_all_origins",
     "test": "bazel test //...",
     "watch:backend": "mkdir -p data && ibazel run //src/backend -- $PWD/data/db.sqlite 127.0.0.1:50010",
     "watch:web": "ibazel run //src/frontend/web:devserver",

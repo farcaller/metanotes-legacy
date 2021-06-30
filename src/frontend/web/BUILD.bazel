@@ -23,7 +23,7 @@ rollup_bundle(
     format = "iife",
     output_dir = True,
     rollup_bin = ":rollup_bin",
-    rollup_worker_bin = "//tools/rollup-worker",
+    rollup_worker_bin = "//tools/rollup_worker",
     sourcemap = "inline",
     supports_workers = True,
     deps = [

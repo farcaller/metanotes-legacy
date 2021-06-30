@@ -3,12 +3,12 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 package(default_visibility = ["//visibility:public"])
 
 nodejs_binary(
-    name = "rollup-worker",
+    name = "rollup_worker",
     data = [
         "@npm//protobufjs",
         "@npm//rollup",
     ],
-    entry_point = "rollup-worker.js",
+    entry_point = "rollup_worker.js",
     templated_args = [
         "--node_options=--max-old-space-size=7168",
     ],

@@ -15,7 +15,7 @@
 import './wdyr';
 
 import { Platform } from 'react-native';
-import reportWebVitals from './report-web-vitals';
+import reportWebVitals from './report_web_vitals';
 
 if (Platform.OS === 'web') {
   if (process.env.NODE_ENV === 'development') {

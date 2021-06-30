@@ -16,7 +16,7 @@ filegroup(
     srcs = [
         "//src/backend:backend_image.tar",
         "//src/frontend/web:web_image.tar",
-        "//src/grpc-web-proxy/envoy:envoy_image.tar",
+        "//src/grpc_web_proxy/envoy:envoy_image.tar",
     ],
 )
 
@@ -24,7 +24,7 @@ container_bundle(
     name = "containers_bundle",
     images = {
         "ghcr.io/farcaller/metanotes-server:sha-{STABLE_GIT_COMMIT}": "//src/backend:backend_image",
-        "ghcr.io/farcaller/metanotes-envoy:sha-{STABLE_GIT_COMMIT}": "//src/grpc-web-proxy/envoy:envoy_image",
+        "ghcr.io/farcaller/metanotes-envoy:sha-{STABLE_GIT_COMMIT}": "//src/grpc_web_proxy/envoy:envoy_image",
         "ghcr.io/farcaller/metanotes-core:sha-{STABLE_GIT_COMMIT}": "//src/frontend/web:web_image",
     },
 )
@@ -32,7 +32,7 @@ container_bundle(
 container_push(
     name = "publish_envoy",
     format = "Docker",
-    image = "//src/grpc-web-proxy/envoy:envoy_image",
+    image = "//src/grpc_web_proxy/envoy:envoy_image",
     registry = "ghcr.io",
     repository = "farcaller/metanotes-envoy",
     tag = "sha-{STABLE_GIT_COMMIT}",

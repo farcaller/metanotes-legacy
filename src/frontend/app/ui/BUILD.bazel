@@ -29,7 +29,7 @@ tsx_ui_template(
     name = "index",
     template = "index.tpl.tsx",
     ui_library = select({
-        ":ui_kitten_config": "ui-kitten",
+        ":ui_kitten_config": "ui_kitten",
         ":react_native_paper_config": "paper",
     }),
 )
@@ -51,7 +51,7 @@ ts_project(
 
 ts_project(
     name = "ui_kitten_lib",
-    srcs = ["ui-kitten.tsx"],
+    srcs = ["ui_kitten.tsx"],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [

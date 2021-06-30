@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { MetanotesServerAPI, MetanotesServerConfig } from './metanotes-server';
+import { MetanotesServerAPI, MetanotesServerConfig } from './metanotes_server';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 
 export interface StorageAPI {

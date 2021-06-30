@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble } from './interface/scribble';
-import { ScribblesStore } from './interface/store';
+import Scribble from './scribble/scribble';
 
 /**
  * Returns the scribbles matching the given tag using the tiddlywiki sort algorithm.
@@ -22,17 +21,7 @@ import { ScribblesStore } from './interface/store';
  * @param tag The tag.
  * @returns Sorted array of matched scribbles.
  */
-export default function scribblesByTag(this: ScribblesStore, tag: string): Scribble[] {
-  const matchingScribbles = this.scribbles.filter((scribble) => {
-    const { latestStableVersion } = scribble;
-    if (!latestStableVersion) { return false; }
-    const { tags } = latestStableVersion.computedMeta;
-    if (!tags) { return false; }
-    if (tags.indexOf(tag) === -1) { return false; }
-    return true;
-  });
-  const tagScribble = this.scribbleByTitle(tag);
-
+export default function sortedScribblesByTag(matchingScribbles: Scribble[], tagScribble?: Scribble): Scribble[] {
   // sorting is adopted from TW5 rules: https://tiddlywiki.com/static/Order%2520of%2520Tagged%2520Tiddlers.html
   // 1. Get the scribble named ${tag} and add all the results in the order of the scribble's `list` attribute
   // 2. Append all the remaining scribbles with non-empty `title` sorted alphabetically

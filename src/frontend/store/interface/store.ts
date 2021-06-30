@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Scribble } from './scribble';
+type Scribble = any;
 
 export interface ScribblesStore {
   scribbles: Scribble[];

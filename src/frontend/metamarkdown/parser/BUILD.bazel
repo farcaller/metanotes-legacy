@@ -9,7 +9,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/frontend/store/interface",
+        "//src/frontend/store/scribble",
         "@npm//@types/parsimmon",
         "@npm//mdast-util-compact",
         "@npm//parsimmon",

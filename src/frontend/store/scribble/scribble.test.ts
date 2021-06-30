@@ -16,10 +16,10 @@ import { useEffect, useCallback } from 'react';
 
 import Scribble from './scribble';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
-import { CoreScribble } from '../interface/core_scribble';
+import { CoreScribble } from './core_scribble';
 import ScribblesStore from '../store';
 import { StorageAPI } from '../client';
-import { TitleKey } from '../interface/metadata';
+import { TitleKey } from './metadata';
 
 describe('fromCoreScribble', () => {
   let coreScribble: CoreScribble;

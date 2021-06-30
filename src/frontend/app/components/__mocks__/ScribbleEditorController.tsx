@@ -17,9 +17,9 @@
 import React, { useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { Scribble } from '../../../store/interface/scribble';
+import Scribble from '../../../store/scribble/scribble';
 import ScribbleHeader from '../ScribbleHeader';
-import { TitleKey } from '../../../store/interface/metadata';
+import { TitleKey, DraftKey } from '../../../store/scribble/metadata';
 
 function ScribbleEditorController({ scribble }: { scribble: Scribble }) {
   const [workVersion] = useState(scribble.latestVersion);
@@ -30,7 +30,7 @@ function ScribbleEditorController({ scribble }: { scribble: Scribble }) {
     let value = '';
     value = workBody;
     const meta = workVersion.clonedMetadata;
-    meta.delete('mn-draft');
+    meta.delete(DraftKey);
     meta.set(TitleKey, title);
     scribble.createStableVersion(value, meta);
   }, [scribble, workVersion, workBody]);

@@ -13,14 +13,13 @@
 // limitations under the License.
 
 import { action, makeAutoObservable, runInAction } from 'mobx';
-import { computedFn } from 'mobx-utils';
 
 import { StorageAPI } from './client';
 import { FetchStatus, isPending } from './fetch_status';
-import { CoreScribble } from './interface/core_scribble';
-import { ScribbleID } from './interface/ids';
+import { CoreScribble } from './scribble/core_scribble';
+import { ScribbleID } from './scribble/ids';
 import Scribble from './scribble/scribble';
-import scribblesByTag from './tagging';
+import sortedScribblesByTag from './tagging';
 import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
 import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
 import useStore from './context/use_context';
@@ -166,7 +165,18 @@ class ScribblesStore implements ScribblesStoreInterface {
    * @param tag The tag.
    * @returns Sorted array of matched scribbles.
    */
-  scribblesByTag = computedFn(scribblesByTag);
+  scribblesByTag(tag: string): Scribble[] {
+    const matchingScribbles = this.scribbles.filter((scribble) => {
+      const { latestStableVersion } = scribble;
+      if (!latestStableVersion) { return false; }
+      const { tags } = latestStableVersion.computedMeta;
+      if (!tags) { return false; }
+      if (tags.indexOf(tag) === -1) { return false; }
+      return true;
+    });
+    const tagScribble = this.scribbleByTitle(tag);
+    return sortedScribblesByTag(matchingScribbles, tagScribble);
+  }
 
   /**
    * Returns all scribbles.

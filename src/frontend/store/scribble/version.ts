@@ -16,12 +16,11 @@ import { makeAutoObservable } from 'mobx';
 import { ulid, decodeTime } from 'ulid';
 import { computedFn } from 'mobx-utils';
 
-import { CoreScribble } from '../interface/core_scribble';
-import { ScribbleID, VersionID } from '../interface/ids';
+import { CoreScribble } from './core_scribble';
+import { ScribbleID, VersionID } from './ids';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import ComputedMetadata from './computed_metadata';
-import { Version as VersionInterface } from '../interface/version';
-import { DraftKey, TitleKey } from '../interface/metadata';
+import { DraftKey, TitleKey } from './metadata';
 
 /**
  * Generates a costant VersionID for the given ScribbleID.
@@ -37,7 +36,7 @@ function coreVersionForScribbleID(scribbleID: ScribbleID): VersionID {
 /**
  * Mobx model for the scribble version.
  */
-export default class Version implements VersionInterface {
+export default class Version {
   /** Version ID. */
   readonly versionID: VersionID;
 

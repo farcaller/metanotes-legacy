@@ -14,10 +14,12 @@
 
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useState } from 'react';
-import { View, StyleSheet, Text, TextInput, Platform } from 'react-native';
+import {
+  View, StyleSheet, Text, TextInput, Platform,
+} from 'react-native';
 import { IconButton } from 'react-native-paper';
 
-import { Scribble } from '../../store/interface/scribble';
+import Scribble from '../../store/scribble/scribble';
 import { useSpreadStore } from './SpreadStore';
 
 const styles = StyleSheet.create({
@@ -55,6 +57,12 @@ interface ScribbleHeaderProps {
   onEdit?: () => void;
 }
 
+/**
+ * @param root0
+ * @param root0.scribble
+ * @param root0.onSave
+ * @param root0.onEdit
+ */
 function ScribbleHeader({ scribble, onSave, onEdit }: ScribbleHeaderProps) {
   const spreadStore = useSpreadStore();
 

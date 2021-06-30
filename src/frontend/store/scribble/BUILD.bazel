@@ -10,13 +10,19 @@ ts_project(
             "*.ts",
             "*.tsx",
         ],
-        exclude = ["**/*.test.ts"],
+        exclude = [
+            "ids.ts",
+            "core_scribble.ts",
+            "**/*.test.ts",
+        ],
     ),
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        ":core_scribble",
+        ":ids",
         "//src/common/api:api_web",
-        "//src/frontend/metamarkdown/renderer",
+        "//src/frontend/metamarkdown/renderer:components",
         "//src/frontend/store/interface",
         "//src/frontend/store/scribble/module",
         "@npm//@types/js-yaml",
@@ -27,6 +33,24 @@ ts_project(
         "@npm//mobx-utils",
         "@npm//ulid",
     ],
+)
+
+ts_project(
+    name = "core_scribble",
+    srcs = ["core_scribble.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":ids",
+        "//src/common/api:api_web",
+    ],
+)
+
+ts_project(
+    name = "ids",
+    srcs = ["ids.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
 )
 
 ts_jest_test(

@@ -17,7 +17,6 @@ import * as ReactModule from 'react';
 import * as ReactNativeModule from 'react-native';
 import { observer } from 'mobx-react-lite';
 
-import { Scribble } from '../../interface/scribble';
 import useEvalStore from '../eval/use_context';
 import EvalStoreContext, { EvalStore } from '../eval/context';
 import Pipeline, { evalCmdlet } from '../../../filter';
@@ -27,12 +26,11 @@ import ScribblesStoreInterface from './scribbles_store_interface';
  * A require implementation for scribbles.
  *
  * @param mod Module to load.
- * @param _scribble Scribble originating the request.
  * @param store Store owning the scribble.
  * @returns Resolved module.
  * @throws Throws if module cannot be resolved.
  */
-export default function scribbleRequire(mod: string, _scribble: Scribble, store: ScribblesStoreInterface): unknown {
+export default function scribbleRequire(mod: string, store: ScribblesStoreInterface): unknown {
   switch (mod) {
     case '@metascribbles/parsimmon':
       return ParsimmonModule;

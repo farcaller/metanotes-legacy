@@ -17,7 +17,6 @@ import ScribbleStore from './store';
 import * as pb from '../../common/api/api_web_pb/src/common/api/api_pb';
 import { FetchFailed } from './fetch_status';
 import Scribble from './scribble/scribble';
-import { Scribble as ScribbleInterface } from './interface/scribble';
 
 test('it returns core scribbles by id', () => {
   const store = new ScribbleStore(undefined as unknown as StorageAPI);
@@ -165,7 +164,7 @@ describe('scribblesByTag', () => {
     }]);
   };
 
-  const getIDs = (scribbles: ScribbleInterface[]) => scribbles.map((s) => s.scribbleID);
+  const getIDs = (scribbles: Scribble[]) => scribbles.map((s) => s.scribbleID);
 
   test('it sorts tags by title', () => {
     makeScribble('3', '3', { tags: '["hello"]' });

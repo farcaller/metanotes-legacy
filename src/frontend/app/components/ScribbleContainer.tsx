@@ -17,7 +17,7 @@ import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
 import useStore from '../../store/context/use_context';
-import { Scribble } from '../../store/interface/scribble';
+import Scribble from '../../store/scribble/scribble';
 import ScribbleEditorController from './ScribbleEditorController';
 import ScribbleHeader from './ScribbleHeader';
 import render from '../../metamarkdown/renderer/renderer';

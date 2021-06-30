@@ -15,9 +15,16 @@
 import React from 'react';
 import { transform, availablePlugins } from '@babel/standalone';
 
-import { Scribble } from '../../interface/scribble';
 import scribbleRequire from './require';
 import ScribblesStoreInterface from './scribbles_store_interface';
+
+interface Version {
+  get body(): string|null;
+}
+
+interface Scribble {
+  get latestStableVersion(): Version|undefined;
+}
 
 /**
  * ScribbleEvaluationError is thrown if the scribble JS module fails to eval.
@@ -76,7 +83,7 @@ function loadModule<T>(
   }
   const exports = {} as Exports;
 
-  const storeRequire = (mod: string) => scribbleRequire(mod, scribble, store);
+  const storeRequire = (mod: string) => scribbleRequire(mod, store);
 
   try {
     // eslint-disable-next-line no-new-func

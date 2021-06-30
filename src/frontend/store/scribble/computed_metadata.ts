@@ -16,8 +16,6 @@ import Ajv, { JSONSchemaType, ValidateFunction } from 'ajv';
 import yaml from 'js-yaml';
 import { makeAutoObservable } from 'mobx';
 
-import { Version } from '../interface/version';
-
 const ajv = new Ajv();
 const TagSchemaDefinition: JSONSchemaType<string[]> = {
   // "$schema": "https://json-schema.org/draft/2019-09/schema",
@@ -40,6 +38,10 @@ const ListSchemaDefinition: JSONSchemaType<string[]> = {
   },
 };
 const ListSchema = ajv.compile(ListSchemaDefinition);
+
+interface Version {
+  getMeta(key: string): string|undefined;
+}
 
 /**
  * Mobx model for the scribble version's computed metadata.

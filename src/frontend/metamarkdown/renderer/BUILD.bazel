@@ -11,6 +11,7 @@ ts_project(
             "*.tsx",
         ],
         exclude = [
+            "components.ts",
             "*.test.ts",
             "*.test.tsx",
         ],
@@ -20,11 +21,21 @@ ts_project(
     deps = [
         "//src/frontend/metamarkdown/parser",
         "//src/frontend/metamarkdown/parser:widget",
-        "//src/frontend/store/interface",
+        "//src/frontend/store/scribble",
         "@npm//@types/react",
         "@npm//@types/react-native",
         "@npm//ts-mdast",
         "@npm//unified",
+    ],
+)
+
+ts_project(
+    name = "components",
+    srcs = ["components.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@types/react",
     ],
 )
 

@@ -19,9 +19,9 @@ import { observer } from 'mobx-react-lite';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { Scribble } from '../../store/interface/scribble';
+import Scribble from '../../store/scribble/scribble';
 import ScribbleHeader from './ScribbleHeader';
-import { TitleKey } from '../../store/interface/metadata';
+import { DraftKey, TitleKey } from '../../store/scribble/metadata';
 
 const BackgroundColor = '#fff7df';
 
@@ -100,7 +100,7 @@ function ScribbleEditorController({ scribble }: { scribble: Scribble }) {
       value = editorRef.current.getValue();
     }
     const meta = workVersion.clonedMetadata;
-    meta.delete('mn-draft');
+    meta.delete(DraftKey);
     meta.set(TitleKey, title);
     scribble.createStableVersion(value, meta);
   }, [scribble, workVersion, workBody]);

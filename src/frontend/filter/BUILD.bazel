@@ -12,7 +12,6 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/frontend/store/interface",
         "@npm//@types/parsimmon",
         "@npm//parsimmon",
     ],

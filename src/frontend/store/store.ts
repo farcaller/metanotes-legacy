@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { useContext } from 'react';
 import { action, makeAutoObservable, runInAction } from 'mobx';
 
 import { StorageAPI } from './client';
@@ -20,14 +21,17 @@ import { CoreScribble } from './scribble/core_scribble';
 import { ScribbleID } from './scribble/ids';
 import Scribble from './scribble/scribble';
 import sortedScribblesByTag from './tagging';
-import { ScribblesStore as ScribblesStoreInterface } from './interface/store';
 import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
-import useStore from './context/use_context';
+import ScribblesStoreContext from './context';
+
+export function useStore(): ScribblesStore {
+  return useContext(ScribblesStoreContext);
+}
 
 /**
  * The mobx store for scribbles, both core and remote.
  */
-class ScribblesStore implements ScribblesStoreInterface {
+class ScribblesStore {
   /** Backend API interface. */
   private api: StorageAPI;
 

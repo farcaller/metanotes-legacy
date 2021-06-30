@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { StorageAPI } from './client';
 import ScribblesStore from './store';
 import coreScribbles from '../scribbles';
-import ScribblesStoreContext from './context/context';
+import ScribblesStoreContext from './context';
 
 function StoreProvider({ api, children }: React.PropsWithChildren<{ api?: StorageAPI }>): JSX.Element {
   const [store, setStore] = useState<ScribblesStore>();

@@ -16,14 +16,13 @@ import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
-import useStore from '../../store/context/use_context';
+import ScribblesStore, { useStore } from '../../store/store';
 import Scribble from '../../store/scribble/scribble';
 import ScribbleEditorController from './ScribbleEditorController';
 import ScribbleHeader from './ScribbleHeader';
 import render from '../../metamarkdown/renderer/renderer';
 import components from '../../metamarkdown/renderer/react_native_components';
 import Components from '../../metamarkdown/renderer/components';
-import { ScribblesStore } from '../../store/interface/store';
 import EvalStoreContext, { EvalStore } from '../../store/scribble/eval/context';
 import useEvalStore from '../../store/scribble/eval/use_context';
 

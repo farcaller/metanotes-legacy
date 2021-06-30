@@ -23,7 +23,6 @@ ts_project(
         ":ids",
         "//src/common/api:api_web",
         "//src/frontend/metamarkdown/renderer:components",
-        "//src/frontend/store/interface",
         "//src/frontend/store/scribble/module",
         "@npm//@types/js-yaml",
         "@npm//ajv",

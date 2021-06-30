@@ -12,16 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-type Scribble = any;
+import { createContext } from 'react';
 
-export interface ScribblesStore {
-  scribbles: Scribble[];
-  scribbleByTitle(title: string): Scribble | undefined;
-  scribblesByTag(tag: string): Scribble[];
+import ScribblesStore from './store';
 
-  requireScribble<T>(title: string): T;
-  createDraftScribble(): Scribble;
+const ScribblesStoreContext = createContext<ScribblesStore>(null as unknown as ScribblesStore);
 
-  renameScribble(scribble: Scribble, oldTitle: string): void;
-  removeScribble(scribble: Scribble): void;
-}
+export default ScribblesStoreContext;

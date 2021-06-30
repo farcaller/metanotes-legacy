@@ -28,9 +28,6 @@ ts_project(
     deps = [
         "//src/frontend/scribbles",
         "//src/frontend/store/client",
-        "//src/frontend/store/context",
-        "//src/frontend/store/context:use_context",
-        "//src/frontend/store/interface",
         "//src/frontend/store/scribble",
         "@npm//@types/react",
         "@npm//mobx",
@@ -48,7 +45,6 @@ ts_project(
     deps = [
         ":store",
         "//src/frontend/scribbles",
-        "//src/frontend/store/context:use_context",
         "@npm//@types/parsimmon",
         "@npm//mobx",
     ],

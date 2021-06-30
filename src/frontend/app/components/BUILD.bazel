@@ -21,7 +21,6 @@ ts_project(
         "//src/frontend/app/ui",
         "//src/frontend/metamarkdown/renderer",
         "//src/frontend/store",
-        "//src/frontend/store/context:use_context",
         "@npm//@monaco-editor/react",
         "@npm//@types/react",
         "@npm//@types/react-native",

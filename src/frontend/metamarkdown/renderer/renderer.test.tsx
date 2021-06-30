@@ -19,11 +19,13 @@ import { render } from '@testing-library/react-native';
 
 import markdownRender from './renderer';
 import components from './react_native_components';
-import mockStore from '../parser/mocks/store';
+import MockStore from '../../store/mock_store';
 
 test('it renders a markdown document', async () => {
+  const mockStore = MockStore();
+
   function Element() {
-    return markdownRender('hello\n\nworld\n', false, mockStore.parserScribbles, components);
+    return markdownRender('hello\n\nworld\n', false, mockStore.scribblesByTag('$:core/parser'), components);
   }
   const { toJSON } = render(<Element />);
 

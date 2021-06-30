@@ -24,6 +24,7 @@ def ts_jest_test(name, srcs, deps = [], **kwargs):
             "@npm//@types/react-native",
         ],
         declaration = True,
+        testonly = True,
         tsconfig = "//:tsconfig.jest.json",
     )
     args = [

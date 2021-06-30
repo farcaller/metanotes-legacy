@@ -34,7 +34,7 @@ ts_jest_test(
     srcs = glob(["*.test.ts"]) + ["//src/types"],
     deps = [
         ":parser",
-        "//src/frontend/metamarkdown/parser/mocks:mock_store",
+        "//src/frontend/store:mock_store",
         "@npm//beautify",
         "@npm//commonmark-spec",
         "@npm//mdast-util-compact",

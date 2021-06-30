@@ -26,7 +26,7 @@ ts_jest_test(
     ]),
     deps = [
         ":filter",
-        "//src/frontend/metamarkdown/parser/mocks:mock_store",
+        "//src/frontend/store:mock_store",
         "//src/frontend/store/scribble/eval:context",
         "@npm//@testing-library/react-native",
         "@npm//@types/react-test-renderer",

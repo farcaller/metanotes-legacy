@@ -23,14 +23,15 @@ import remarkHTML from 'remark-html';
 import unified from 'unified';
 
 import makeParser from './parser';
-import mockStore from './mocks/store';
+import MockStore from '../../store/mock_store';
 
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
+const mockStore = MockStore();
 
 function doParse(doc: string, rootNode = 'Document'): mdast.Node {
   if (rootParsers[rootNode] === undefined) {
     const parser = unified()
-      .use(makeParser, { parserScribbles: mockStore.parserScribbles, rootNode });
+      .use(makeParser, { parserScribbles: mockStore.scribblesByTag('$:core/parser'), rootNode });
     rootParsers[rootNode] = parser;
   }
   const parser = rootParsers[rootNode];
@@ -93,11 +94,11 @@ function testCommonmark(idx: number, todoReason?: string, only = false) {
     const expected = cleanupHtml(spec.html);
 
     const parser = unified()
-      .use(makeParser, { parserScribbles: mockStore.parserScribbles })
+      .use(makeParser, { parserScribbles: mockStore.scribblesByTag('$:core/parser') })
       .use(remarkHTML);
 
     const astParser = unified()
-      .use(makeParser, { parserScribbles: mockStore.parserScribbles });
+      .use(makeParser, { parserScribbles: mockStore.scribblesByTag('$:core/parser') });
 
     let outString: string;
 

@@ -19,8 +19,10 @@ import { render } from '@testing-library/react-native';
 import { observer } from 'mobx-react-lite';
 
 import EvalStoreContext, { EvalStore } from '../store/scribble/eval/context';
-import mockStore from '../metamarkdown/parser/mocks/store';
+import MockStore from '../store/mock_store';
 import { ExternalStore } from '../store/provider';
+
+const mockStore = MockStore();
 
 function makeQuery(store: EvalStore, query: string) {
   function Element() {

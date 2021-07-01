@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Scribble from './scribble/scribble';
+import Scribble from '../scribble/scribble';
 
 /**
  * Returns the scribbles matching the given tag using the tiddlywiki sort algorithm.

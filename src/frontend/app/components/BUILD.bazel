@@ -20,9 +20,9 @@ ts_project(
     deps = [
         "//src/frontend/app/ui",
         "//src/frontend/metamarkdown/renderer",
-        "//src/frontend/store",
         "//src/frontend/store/eval_store",
         "//src/frontend/store/eval_store:use_context",
+        "//src/frontend/store/scribbles_store",
         "@npm//@monaco-editor/react",
         "@npm//@types/react",
         "@npm//@types/react-native",

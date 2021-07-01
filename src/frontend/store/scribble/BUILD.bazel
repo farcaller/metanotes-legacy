@@ -57,7 +57,7 @@ ts_jest_test(
     srcs = glob(["*.test.ts"]),
     deps = [
         ":scribble",
-        "//src/frontend/store",
         "//src/frontend/store/client",
+        "//src/frontend/store/scribbles_store",
     ],
 )

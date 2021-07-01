@@ -47,7 +47,7 @@ ts_jest_test(
     ]),
     deps = [
         ":renderer",
-        "//src/frontend/store:mock_store",
+        "//src/frontend/store/scribbles_store:mock_store",
         "@npm//@testing-library/react-native",
         "@npm//@types/react-test-renderer",
         "@npm//mobx-react-lite",

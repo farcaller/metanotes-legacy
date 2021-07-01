@@ -16,7 +16,7 @@ import React, { createContext, useContext } from 'react';
 import { makeAutoObservable } from 'mobx';
 
 import Scribble from '../../store/scribble/scribble';
-import ScribblesStore, { useStore } from '../../store/store';
+import ScribblesStore, { useStore } from '../../store/scribbles_store/store';
 
 export class SpreadStore {
   scribbles: Scribble[] = [];

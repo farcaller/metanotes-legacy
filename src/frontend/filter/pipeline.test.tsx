@@ -19,8 +19,8 @@ import { render } from '@testing-library/react-native';
 import { observer } from 'mobx-react-lite';
 
 import EvalStoreContext from '../store/eval_store/context';
-import MockStore from '../store/mock_store';
-import { ExternalStore } from '../store/provider';
+import MockStore from '../store/scribbles_store/mock_store';
+import { ExternalStore } from '../store/scribbles_store/provider';
 import EvalStore from '../store/eval_store/eval_store';
 
 const mockStore = MockStore();

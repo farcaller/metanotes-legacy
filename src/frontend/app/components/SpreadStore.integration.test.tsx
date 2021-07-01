@@ -20,10 +20,10 @@ import { act } from 'react-test-renderer';
 
 jest.mock('./ScribbleEditorController');
 
-import ScribblesStore from '../../store/store';
+import ScribblesStore from '../../store/scribbles_store/store';
 import { StorageAPI } from '../../store/client';
 import { ExternalSpreadStoreProvider, SpreadStore } from './SpreadStore';
-import { ExternalStore } from '../../store/provider';
+import { ExternalStore } from '../../store/scribbles_store/provider';
 import CommonUIProvider from '../ui';
 import ScribblesContainer from './ScribblesContainer';
 import scribbles from '../../scribbles';

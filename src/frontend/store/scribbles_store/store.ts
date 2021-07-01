@@ -15,11 +15,11 @@
 import { useContext } from 'react';
 import { action, makeAutoObservable, runInAction } from 'mobx';
 
-import { StorageAPI } from './client';
+import { StorageAPI } from '../client';
 import { FetchStatus, isPending } from './fetch_status';
-import { CoreScribble } from './scribble/core_scribble';
-import { ScribbleID } from './scribble/ids';
-import Scribble from './scribble/scribble';
+import { CoreScribble } from '../scribble/core_scribble';
+import { ScribbleID } from '../scribble/ids';
+import Scribble from '../scribble/scribble';
 import sortedScribblesByTag from './tagging';
 import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
 import ScribblesStoreContext from './context';

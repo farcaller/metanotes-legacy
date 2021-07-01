@@ -16,7 +16,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
-import ScribblesStore, { useStore } from '../../store/store';
+import ScribblesStore, { useStore } from '../../store/scribbles_store/store';
 import Scribble from '../../store/scribble/scribble';
 import ScribbleEditorController from './ScribbleEditorController';
 import ScribbleHeader from './ScribbleHeader';

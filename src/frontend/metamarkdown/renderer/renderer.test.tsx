@@ -19,7 +19,7 @@ import { render } from '@testing-library/react-native';
 
 import markdownRender from './renderer';
 import components from './react_native_components';
-import MockStore from '../../store/mock_store';
+import MockStore from '../../store/scribbles_store/mock_store';
 
 test('it renders a markdown document', async () => {
   const mockStore = MockStore();

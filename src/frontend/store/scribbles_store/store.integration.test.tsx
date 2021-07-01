@@ -21,7 +21,7 @@ import { observer } from 'mobx-react-lite';
 import TestRenderer from 'react-test-renderer';
 
 import ScribblesStore from './store';
-import { StorageAPI } from './client';
+import { StorageAPI } from '../client';
 
 const { act } = TestRenderer;
 

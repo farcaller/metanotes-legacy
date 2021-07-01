@@ -6,12 +6,12 @@ package(default_visibility = ["//visibility:public"])
 package_group(
     name = "store_pkg",
     packages = [
-        "//src/frontend/store",
+        "//src/frontend/store/scribbles_store",
     ],
 )
 
 ts_project(
-    name = "store",
+    name = "scribbles_store",
     srcs = glob(
         [
             "*.ts",
@@ -43,7 +43,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        ":store",
+        ":scribbles_store",
         "//src/frontend/scribbles",
         "@npm//@types/parsimmon",
         "@npm//mobx",
@@ -57,7 +57,7 @@ ts_jest_test(
         "*.test.tsx",
     ]),
     deps = [
-        ":store",
+        ":scribbles_store",
         "//src/common/api:api_web",
         "@npm//@testing-library/react-native",
         "@npm//@types/react-test-renderer",

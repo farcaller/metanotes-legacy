@@ -23,7 +23,7 @@ import remarkHTML from 'remark-html';
 import unified from 'unified';
 
 import makeParser from './parser';
-import MockStore from '../../store/mock_store';
+import MockStore from '../../store/scribbles_store/mock_store';
 
 const rootParsers = {} as { [k: string]: unified.Processor<unified.Settings> };
 const mockStore = MockStore();

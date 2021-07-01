@@ -14,7 +14,8 @@
 
 import { useContext } from 'react';
 
-import EvalStoreContext, { EvalStore } from './context';
+import EvalStoreContext from './context';
+import EvalStore from './eval_store';
 
 export default function useEvalStore(): EvalStore {
   return useContext(EvalStoreContext)!;

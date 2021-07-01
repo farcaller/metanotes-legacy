@@ -9,8 +9,7 @@ ts_project(
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/filter",
-        "//src/frontend/store/scribble/eval:context",
-        "//src/frontend/store/scribble/eval:use_context",
+        "//src/frontend/store/eval_store:use_context",
         "@npm//@babel/standalone",
         "@npm//@types/babel__standalone",
         "@npm//@types/parsimmon",

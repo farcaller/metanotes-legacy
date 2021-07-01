@@ -3,12 +3,14 @@ load("@npm//@bazel/typescript:index.bzl", "ts_project")
 package(default_visibility = ["//visibility:public"])
 
 ts_project(
-    name = "context",
-    srcs = ["context.ts"],
+    name = "eval_store",
+    srcs = [
+        "context.ts",
+        "eval_store.ts",
+        "provider.tsx",
+    ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
-    # TODO: tighten
-    # visibility = ["//src/frontend/store:store_pkg"],
     deps = [
         "@npm//@types/react",
         "@npm//mobx",
@@ -23,7 +25,7 @@ ts_project(
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
-        ":context",
+        ":eval_store",
         "@npm//@types/react",
         "@npm//react",
     ],

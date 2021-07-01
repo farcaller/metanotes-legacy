@@ -17,8 +17,9 @@ import * as ReactModule from 'react';
 import * as ReactNativeModule from 'react-native';
 import { observer } from 'mobx-react-lite';
 
-import useEvalStore from '../eval/use_context';
-import EvalStoreContext, { EvalStore } from '../eval/context';
+import useEvalStore from '../../eval_store/use_context';
+import EvalStoreContext from '../../eval_store/context';
+import EvalStore from '../../eval_store/eval_store';
 import Pipeline, { evalCmdlet } from '../../../filter';
 import ScribblesStoreInterface from './scribbles_store_interface';
 
@@ -41,8 +42,9 @@ export default function scribbleRequire(mod: string, store: ScribblesStoreInterf
     case '@metascribbles/store':
       return {
         useStore: store.useStore,
-        useEvalStore,
         observer,
+        // TODO: stop exposing the context and the store (used in for widget)
+        useEvalStore,
         EvalStore,
         EvalStoreContext,
       };

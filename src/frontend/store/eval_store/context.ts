@@ -12,35 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { makeAutoObservable } from 'mobx';
-import { computedFn } from 'mobx-utils';
 import { createContext } from 'react';
 
-export class EvalStore {
-  private $values: Map<string, unknown> = new Map();
-
-  private parentStore?: EvalStore;
-
-  constructor(parent?: EvalStore) {
-    makeAutoObservable(this);
-    this.parentStore = parent;
-  }
-
-  get: (k: string) => unknown = computedFn((key: string) => {
-    const val = this.$values.get(key);
-    if (val) {
-      return val;
-    }
-    if (this.parentStore) {
-      return this.parentStore.get(key);
-    }
-    return undefined;
-  })
-
-  set(key: string, value: unknown) {
-    this.$values.set(key, value);
-  }
-}
+import EvalStore from './eval_store';
 
 const EvalStoreContext = createContext<EvalStore | undefined>(undefined);
 

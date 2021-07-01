@@ -22,7 +22,8 @@ jest.mock('./ScribbleEditorController');
 
 import ScribblesStore from '../../store/scribbles_store/store';
 import { StorageAPI } from '../../store/client';
-import { ExternalSpreadStoreProvider, SpreadStore } from './SpreadStore';
+import { ExternalSpreadStoreProvider } from '../../store/spread_store/provider';
+import SpreadStore from '../../store/spread_store/spread_store';
 import { ExternalStore } from '../../store/scribbles_store/provider';
 import CommonUIProvider from '../ui';
 import ScribblesContainer from './ScribblesContainer';

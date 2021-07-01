@@ -21,6 +21,8 @@ ts_project(
         "//src/frontend/app/ui",
         "//src/frontend/metamarkdown/renderer",
         "//src/frontend/store/eval_store",
+        "//src/frontend/store/spread_store:use_context",
+        "//src/frontend/store/spread_store",
         "//src/frontend/store/eval_store:use_context",
         "//src/frontend/store/scribbles_store",
         "@npm//@monaco-editor/react",

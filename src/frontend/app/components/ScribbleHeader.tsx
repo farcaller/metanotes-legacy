@@ -20,7 +20,7 @@ import {
 import { IconButton } from 'react-native-paper';
 
 import Scribble from '../../store/scribble/scribble';
-import { useSpreadStore } from './SpreadStore';
+import useSpreadStore from '../../store/spread_store/use_context';
 
 const styles = StyleSheet.create({
   title: {

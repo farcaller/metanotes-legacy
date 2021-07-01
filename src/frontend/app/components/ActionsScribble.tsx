@@ -17,7 +17,7 @@ import { View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 import colors from './colors';
-import { useSpreadStore } from './SpreadStore';
+import useSpreadStore from '../../store/spread_store/use_context';
 
 const styles = StyleSheet.create({
   container: {

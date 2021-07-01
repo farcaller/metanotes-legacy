@@ -1,0 +1,35 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:jest.bzl", "ts_jest_test")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "spread_store",
+    srcs = [
+        "context.ts",
+        "spread_store.ts",
+        "provider.tsx",
+    ],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/frontend/store/scribble",
+        "//src/frontend/store/scribbles_store",
+        "@npm//@types/react",
+        "@npm//mobx",
+        "@npm//mobx-utils",
+        "@npm//react",
+    ],
+)
+
+ts_project(
+    name = "use_context",
+    srcs = ["use_context.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":spread_store",
+        "@npm//@types/react",
+        "@npm//react",
+    ],
+)

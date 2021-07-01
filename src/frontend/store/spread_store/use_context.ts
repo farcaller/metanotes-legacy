@@ -12,23 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import { useContext } from 'react';
 
-import CommonUIProvider from '../ui';
-import Store from './Store';
-import ScribblesContainer from './ScribblesContainer';
-import SpreadStoreProvider from '../../store/spread_store/provider';
+import SpreadStoreContext from './context';
+import SpreadStore from './spread_store';
 
-function Root() {
-  return (
-    <Store>
-      <CommonUIProvider>
-        <SpreadStoreProvider>
-          <ScribblesContainer />
-        </SpreadStoreProvider>
-      </CommonUIProvider>
-    </Store>
-  );
+export default function useSpreadStore(): SpreadStore {
+  return useContext(SpreadStoreContext)!;
 }
-
-export default Root;

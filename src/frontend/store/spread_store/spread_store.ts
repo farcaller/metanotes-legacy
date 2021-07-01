@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { createContext, useContext } from 'react';
 import { makeAutoObservable } from 'mobx';
 
-import Scribble from '../../store/scribble/scribble';
-import ScribblesStore, { useStore } from '../../store/scribbles_store/store';
+import Scribble from '../scribble/scribble';
+import ScribblesStore from '../scribbles_store/store';
 
-export class SpreadStore {
+class SpreadStore {
   scribbles: Scribble[] = [];
 
   private scribblesStore: ScribblesStore;
@@ -76,37 +75,4 @@ export class SpreadStore {
   }
 }
 
-const SpreadStoreContext = createContext<SpreadStore>(undefined as unknown as SpreadStore);
-
-export function useSpreadStore(): SpreadStore {
-  return useContext(SpreadStoreContext);
-}
-
-function SpreadStoreProvider({ children }: React.PropsWithChildren<unknown>) {
-  const store = useStore();
-
-  return (
-    <>
-      <SpreadStoreContext.Provider value={new SpreadStore(store)}>
-        {children}
-      </SpreadStoreContext.Provider>
-    </>
-  );
-}
-
-export default React.memo(SpreadStoreProvider);
-
-/**
- * A testing store context.
- */
-function ExternalSpreadStoreProviderImpl(
-  { store, children }: React.PropsWithChildren<{ store: SpreadStore }>,
-): JSX.Element {
-  return (
-    <SpreadStoreContext.Provider value={store}>
-      {store && children}
-    </SpreadStoreContext.Provider>
-  );
-}
-
-export const ExternalSpreadStoreProvider = React.memo(ExternalSpreadStoreProviderImpl);
+export default SpreadStore;

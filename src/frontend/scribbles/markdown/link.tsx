@@ -38,7 +38,7 @@ function Strong({ url, title, children }: React.PropsWithChildren<{ url: string,
       const id = url.substring(13);
       // spreadStore.openByID(id);
     }
-    console.error('unknown link:', link);
+    console.error('unknown link:', url);
   }, [url]);
 
   return (

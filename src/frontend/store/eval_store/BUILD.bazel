@@ -18,7 +18,7 @@ ts_project(
 )
 
 ts_project(
-    name = "use_context",
+    name = "context",
     srcs = ["use_context.ts"],
     deps = [
         ":eval_store",

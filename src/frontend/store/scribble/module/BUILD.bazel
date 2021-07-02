@@ -7,7 +7,7 @@ ts_project(
     srcs = glob(["*.ts"]),
     deps = [
         "//src/frontend/filter",
-        "//src/frontend/store/eval_store:use_context",
+        "//src/frontend/store/eval_store:context",
         "//src/frontend/store/scribble:scribble_interface",
         "//src/frontend/store/scribbles_store:context",
         "//src/frontend/store/scribbles_store:scribbles_store_interface",

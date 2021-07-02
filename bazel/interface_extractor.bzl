@@ -1,6 +1,6 @@
 """Rules for scribbles."""
 
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "js_library")
 
 def ts_extracted_interface(name, src, deps = [], rewrite = None):
     """Extracts the interface from the given class file.
@@ -22,7 +22,7 @@ def ts_extracted_interface(name, src, deps = [], rewrite = None):
         rewrite_rules_val = json.encode(rewrite)
 
     npm_package_bin(
-        name = name,
+        name = "%s.dts" % name,
         tool = "//tools:interface_extractor",
         data = [
             src,
@@ -39,4 +39,9 @@ def ts_extracted_interface(name, src, deps = [], rewrite = None):
             "-r",
             rewrite_rules_val,
         ],
+    )
+
+    js_library(
+        name = name,
+        srcs = [dfile],
     )

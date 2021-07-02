@@ -48,11 +48,11 @@ ts_project(
     srcs = [
         "context.ts",
         "use_context.ts",
-        ":scribbles_store_interface",
     ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        ":scribbles_store_interface",
         "//src/frontend/store/client",
         "@npm//@types/react",
         "@npm//react",

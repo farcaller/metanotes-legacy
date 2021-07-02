@@ -37,12 +37,11 @@ ts_project(
             "core_scribble.ts",
             "**/*.test.ts",
         ],
-    ) + [
-        "//src/frontend/store/scribbles_store:scribbles_store_interface",
-    ],
+    ),
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
+        "//src/frontend/store/scribbles_store:scribbles_store_interface",
         ":core_scribble",
         ":ids",
         "//src/common/api:api_web",

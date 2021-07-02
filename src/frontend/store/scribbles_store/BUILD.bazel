@@ -4,13 +4,6 @@ load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
-package_group(
-    name = "store_pkg",
-    packages = [
-        "//src/frontend/store/scribbles_store",
-    ],
-)
-
 ts_extracted_interface(
     name = "scribbles_store_interface",
     src = "scribbles_store.ts",
@@ -29,13 +22,13 @@ ts_project(
         "scribbles_store.ts",
         "tagging.ts",
         "upload_status.ts",
-        "//src/frontend/store/scribble:scribble_interface",
     ],
     deps = [
         "//src/frontend/scribbles",
         "//src/frontend/store/client",
         "//src/frontend/store/scribble",
         "//src/frontend/store/scribble:core_scribble",
+        "//src/frontend/store/scribble:scribble_interface",
         "@npm//mobx",
         "@npm//mobx-utils",
     ],

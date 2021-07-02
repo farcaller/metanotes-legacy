@@ -7,14 +7,15 @@ ts_project(
     name = "spread_store",
     srcs = [
         "context.ts",
-        "spread_store.ts",
         "provider.tsx",
+        "spread_store.ts",
     ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/store/scribble",
         "//src/frontend/store/scribbles_store",
+        "//src/frontend/store/scribbles_store:context",
         "@npm//@types/react",
         "@npm//mobx",
         "@npm//mobx-utils",

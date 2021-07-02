@@ -27,6 +27,7 @@ ts_jest_test(
         ":filter",
         "//src/frontend/store/eval_store",
         "//src/frontend/store/scribbles_store:mock_store",
+        "//src/frontend/store/scribbles_store:provider",
         "@npm//@testing-library/react-native",
         "@npm//@types/react-test-renderer",
         "@npm//mobx-react-lite",

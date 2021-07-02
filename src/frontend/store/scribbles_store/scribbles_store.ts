@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useContext } from 'react';
 import { action, makeAutoObservable, runInAction } from 'mobx';
 
 import { StorageAPI } from '../client';
@@ -22,11 +21,6 @@ import { ScribbleID } from '../scribble/ids';
 import Scribble from '../scribble/scribble';
 import sortedScribblesByTag from './tagging';
 import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
-import ScribblesStoreContext from './context';
-
-export function useStore(): ScribblesStore {
-  return useContext(ScribblesStoreContext);
-}
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -66,6 +60,7 @@ class ScribblesStore {
    * Loads the core scribbles. It's not safe to call this method multiple times.
    *
    * @param coreScribbles The array of the pre-built core scribbles.
+   * @internal
    */
   loadCoreScribbles(coreScribbles: CoreScribble[]): void {
     for (const coreScribble of coreScribbles) {
@@ -191,6 +186,7 @@ class ScribblesStore {
     return Array.from(this.$scribblesByID.values());
   }
 
+  /** internal */
   get fetchStatus(): FetchStatus {
     return this.$fetchStatus;
   }
@@ -279,8 +275,6 @@ class ScribblesStore {
       this.$scribblesByTitle.delete(scribble.title);
     }
   }
-
-  useStore = useStore;
 }
 
 export default ScribblesStore;

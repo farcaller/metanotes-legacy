@@ -15,7 +15,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { StorageAPI } from '../client';
-import ScribblesStore from './store';
+import ScribblesStore from './scribbles_store';
 import coreScribbles from '../../scribbles';
 import ScribblesStoreContext from './context';
 

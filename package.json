@@ -97,6 +97,7 @@
     "babel-jest": "^27.0.2",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "beautify": "^0.0.8",
+    "commander": "^8.0.0",
     "commonmark-spec": "^0.29.0",
     "core-js": "^3.13.1",
     "eslint": ">=7.27.0",
@@ -127,6 +128,7 @@
     "rollup-plugin-visualizer": "^5.5.0",
     "sort-package-json": "^1.50.0",
     "terser": "^5.7.0",
+    "ts-morph": "^11.0.0",
     "ts-protoc-gen": "^0.15.0",
     "typescript": "^4.3.2"
   }

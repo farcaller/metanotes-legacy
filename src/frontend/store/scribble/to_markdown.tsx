@@ -12,9 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-interface ScribblesStoreInterface {
-  useStore(): unknown;
-  requireScribble(mod: string): unknown;
-}
+import React from 'react';
+import { Text } from 'react-native';
+import Components from '../../metamarkdown/renderer/components';
 
-export default ScribblesStoreInterface;
+export default function toMarkdown(components: Components, scribbleID: string, title?: string) {
+  return (
+    <components.link
+      url={`scribbleid://${scribbleID}`}
+      title={`$${scribbleID}`}
+    >
+      <Text>{title ?? `$${scribbleID}`}</Text>
+    </components.link>
+  );
+}

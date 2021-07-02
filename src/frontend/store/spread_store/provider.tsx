@@ -16,10 +16,11 @@ import React from 'react';
 
 import SpreadStoreContext from './context';
 import SpreadStore from './spread_store';
-import { useStore } from '../scribbles_store/store';
+import useStore from '../scribbles_store/use_context';
+import ScribblesStore from '../scribbles_store/scribbles_store';
 
 function SpreadStoreProvider({ children }: React.PropsWithChildren<unknown>) {
-  const scribblesStore = useStore();
+  const scribblesStore = useStore() as ScribblesStore;
   const store = new SpreadStore(scribblesStore);
 
   return (

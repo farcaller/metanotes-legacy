@@ -21,7 +21,8 @@ import useEvalStore from '../../eval_store/use_context';
 import EvalStoreContext from '../../eval_store/context';
 import EvalStore from '../../eval_store/eval_store';
 import Pipeline, { evalCmdlet } from '../../../filter';
-import ScribblesStoreInterface from './scribbles_store_interface';
+import ScribblesStore from '../../scribbles_store/scribbles_store_interface';
+import useStore from '../../scribbles_store/use_context';
 
 /**
  * A require implementation for scribbles.
@@ -31,7 +32,7 @@ import ScribblesStoreInterface from './scribbles_store_interface';
  * @returns Resolved module.
  * @throws Throws if module cannot be resolved.
  */
-export default function scribbleRequire(mod: string, store: ScribblesStoreInterface): unknown {
+export default function scribbleRequire(mod: string, store: ScribblesStore): unknown {
   switch (mod) {
     case '@metascribbles/parsimmon':
       return ParsimmonModule;
@@ -41,7 +42,7 @@ export default function scribbleRequire(mod: string, store: ScribblesStoreInterf
       return ReactNativeModule;
     case '@metascribbles/store':
       return {
-        useStore: store.useStore,
+        useStore,
         observer,
         // TODO: stop exposing the context and the store (used in for widget)
         useEvalStore,

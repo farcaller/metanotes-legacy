@@ -1,7 +1,29 @@
 load("//bazel:jest.bzl", "ts_jest_test")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:interface_extractor.bzl", "ts_extracted_interface")
 
 package(default_visibility = ["//visibility:public"])
+
+ts_extracted_interface(
+    name = "version_interface",
+    src = "version.ts",
+    deps = [
+        "computed_metadata.ts",
+        ":ids",
+    ],
+)
+
+ts_extracted_interface(
+    name = "scribble_interface",
+    src = "scribble.ts",
+    rewrite = {
+        "./version": "./version_interface",
+    },
+    deps = [
+        "version.ts",
+        ":ids",
+    ],
+)
 
 ts_project(
     name = "scribble",
@@ -15,7 +37,9 @@ ts_project(
             "core_scribble.ts",
             "**/*.test.ts",
         ],
-    ),
+    ) + [
+        "//src/frontend/store/scribbles_store:scribbles_store_interface",
+    ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [

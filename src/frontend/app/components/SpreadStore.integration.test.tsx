@@ -20,7 +20,7 @@ import { act } from 'react-test-renderer';
 
 jest.mock('./ScribbleEditorController');
 
-import ScribblesStore from '../../store/scribbles_store/store';
+import ScribblesStore from '../../store/scribbles_store/scribbles_store';
 import { StorageAPI } from '../../store/client';
 import { ExternalSpreadStoreProvider } from '../../store/spread_store/provider';
 import SpreadStore from '../../store/spread_store/spread_store';

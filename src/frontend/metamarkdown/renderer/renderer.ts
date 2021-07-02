@@ -14,7 +14,7 @@
 
 import unified from 'unified';
 
-import Scribble from '../../store/scribble/scribble';
+import Scribble from '../../store/scribble/scribble_interface';
 import makeParser from '../parser/parser';
 import makeCompiler from './compiler';
 import Components from './components';

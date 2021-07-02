@@ -74,6 +74,7 @@ export default class Version {
     return new Date(decodeTime(this.versionID));
   }
 
+  /** @internal */
   toString(): string {
     let desc = `${this.versionID}`;
     if (this.title !== '') {
@@ -87,6 +88,7 @@ export default class Version {
    *
    * @param coreScribble Source core scribble.
    * @returns New version.
+   * @internal
    */
   static fromCoreScribble(coreScribble: CoreScribble): Version {
     const m = new Map();
@@ -103,6 +105,7 @@ export default class Version {
    *
    * @param vpb Source protobuf message.
    * @returns New version.
+   * @internal
    */
   static fromProto(vpb: pb.Version): Version {
     const m = new Map();
@@ -115,6 +118,7 @@ export default class Version {
    * Builds a protobuf message from the version.
    *
    * @returns Version proto.
+   * @internal
    */
   toProto(): pb.Version {
     const v = new pb.Version();
@@ -125,6 +129,7 @@ export default class Version {
     return v;
   }
 
+  /** @internal */
   toJSON(): unknown {
     return {
       versionID: this.versionID,
@@ -140,8 +145,9 @@ export default class Version {
    *
    * @param key Metadata key.
    * @returns Metadata value or `undefined` if value isn't defined.
+   * @internal
    */
-  getMeta = computedFn(function getMeta(this: Version, key: string): string | undefined {
+  readonly getMeta = computedFn(function getMeta(this: Version, key: string): string | undefined {
     return this.$meta.get(key);
   })
 

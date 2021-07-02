@@ -1,4 +1,5 @@
 load("//bazel:jest.bzl", "ts_jest_test")
+load("//bazel:interface_extractor.bzl", "ts_extracted_interface")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
@@ -10,28 +11,66 @@ package_group(
     ],
 )
 
+ts_extracted_interface(
+    name = "scribbles_store_interface",
+    src = "scribbles_store.ts",
+    rewrite = {
+        "../scribble/scribble": "../scribble/scribble_interface",
+    },
+    deps = [
+        "//src/frontend/store/scribble:scribble.ts",
+    ],
+)
+
 ts_project(
     name = "scribbles_store",
-    srcs = glob(
-        [
-            "*.ts",
-            "*.tsx",
-        ],
-        exclude = [
-            "mock_store.ts",
-            "**/*.test.ts",
-            "**/*.test.tsx",
-        ],
-    ),
+    srcs = [
+        "fetch_status.ts",
+        "scribbles_store.ts",
+        "tagging.ts",
+        "upload_status.ts",
+        "//src/frontend/store/scribble:scribble_interface",
+    ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/scribbles",
         "//src/frontend/store/client",
         "//src/frontend/store/scribble",
-        "@npm//@types/react",
+        "//src/frontend/store/scribble:core_scribble",
         "@npm//mobx",
         "@npm//mobx-utils",
+    ],
+)
+
+ts_project(
+    name = "context",
+    srcs = [
+        "context.ts",
+        "use_context.ts",
+        ":scribbles_store_interface",
+    ],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/frontend/store/client",
+        "@npm//@types/react",
+        "@npm//react",
+    ],
+)
+
+ts_project(
+    name = "provider",
+    srcs = [
+        "provider.tsx",
+    ],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        ":context",
+        ":scribbles_store",
+        "//src/frontend/store/client",
+        "@npm//@types/react",
         "@npm//react",
     ],
 )

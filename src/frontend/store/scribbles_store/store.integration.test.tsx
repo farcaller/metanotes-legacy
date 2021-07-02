@@ -20,7 +20,7 @@ import { render } from '@testing-library/react-native';
 import { observer } from 'mobx-react-lite';
 import TestRenderer from 'react-test-renderer';
 
-import ScribblesStore from './store';
+import ScribblesStore from './scribbles_store';
 import { StorageAPI } from '../client';
 
 const { act } = TestRenderer;

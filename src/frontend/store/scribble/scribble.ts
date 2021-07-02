@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { Text } from 'react-native';
 import { action, computed, makeAutoObservable } from 'mobx';
 import { ulid } from 'ulid';
 
@@ -24,12 +22,8 @@ import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import loadModule from './module';
 import { DraftKey } from './metadata';
 import Components from '../../metamarkdown/renderer/components';
-
-interface ScribblesStoreInterface {
-  useStore(): unknown;
-  requireScribble(mod: string): unknown;
-  renameScribble(scribble: Scribble, oldTitle: string): void;
-}
+import ScribblesStoreInterface from '../scribbles_store/scribbles_store_interface';
+import toMarkdown from './to_markdown';
 
 /**
  * Mobx model for the scribble.
@@ -71,6 +65,7 @@ export default class Scribble {
    * @param store Owning store.
    * @param coreScribble Source core scribble.
    * @returns New scribble.
+   * @internal
    */
   static fromCoreScribble(store: ScribblesStoreInterface, coreScribble: CoreScribble): Scribble {
     const v = Version.fromCoreScribble(coreScribble);
@@ -86,6 +81,7 @@ export default class Scribble {
    * @param store Owning store.
    * @param spb Source protobuf message.
    * @returns New scribble.
+   * @internal
    */
   static fromProto(store: ScribblesStoreInterface, spb: pb.Scribble): Scribble {
     const s = new Scribble(store, spb.getScribbleId());
@@ -102,6 +98,7 @@ export default class Scribble {
    *
    * @param dirtyOnly Serializes only the dirty versions if true.
    * @returns Scribble proto.
+   * @internal
    */
   toProto(dirtyOnly = false): pb.Scribble {
     const s = new pb.Scribble();
@@ -179,6 +176,7 @@ export default class Scribble {
    * Updates the current scribble to match the otherScribble while preserving local versions.
    *
    * @param otherScribble The fetched Scribble.
+   * @internal
    */
   updateFrom(otherScribble: Scribble): void {
     otherScribble.$versionsByID.forEach((v, versionID) => {
@@ -198,6 +196,7 @@ export default class Scribble {
     return loadModule(this, this.store);
   }
 
+  /** @internal */
   toString(): string {
     let desc = `${this.scribbleID}`;
     if (this.title !== '') {
@@ -206,21 +205,16 @@ export default class Scribble {
     return desc;
   }
 
+  /** @internal */
   toJSON(): unknown {
     return {
       scribbeID: this.scribbleID,
     };
   }
 
+  /** @internal */
   toMarkdown(components: Components): JSX.Element {
-    return (
-      <components.link
-        url={`scribbleid://${this.scribbleID}`}
-        title={`$${this.scribbleID}`}
-      >
-        <Text>{this.latestStableVersion?.title ?? `$${this.scribbleID}`}</Text>
-      </components.link>
-    );
+    return toMarkdown(components, this.scribbleID, this.latestStableVersion?.title);
   }
 
   /**

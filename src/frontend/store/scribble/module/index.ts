@@ -16,15 +16,8 @@ import React from 'react';
 import { transform, availablePlugins } from '@babel/standalone';
 
 import scribbleRequire from './require';
-import ScribblesStoreInterface from './scribbles_store_interface';
-
-interface Version {
-  get body(): string|null;
-}
-
-interface Scribble {
-  get latestStableVersion(): Version|undefined;
-}
+import ScribblesStore from '../../scribbles_store/scribbles_store_interface';
+import Scribble from '../scribble_interface';
 
 /**
  * ScribbleEvaluationError is thrown if the scribble JS module fails to eval.
@@ -55,7 +48,7 @@ interface Exports {
  */
 function loadModule<T>(
   scribble: Scribble,
-  store: ScribblesStoreInterface,
+  store: ScribblesStore,
 ): T {
   const { latestStableVersion } = scribble;
   if (latestStableVersion === undefined) {

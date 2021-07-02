@@ -4,12 +4,16 @@ package(default_visibility = ["//visibility:public"])
 
 ts_project(
     name = "module",
-    srcs = glob(["*.ts"]),
+    srcs = glob(["*.ts"]) + [
+        "//src/frontend/store/scribbles_store:scribbles_store_interface",
+        "//src/frontend/store/scribble:scribble_interface",
+    ],
     declaration = True,
     tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/filter",
         "//src/frontend/store/eval_store:use_context",
+        "//src/frontend/store/scribbles_store:context",
         "@npm//@babel/standalone",
         "@npm//@types/babel__standalone",
         "@npm//@types/parsimmon",

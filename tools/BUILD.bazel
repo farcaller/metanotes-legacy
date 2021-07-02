@@ -20,3 +20,23 @@ nodejs_binary(
     ],
     entry_point = ":scribblegen.ts",
 )
+
+ts_project(
+    name = "interface_extractor_lib",
+    srcs = ["interface_extractor.ts"],
+    declaration = True,
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@types/node",
+        "@npm//commander",
+        "@npm//ts-morph",
+    ],
+)
+
+nodejs_binary(
+    name = "interface_extractor",
+    data = [
+        ":interface_extractor_lib",
+    ],
+    entry_point = ":interface_extractor.ts",
+)

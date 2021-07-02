@@ -15,7 +15,7 @@
 import { Processor } from 'unified';
 import * as mdast from 'ts-mdast';
 import Parsimmon, { Language, Parser } from 'parsimmon';
-import Scribble from '../../store/scribble/scribble';
+import Scribble from '../../store/scribble/scribble_interface';
 
 interface RebuildParserArgs {
   currentBlockTag?: string;

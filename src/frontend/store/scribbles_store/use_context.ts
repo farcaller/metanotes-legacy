@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createContext } from 'react';
+import { useContext } from 'react';
 
+import ScribblesStoreContext from './context';
 import ScribblesStoreInterface from './scribbles_store_interface';
 
-const ScribblesStoreContext = createContext<ScribblesStoreInterface>(null as unknown as ScribblesStoreInterface);
-
-export default ScribblesStoreContext;
+export default function useStore(): ScribblesStoreInterface {
+  return useContext(ScribblesStoreContext)!;
+}

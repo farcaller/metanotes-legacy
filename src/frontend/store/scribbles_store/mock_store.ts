@@ -17,7 +17,7 @@
 import { autorun } from 'mobx';
 
 import coreScribbles from '../../scribbles';
-import ScribbleStore from './store';
+import ScribbleStore from './scribbles_store';
 import { StorageAPI } from '../client';
 
 function MockStore(): ScribbleStore {

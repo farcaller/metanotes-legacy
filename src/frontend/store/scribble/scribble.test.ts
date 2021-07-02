@@ -17,7 +17,7 @@ import { useEffect, useCallback } from 'react';
 import Scribble from './scribble';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import { CoreScribble } from './core_scribble';
-import ScribblesStore from '../scribbles_store/store';
+import ScribblesStore from '../scribbles_store/scribbles_store';
 import { StorageAPI } from '../client';
 import { TitleKey } from './metadata';
 

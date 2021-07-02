@@ -15,7 +15,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import Scribble from '../scribble/scribble';
-import ScribblesStore from '../scribbles_store/store';
+import ScribblesStore from '../scribbles_store/scribbles_store';
 
 class SpreadStore {
   scribbles: Scribble[] = [];

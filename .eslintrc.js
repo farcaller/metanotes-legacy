@@ -136,6 +136,9 @@ module.exports = {
     'jsdoc/require-returns': ['warn', {
       checkGetters: false,
     }],
+    'jsdoc/check-tag-names': ['warn', {
+      definedTags: ['internal'],
+    }],
     'react-native/no-unused-styles': 2,
     'react-native/split-platform-components': 2,
     'react-native/no-inline-styles': 2,

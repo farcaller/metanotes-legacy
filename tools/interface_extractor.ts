@@ -35,25 +35,30 @@ const project = new Project({
   tsConfigFilePath: options.t,
 });
 
-const sourceFile = project.addSourceFileAtPath(options.s);
-const sourceClass = sourceFile.getClasses()[0];
-const destInterface = sourceClass.extractInterface(sourceClass.getName());
-destInterface.isDefaultExport = true;
-
-const destFile = project.createSourceFile(options.o.replace('d.ts', 'ts'));
-
 const rewriteRules = options.r ? JSON.parse(options.r) : [];
 
+const sourceFile = project.addSourceFileAtPath(options.s);
+const destFile = project.createSourceFile(options.o.replace('d.ts', 'ts'));
+
+// step 1: rewrite any imports at source if needed. This prevents the unneeded dependency on the dep.ts instead of
+//         dep_interface.d.ts. Add the final imports to the dest.
 for (const imp of sourceFile.getImportDeclarations()) {
   const modSpecifier = imp.getModuleSpecifierValue();
   const rewrite = rewriteRules[modSpecifier];
   if (rewrite) {
     imp.setModuleSpecifier(rewrite);
   }
+
   destFile.addImportDeclaration(imp.getStructure());
 }
 
+// step 2: extract the first class of the source and convert it into an interface. Add it to the dest.
+const sourceClass = sourceFile.getClasses()[0];
+const destInterface = sourceClass.extractInterface(sourceClass.getName());
+destInterface.isDefaultExport = true;
 const interfaceDecl = destFile.addInterface(destInterface);
+
+// step 3: remove any methods/props that are marked with @internal.
 for (const method of interfaceDecl.getMethods()) {
   if (method.getJsDocs().find((doc) => doc.getTags().find((tag) => tag.getTagName() === 'internal')) !== undefined) {
     method.remove();
@@ -65,14 +70,16 @@ for (const prop of interfaceDecl.getProperties()) {
   }
 }
 
+// step 4: remove any unused imports left over the step 3 cleanup.
 destFile.fixUnusedIdentifiers();
 
 const outputFiles = destFile.getEmitOutput().getOutputFiles();
-const destText = outputFiles.find((of) => of.getFilePath().endsWith('.d.ts'))?.getText();
+const destText = outputFiles.find((of) => of.getFilePath().endsWith('.d.ts'))?.getText() as string;
 
-if (!destText) {
-  console.error(project.formatDiagnosticsWithColorAndContext(destFile.getPreEmitDiagnostics()));
+const diagnostics = destFile.getPreEmitDiagnostics();
+if (diagnostics.length > 0) {
+  console.error(project.formatDiagnosticsWithColorAndContext(diagnostics));
   exit(1);
 }
 
-fs.writeFileSync(options.o, destText as unknown as string, { encoding: 'utf8' });
+fs.writeFileSync(options.o, destText, { encoding: 'utf8' });

@@ -20,8 +20,8 @@ ts_extracted_interface(
         "./version": "./version_interface",
     },
     deps = [
-        "version.ts",
         ":ids",
+        ":version_interface",
     ],
 )
 

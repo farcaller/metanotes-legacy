@@ -11,7 +11,8 @@ ts_extracted_interface(
         "../scribble/scribble": "../scribble/scribble_interface",
     },
     deps = [
-        "//src/frontend/store/scribble:scribble.ts",
+        "//src/frontend/store/scribble:ids",
+        "//src/frontend/store/scribble:scribble_interface",
     ],
 )
 

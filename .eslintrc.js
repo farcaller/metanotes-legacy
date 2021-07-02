@@ -165,5 +165,11 @@ module.exports = {
         'no-console': ['off'],
       },
     },
+    {
+      files: ['dist/bin/**/*.ts', 'bazel-out/**/*.ts'],
+      rules: {
+        'header/header': ['off'],
+      },
+    },
   ],
 };

@@ -20,6 +20,7 @@
 
 import React, { useCallback } from '@metascribbles/react';
 import { Text, StyleSheet } from '@metascribbles/react-native';
+import { useSpreadStore } from '@metascribbles/store';
 
 const styles = StyleSheet.create({
   link: {
@@ -30,16 +31,16 @@ const styles = StyleSheet.create({
 });
 
 function Strong({ url, title, children }: React.PropsWithChildren<{ url: string, title?: string }>) {
-  // TODO: implement spreadstore
-  // const spreadStore = useSpreadStore();
+  const spreadStore = useSpreadStore();
 
   const openScribble = useCallback(() => {
     if (url.startsWith('scribbleid://')) {
       const id = url.substring(13);
-      // spreadStore.openByID(id);
+      spreadStore.openScribbleByID(id);
+      return;
     }
     console.error('unknown link:', url);
-  }, [url]);
+  }, [url, spreadStore]);
 
   return (
     <Text style={styles.link} onPress={openScribble}>

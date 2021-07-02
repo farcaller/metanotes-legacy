@@ -23,6 +23,7 @@ import EvalStore from '../../eval_store/eval_store';
 import Pipeline, { evalCmdlet } from '../../../filter';
 import ScribblesStore from '../../scribbles_store/scribbles_store_interface';
 import useStore from '../../scribbles_store/use_context';
+import useSpreadStore from '../../spread_store/use_context';
 
 /**
  * A require implementation for scribbles.
@@ -43,6 +44,7 @@ export default function scribbleRequire(mod: string, store: ScribblesStore): unk
     case '@metascribbles/store':
       return {
         useStore,
+        useSpreadStore,
         observer,
         // TODO: stop exposing the context and the store (used in for widget)
         useEvalStore,

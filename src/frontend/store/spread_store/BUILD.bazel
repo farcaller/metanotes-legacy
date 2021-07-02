@@ -1,30 +1,57 @@
 load("//bazel:ts_project.bzl", "ts_project")
-load("//bazel:jest.bzl", "ts_jest_test")
+load("//bazel:interface_extractor.bzl", "ts_extracted_interface")
 
 package(default_visibility = ["//visibility:public"])
+
+ts_extracted_interface(
+    name = "spread_store_interface",
+    src = "spread_store.ts",
+    rewrite = {
+        "../scribbles_store/scribbles_store": "../scribbles_store/scribbles_store_interface",
+        "../scribble/scribble": "../scribble/scribble_interface",
+    },
+    deps = [
+        "//src/frontend/store/scribble:ids",
+        "//src/frontend/store/scribble:scribble_interface",
+        "//src/frontend/store/scribbles_store:scribbles_store_interface",
+    ],
+)
 
 ts_project(
     name = "spread_store",
     srcs = [
-        "context.ts",
-        "provider.tsx",
         "spread_store.ts",
     ],
     deps = [
         "//src/frontend/store/scribble",
+        "//src/frontend/store/scribble:ids",
         "//src/frontend/store/scribbles_store",
         "//src/frontend/store/scribbles_store:context",
-        "@npm//@types/react",
         "@npm//mobx",
         "@npm//mobx-utils",
+    ],
+)
+
+ts_project(
+    name = "context",
+    srcs = [
+        "context.ts",
+        "use_context.ts",
+    ],
+    deps = [
+        ":spread_store_interface",
+        "@npm//@types/react",
         "@npm//react",
     ],
 )
 
 ts_project(
-    name = "use_context",
-    srcs = ["use_context.ts"],
+    name = "provider",
+    srcs = [
+        "provider.tsx",
+    ],
     deps = [
+        ":context",
         ":spread_store",
         "@npm//@types/react",
         "@npm//react",

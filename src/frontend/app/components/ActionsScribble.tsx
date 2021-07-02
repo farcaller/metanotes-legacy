@@ -46,7 +46,7 @@ function ActionsScribble({ spread = false }: ActionsScribbleProps) {
 
   const onCreate = useCallback(() => spreadStore.createScribble(), [spreadStore]);
 
-  const onOpen = useCallback(() => spreadStore.openScribble('$:ui/scribbles/open'), [spreadStore]);
+  const onOpen = useCallback(() => spreadStore.openScribbleByTitle('$:ui/scribbles/open'), [spreadStore]);
 
   return (
     <View style={[styles.container, spread ? styles.spreadContainer : undefined]}>

@@ -18,7 +18,7 @@ import { View, StyleSheet, ScrollView, Text } from 'react-native';
 
 import ScribblesStore from '../../store/scribbles_store/scribbles_store_interface';
 import useStore from '../../store/scribbles_store/use_context';
-import Scribble from '../../store/scribble/scribble';
+import Scribble from '../../store/scribble/scribble_interface';
 import ScribbleEditorController from './ScribbleEditorController';
 import ScribbleHeader from './ScribbleHeader';
 import render from '../../metamarkdown/renderer/renderer';
@@ -77,14 +77,16 @@ function ScribbleBodyEl({ scribble }: { scribble: Scribble }) {
   switch (scribble.latestVersion.getMeta('content-type')) {
     case 'text/markdown':
       return <MarkdownBody scribble={scribble} />;
-    case 'application/vnd.metanotes.component-jsmodule':
+    case 'application/vnd.metanotes.component-jswidget':
       return <JSModuleBody scribble={scribble} />;
     default:
       return (
-        <Text>
-          unknown content type
-          {scribble.latestVersion.getMeta('content-type')}
-        </Text>
+        <>
+          <Text>
+            unknown content type {scribble.latestVersion.getMeta('content-type')}
+          </Text>
+          <Text>{scribble.latestVersion.body}</Text>
+        </>
       );
   }
 }

@@ -11,6 +11,7 @@ ts_project(
         "//src/frontend/store/scribble:scribble_interface",
         "//src/frontend/store/scribbles_store:context",
         "//src/frontend/store/scribbles_store:scribbles_store_interface",
+        "//src/frontend/store/spread_store:context",
         "@npm//@babel/standalone",
         "@npm//@types/babel__standalone",
         "@npm//@types/parsimmon",

@@ -19,7 +19,7 @@ import { observer } from 'mobx-react-lite';
 import colors from './colors';
 import Separator from './Separator';
 import useSpreadStore from '../../store/spread_store/use_context';
-import Scribble from '../../store/scribble/scribble';
+import Scribble from '../../store/scribble/scribble_interface';
 import ActionsScribble from './ActionsScribble';
 import ScribbleContainer from './ScribbleContainer';
 

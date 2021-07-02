@@ -13,14 +13,17 @@
 // limitations under the License.
 
 import EvalStoreContext_ from '../../frontend/store/scribble/eval/context';
-import useStore_ from '../../frontend/store/context/use_context';
+import useStore_ from '../../frontend/store/scribbles_store/use_context';
 import useEvalStore_ from '../../frontend/store/scribble/eval/use_context';
+import useSpreadStore_ from '../../frontend/store/spread_store/use_context';
 
 export { observer } from 'mobx-react-lite';
 
-export { Scribble } from '../../frontend/store/interface/scribble';
+export { Scribble } from '../../frontend/store/scribble/scribble_interface';
 export { EvalStore } from '../../frontend/store/scribble/eval/context';
 
 export const useStore = useStore_;
 export const useEvalStore = useEvalStore_;
+export const useSpreadStore = useSpreadStore_;
 export const EvalStoreContext = EvalStoreContext_;
+

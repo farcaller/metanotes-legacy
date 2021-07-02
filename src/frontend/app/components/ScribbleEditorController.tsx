@@ -19,7 +19,7 @@ import { observer } from 'mobx-react-lite';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { useDebouncedCallback } from 'use-debounce';
 
-import Scribble from '../../store/scribble/scribble';
+import Scribble from '../../store/scribble/scribble_interface';
 import ScribbleHeader from './ScribbleHeader';
 import { DraftKey, TitleKey } from '../../store/scribble/metadata';
 

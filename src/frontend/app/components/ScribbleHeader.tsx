@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
-import Scribble from '../../store/scribble/scribble';
+import Scribble from '../../store/scribble/scribble_interface';
 import useSpreadStore from '../../store/spread_store/use_context';
 
 const styles = StyleSheet.create({

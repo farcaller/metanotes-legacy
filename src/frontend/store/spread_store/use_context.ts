@@ -15,7 +15,7 @@
 import { useContext } from 'react';
 
 import SpreadStoreContext from './context';
-import SpreadStore from './spread_store';
+import SpreadStore from './spread_store_interface';
 
 export default function useSpreadStore(): SpreadStore {
   return useContext(SpreadStoreContext)!;

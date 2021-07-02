@@ -14,7 +14,7 @@
 
 import { createContext } from 'react';
 
-import SpreadStore from './spread_store';
+import SpreadStore from './spread_store_interface';
 
 const SpreadStoreContext = createContext<SpreadStore | undefined>(undefined);
 

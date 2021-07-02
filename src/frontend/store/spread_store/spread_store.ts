@@ -14,6 +14,7 @@
 
 import { makeAutoObservable } from 'mobx';
 
+import { ScribbleID } from '../scribble/ids';
 import Scribble from '../scribble/scribble';
 import ScribblesStore from '../scribbles_store/scribbles_store';
 
@@ -40,11 +41,23 @@ class SpreadStore {
     this.scribbles.push(scribble);
   }
 
-  openScribble(title: string): void {
+  openScribbleByTitle(title: string): void {
     const scribble = this.scribblesStore.scribbleByTitle(title);
     if (!scribble) {
       return;
     }
+    this.openScribble(scribble);
+  }
+
+  openScribbleByID(id: ScribbleID): void {
+    const scribble = this.scribblesStore.scribbleByID(id);
+    if (!scribble) {
+      return;
+    }
+    this.openScribble(scribble);
+  }
+
+  openScribble(scribble: Scribble): void {
     if (this.scribbles.find((s) => s.scribbleID === scribble.scribbleID) !== undefined) {
       return;
     }

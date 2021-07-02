@@ -1,4 +1,4 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 load("//bazel:jest.bzl", "ts_jest_test")
 
 package(default_visibility = ["//visibility:public"])
@@ -15,8 +15,6 @@ ts_project(
             "**/*.test.tsx",
         ],
     ),
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/app/ui",
         "//src/frontend/metamarkdown/renderer",

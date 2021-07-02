@@ -1,6 +1,6 @@
 load("//bazel:jest.bzl", "ts_jest_test")
 load("//bazel:interface_extractor.bzl", "ts_extracted_interface")
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -31,8 +31,6 @@ ts_project(
         "upload_status.ts",
         "//src/frontend/store/scribble:scribble_interface",
     ],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/scribbles",
         "//src/frontend/store/client",
@@ -49,8 +47,6 @@ ts_project(
         "context.ts",
         "use_context.ts",
     ],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         ":scribbles_store_interface",
         "//src/frontend/store/client",
@@ -64,8 +60,6 @@ ts_project(
     srcs = [
         "provider.tsx",
     ],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         ":context",
         ":scribbles_store",
@@ -79,8 +73,6 @@ ts_project(
     name = "mock_store",
     testonly = True,
     srcs = ["mock_store.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         ":scribbles_store",
         "//src/frontend/scribbles",

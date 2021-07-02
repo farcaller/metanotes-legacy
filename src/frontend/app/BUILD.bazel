@@ -1,4 +1,4 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -14,8 +14,6 @@ ts_project(
             "**/*.test.tsx",
         ],
     ),
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "//src/common/buildinfo",
         "//src/frontend/app/components",

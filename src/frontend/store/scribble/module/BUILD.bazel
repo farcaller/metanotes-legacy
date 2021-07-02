@@ -1,18 +1,16 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
 ts_project(
     name = "module",
     srcs = glob(["*.ts"]),
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/frontend/store/scribbles_store:scribbles_store_interface",
-        "//src/frontend/store/scribble:scribble_interface",
         "//src/frontend/filter",
         "//src/frontend/store/eval_store:use_context",
+        "//src/frontend/store/scribble:scribble_interface",
         "//src/frontend/store/scribbles_store:context",
+        "//src/frontend/store/scribbles_store:scribbles_store_interface",
         "@npm//@babel/standalone",
         "@npm//@types/babel__standalone",
         "@npm//@types/parsimmon",

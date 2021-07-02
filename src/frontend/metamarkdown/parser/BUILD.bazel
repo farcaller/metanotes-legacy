@@ -1,13 +1,11 @@
 load("//bazel:jest.bzl", "ts_jest_test")
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
 ts_project(
     name = "parser",
     srcs = ["parser.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "//src/frontend/store/scribble",
         "@npm//@types/parsimmon",
@@ -22,8 +20,6 @@ ts_project(
 ts_project(
     name = "widget",
     srcs = ["widget.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//ts-mdast",
     ],

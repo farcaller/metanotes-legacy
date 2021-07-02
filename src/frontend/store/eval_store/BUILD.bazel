@@ -1,4 +1,4 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -9,8 +9,6 @@ ts_project(
         "eval_store.ts",
         "provider.tsx",
     ],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@types/react",
         "@npm//mobx",
@@ -22,8 +20,6 @@ ts_project(
 ts_project(
     name = "use_context",
     srcs = ["use_context.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         ":eval_store",
         "@npm//@types/react",

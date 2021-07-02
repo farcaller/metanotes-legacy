@@ -1,4 +1,4 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 package(default_visibility = ["//visibility:public"])
@@ -6,8 +6,6 @@ package(default_visibility = ["//visibility:public"])
 ts_project(
     name = "scribblegen_lib",
     srcs = ["scribblegen.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@types/node",
     ],
@@ -24,8 +22,6 @@ nodejs_binary(
 ts_project(
     name = "interface_extractor_lib",
     srcs = ["interface_extractor.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@types/node",
         "@npm//commander",

@@ -1,4 +1,4 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -13,6 +13,4 @@ genrule(
 ts_project(
     name = "buildinfo",
     srcs = ["index.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
 )

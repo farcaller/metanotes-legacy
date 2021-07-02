@@ -1,5 +1,5 @@
 load("//bazel:jest.bzl", "ts_jest_test")
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 load("//bazel:interface_extractor.bzl", "ts_extracted_interface")
 
 package(default_visibility = ["//visibility:public"])
@@ -38,15 +38,13 @@ ts_project(
             "**/*.test.ts",
         ],
     ),
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
-        "//src/frontend/store/scribbles_store:scribbles_store_interface",
         ":core_scribble",
         ":ids",
         "//src/common/api:api_web",
         "//src/frontend/metamarkdown/renderer:components",
         "//src/frontend/store/scribble/module",
+        "//src/frontend/store/scribbles_store:scribbles_store_interface",
         "@npm//@types/js-yaml",
         "@npm//ajv",
         "@npm//google-protobuf",
@@ -60,8 +58,6 @@ ts_project(
 ts_project(
     name = "core_scribble",
     srcs = ["core_scribble.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         ":ids",
         "//src/common/api:api_web",
@@ -71,8 +67,6 @@ ts_project(
 ts_project(
     name = "ids",
     srcs = ["ids.ts"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
 )
 
 ts_jest_test(

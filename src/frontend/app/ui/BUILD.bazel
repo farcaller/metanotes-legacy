@@ -1,4 +1,4 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 load("//bazel:ui.bzl", "tsx_ui_template")
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
@@ -37,8 +37,6 @@ tsx_ui_template(
 ts_project(
     name = "ui",
     srcs = [":index.tsx"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     visibility = ["//src/frontend:__subpackages__"],
     deps = [
         "@npm//@types/react",
@@ -52,8 +50,6 @@ ts_project(
 ts_project(
     name = "ui_kitten_lib",
     srcs = ["ui_kitten.tsx"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@eva-design/eva",
         "@npm//@types/react",
@@ -67,8 +63,6 @@ ts_project(
 ts_project(
     name = "paper_lib",
     srcs = ["paper.tsx"],
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@eva-design/eva",
         "@npm//@types/react",

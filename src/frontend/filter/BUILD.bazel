@@ -1,5 +1,5 @@
 load("//bazel:jest.bzl", "ts_jest_test")
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//bazel:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -9,8 +9,6 @@ ts_project(
         ["*.ts"],
         exclude = ["**/*.test.ts"],
     ),
-    declaration = True,
-    tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@types/parsimmon",
         "@npm//parsimmon",

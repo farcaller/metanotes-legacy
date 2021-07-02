@@ -1,6 +1,6 @@
 """Rules for scribbles."""
 
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "js_library")
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library", "npm_package_bin")
 
 def ts_extracted_interface(name, src, deps = [], rewrite = None):
     """Extracts the interface from the given class file.

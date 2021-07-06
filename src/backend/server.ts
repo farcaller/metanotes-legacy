@@ -18,14 +18,20 @@ import { exit } from 'process';
 
 import * as grpc from '@grpc/grpc-js';
 import * as emptyPb from 'google-protobuf/google/protobuf/empty_pb';
+import { status } from '@grpc/grpc-js';
 
 import * as pb from '../common/api/api_node_pb/src/common/api/api_pb';
 import * as grpcPb from '../common/api/api_node_pb/src/common/api/api_grpc_pb';
 import Store from './store';
+import MakeStatus from './error';
 
 function getScribble(store: Store): grpc.handleUnaryCall<pb.GetScribbleRequest, pb.GetScribbleReply> {
   return async (call, callback) => {
     try {
+      if (call.request.getScribbleId() === '') {
+        callback(MakeStatus(status.FAILED_PRECONDITION, 'no scribble id passed'));
+        return;
+      }
       const s = await store.getScribble(call.request.getScribbleId(), call.request.getVersionIdList());
       const rep = new pb.GetScribbleReply();
       rep.setScribble(s);
@@ -49,6 +55,23 @@ function getAllMetadata(store: Store): grpc.handleUnaryCall<emptyPb.Empty, pb.Ge
   };
 }
 
+function putScribble(store: Store): grpc.handleUnaryCall<pb.PutScribbleRequest, emptyPb.Empty> {
+  return async (call, callback) => {
+    try {
+      const scribble = call.request.getScribble();
+      if (scribble === undefined) {
+        callback(MakeStatus(status.FAILED_PRECONDITION, 'no scribble passed'));
+        return;
+      }
+      await store.putScribble(scribble);
+      const rep = new emptyPb.Empty();
+      callback(null, rep);
+    } catch (e) {
+      callback(e, null);
+    }
+  };
+}
+
 export default function runServer(bind: string, store: Store): void {
   const server = new grpc.Server({
     'grpc.max_send_message_length': -1,
@@ -58,6 +81,7 @@ export default function runServer(bind: string, store: Store): void {
   server.addService(grpcPb.MetanotesService as never, {
     getScribble: getScribble(store),
     getAllMetadata: getAllMetadata(store),
+    putScribble: putScribble(store),
   });
   try {
     server.bindAsync(bind, grpc.ServerCredentials.createInsecure(), (e) => {

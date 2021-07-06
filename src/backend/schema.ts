@@ -19,18 +19,12 @@ import { Database } from 'better-sqlite3';
  */
 export default function syncDBSchema(db: Database): void {
   db.exec(`
-    CREATE TABLE IF NOT EXISTS scribbles (
-        scribble_id TEXT PRIMARY KEY NOT NULL
-    );
-  `);
-
-  db.exec(`
     CREATE TABLE IF NOT EXISTS versions (
-      scribble_id TEXT REFERENCES scribbles (scribble_id) ON DELETE CASCADE NOT NULL,
+      scribble_id TEXT NOT NULL,
       version_id  TEXT UNIQUE NOT NULL,
       body        TEXT NOT NULL,
       meta        TEXT NOT NULL,
-      is_draft    BOOLEAN GENERATED ALWAYS AS (ifnull(json_extract(meta, '$.mn-draft'), false) ) VIRTUAL,
+      is_draft    BOOLEAN GENERATED ALWAYS AS (IIF(JSON_EXTRACT(meta, '$.mn-draft') = 'true', true, false) ) VIRTUAL,
       PRIMARY KEY (scribble_id, version_id)
     );
 

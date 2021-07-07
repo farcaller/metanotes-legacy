@@ -22,8 +22,8 @@ import { useDebouncedCallback } from 'use-debounce';
 import Scribble from '../../store/scribble/scribble_interface';
 import ScribbleHeader from './ScribbleHeader';
 import { DraftKey, TitleKey } from '../../store/scribble/metadata';
+import colors from './colors';
 
-const BackgroundColor = '#fff7df';
 
 const MonacoOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
   automaticLayout: true,
@@ -46,10 +46,10 @@ const MonacoTheme = {
   inherit: true,
   rules: [
     { token: 'keyword.md', foreground: '#000000', fontStyle: 'bold' },
-    { background: BackgroundColor } as unknown as monaco.editor.ITokenThemeRule,
+    { background: colors.background } as unknown as monaco.editor.ITokenThemeRule,
   ],
   colors: {
-    'editor.background': BackgroundColor,
+    'editor.background': colors.background,
   },
 };
 

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 export default {
-  separator: '#9e9e9e',
-  background: '#fff7df',
+  separator: '#586e75',
+  background: '#fdf6e3',
+  backgroundDarker: '#eee8d5',
 };

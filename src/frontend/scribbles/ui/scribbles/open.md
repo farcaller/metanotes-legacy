@@ -1,5 +1,6 @@
 id: 01F7VEAYH34TC9E2ENAYKVW01T
 title: $:ui/scribbles/open
+display-title: Open Scribble
 ---
 
 <TextInput label="search" bind="query" />

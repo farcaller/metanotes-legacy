@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { useEffect, useCallback } from 'react';
+import * as wpb from 'google-protobuf/google/protobuf/wrappers_pb';
 
 import Scribble from './scribble';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
@@ -61,7 +62,7 @@ describe('fromProto', () => {
     spb.setScribbleId('01F35516BMJFC42SGG5VTPSWJV');
     const vpb = new pb.Version();
     vpb.setVersionId('01F357DS7D3VKNQYB3EXJF265Q');
-    vpb.setTextBody('hello');
+    vpb.setTextBody(new wpb.StringValue().setValue('hello'));
     vpb.getMetaMap().set('abc', 'def');
     vpb.getMetaMap().set('mn-title', 'test');
     spb.setVersionList([vpb]);
@@ -130,7 +131,7 @@ describe('computedMetadata', () => {
       meta: { tags: '["hello", "world"]', 'mn-title': 'test' },
     });
 
-    expect(scribble.latestStableVersion?.computedMeta.tags).toEqual(['hello', 'world']);
+    expect(scribble.latestStableVersion?.meta.tags).toEqual(['hello', 'world']);
   });
 
   it('returns empty tags if there is no source meta', () => {
@@ -142,7 +143,7 @@ describe('computedMetadata', () => {
       },
     });
 
-    expect(scribble.latestStableVersion?.computedMeta.tags).toEqual([]);
+    expect(scribble.latestStableVersion?.meta.tags).toEqual([]);
   });
 
   it('returns empty tags if the source meta is malformed', () => {
@@ -152,7 +153,7 @@ describe('computedMetadata', () => {
       meta: { tags: 'broken json', 'mn-title': 'test' },
     });
 
-    expect(scribble.latestStableVersion?.computedMeta.tags).toEqual([]);
+    expect(scribble.latestStableVersion?.meta.tags).toEqual([]);
   });
 });
 
@@ -165,7 +166,7 @@ describe('versions', () => {
 
     const draftID = scribble.createDraftVersion();
 
-    expect(scribble.versionByID(draftID)?.isDraft).toBe(true);
+    expect(scribble.versionByID(draftID)?.meta.isDraft).toBe(true);
     expect(scribble.versionByID(draftID)?.body).toBe('');
   });
 
@@ -178,7 +179,7 @@ describe('versions', () => {
 
     const draftID = scribble.createDraftVersion();
 
-    expect(scribble.versionByID(draftID)?.isDraft).toBe(true);
+    expect(scribble.versionByID(draftID)?.meta.isDraft).toBe(true);
     expect(scribble.versionByID(draftID)?.body).toBe('test body');
   });
 

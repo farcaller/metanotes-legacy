@@ -137,6 +137,10 @@ class ScribblesStore {
     }
   }
 
+  get uploadStatus(): UploadStatus {
+    return this.$uploadStatus;
+  }
+
   /** @internal */
   async uploadScribbles(scribblesToUpload: Scribble[]): Promise<void> {
     console.log(`will upload ${scribblesToUpload.length} scribbles`);

@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import * as wpb from 'google-protobuf/google/protobuf/wrappers_pb';
+
 import { StorageAPI } from '../client';
 import ScribbleStore from './scribbles_store';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import { FetchFailed } from './fetch_status';
 import Scribble from '../scribble/scribble';
+import { when } from 'mobx';
 
 test('it returns core scribbles by id', () => {
   const store = new ScribbleStore(undefined as unknown as StorageAPI);
@@ -56,7 +59,7 @@ describe('fetchScribbles', () => {
         spb.setScribbleId('01F35516BMJFC42SGG5VTPSWJV');
         const vpb = new pb.Version();
         vpb.setVersionId('01F357DS7D3VKNQYB3EXJF265Q');
-        vpb.setTextBody('hello');
+        vpb.setTextBody(new wpb.StringValue().setValue('hello'));
         vpb.getMetaMap().set('abc', 'def');
         vpb.getMetaMap().set('mn-title', 'remote title');
         spb.setVersionList([vpb]);
@@ -108,6 +111,7 @@ describe('uploadScribbles', () => {
       },
     };
     store = new ScribbleStore(api);
+    store.dispose();
   });
 
   test('it only uploads the dirty scribbles', async () => {
@@ -120,7 +124,8 @@ describe('uploadScribbles', () => {
     dirtyScribble.createStableVersion('v2', new Map());
     dirtyScribble.createStableVersion('v3', new Map());
 
-    await store.uploadScribbles();
+    store.saverAction();
+    await when(() => store.uploadStatus.type === 'idle');
 
     expect(api.putScribbles).toHaveLength(1);
     expect(api.putScribbles[0].getVersionList()).toHaveLength(2);
@@ -130,7 +135,8 @@ describe('uploadScribbles', () => {
     const dirtyScribble = store.createDraftScribble();
     dirtyScribble.createStableVersion('v2', new Map());
 
-    await store.uploadScribbles();
+    store.saverAction();
+    await when(() => store.uploadStatus.type === 'idle');
 
     expect(dirtyScribble.dirty).toBeFalsy();
   });
@@ -140,7 +146,8 @@ describe('uploadScribbles', () => {
     const dirtyScribble = store.createDraftScribble();
     dirtyScribble.createStableVersion('v2', new Map());
 
-    await store.uploadScribbles();
+    store.saverAction();
+    await when(() => store.uploadStatus.type === 'failed');
 
     expect(dirtyScribble.dirty).toBeTruthy();
   });

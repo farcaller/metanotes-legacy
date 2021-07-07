@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import open, { Database } from 'better-sqlite3';
-import { Scribble, Version } from '../common/api/api_node_pb/src/common/api/api_pb';
+import * as wpb from 'google-protobuf/google/protobuf/wrappers_pb';
 
+import { Scribble, Version } from '../common/api/api_node_pb/src/common/api/api_pb';
 import Store from './store';
 
 describe('db', () => {
@@ -71,7 +72,7 @@ describe('db', () => {
           ...store.getAllMetadata().map((s) => s.toObject().versionList),
         );
         for (const version of versions) {
-          expect(version.textBody).toEqual('');
+          expect(version.textBody).toBeUndefined();
         }
       });
 
@@ -112,7 +113,7 @@ describe('db', () => {
           scribbleId: '01F35ZYDZF1Y5BE6WHQWP463TX',
           versionList: [{
             versionId: '01F36018DC5WT42F4BDMZK6KHV',
-            textBody: 'body 1.1',
+            textBody: { value: 'body 1.1' },
             metaMap: [['hello', 'new world'], ['mn-title', 'hello']],
           }],
         });
@@ -128,12 +129,12 @@ describe('db', () => {
           scribbleId: '01F35ZYDZF1Y5BE6WHQWP463TX',
           versionList: [{
             versionId: '01F3600GJKK5V3JBJ6E35HMWBG',
-            textBody: 'body 1',
+            textBody: { value: 'body 1' },
             metaMap: [['hello', 'world'], ['mn-title', 'hello']],
           },
           {
             versionId: '01F36018DC5WT42F4BDMZK6KHV',
-            textBody: 'body 1.1',
+            textBody: { value: 'body 1.1' },
             metaMap: [['hello', 'new world'], ['mn-title', 'hello']],
           }],
         });
@@ -146,12 +147,12 @@ describe('db', () => {
         s.setScribbleId('01F9YJ2M61XV9BK45C2RXPN0JW');
         const v1 = new Version();
         v1.setVersionId('01F9YJ8TJ9A8J77WCEZDBBHB2R');
-        v1.setTextBody('hello');
+        v1.setTextBody(new wpb.StringValue().setValue('hello'));
         v1.getMetaMap().set('a', 'b');
         s.getVersionList().push(v1);
         const v2 = new Version();
         v2.setVersionId('01F9YJAV24124PTAK8TY54F6K9');
-        v2.setTextBody('hello2');
+        v2.setTextBody(new wpb.StringValue().setValue('hello2'));
         v2.getMetaMap().set('mn-draft', 'true');
         s.getVersionList().push(v2);
 

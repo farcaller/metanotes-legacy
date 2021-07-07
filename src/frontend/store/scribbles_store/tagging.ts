@@ -34,7 +34,7 @@ export default function sortedScribblesByTag(matchingScribbles: Scribble[], tagS
   const listedScribbles = [];
   if (tagScribble) {
     // TODO: should it match by ID too?
-    for (const title of tagScribble.latestStableVersion?.computedMeta.list ?? []) {
+    for (const title of tagScribble.latestStableVersion?.meta?.list ?? []) {
       const scribbleIdx = matchingScribbles.findIndex((s) => s.title === title);
       if (scribbleIdx !== -1) {
         listedScribbles.push(matchingScribbles.splice(scribbleIdx, 1)[0]);

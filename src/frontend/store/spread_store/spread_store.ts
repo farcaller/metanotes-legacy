@@ -77,7 +77,7 @@ class SpreadStore {
     }
 
     // clean up the scribble if we're closing it
-    if (scribble.latestVersion.isDraft) {
+    if (scribble.latestVersion.meta.isDraft) {
       if (scribble.allVersions.length === 1) {
         this.scribblesStore.removeScribble(scribble);
       } else {

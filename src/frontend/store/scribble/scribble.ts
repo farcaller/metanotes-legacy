@@ -109,12 +109,12 @@ export default class Scribble {
   }
 
   get title(): string {
-    return this.latestStableVersion?.title ?? '';
+    return this.latestStableVersion?.meta.title ?? '';
   }
 
   get titleForDisplay(): string {
     const version = this.latestVersion;
-    return version?.getMeta('display-title') ?? version?.title ?? '';
+    return version?.getMeta('display-title') ?? version?.meta?.title ?? '';
   }
 
   get dirty(): boolean {
@@ -147,7 +147,7 @@ export default class Scribble {
     for (const versionID of allVersions) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const version = this.$versionsByID.get(versionID)!;
-      if (!version.isDraft) {
+      if (!version.meta.isDraft) {
         return version;
       }
     }
@@ -214,7 +214,7 @@ export default class Scribble {
 
   /** @internal */
   toMarkdown(components: Components): JSX.Element {
-    return toMarkdown(components, this.scribbleID, this.latestStableVersion?.title);
+    return toMarkdown(components, this.scribbleID, this.latestStableVersion?.meta?.title);
   }
 
   /**

@@ -169,7 +169,7 @@ class ScribblesStore {
     const matchingScribbles = this.scribbles.filter((scribble) => {
       const { latestStableVersion } = scribble;
       if (!latestStableVersion) { return false; }
-      const { tags } = latestStableVersion.computedMeta;
+      const { tags } = latestStableVersion.meta;
       if (!tags) { return false; }
       if (tags.indexOf(tag) === -1) { return false; }
       return true;

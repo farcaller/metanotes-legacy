@@ -16,6 +16,9 @@ import Ajv, { JSONSchemaType, ValidateFunction } from 'ajv';
 import yaml from 'js-yaml';
 import { makeAutoObservable } from 'mobx';
 
+import { DraftKey, TitleKey, InstantiateKey, ContentTypeKey } from './metadata';
+import { ScribbleID } from './ids';
+
 const ajv = new Ajv();
 const TagSchemaDefinition: JSONSchemaType<string[]> = {
   // "$schema": "https://json-schema.org/draft/2019-09/schema",
@@ -89,5 +92,21 @@ export default class ComputedMetadata {
 
   get list(): string[] {
     return this.fieldWithSchema('list', ListSchema, []);
+  }
+
+  get isDraft(): boolean {
+    return this.version.getMeta(DraftKey) === 'true';
+  }
+
+  get title(): string {
+    return this.version.getMeta(TitleKey) ?? '';
+  }
+
+  get instantiate(): ScribbleID|undefined {
+    return this.version.getMeta(InstantiateKey);
+  }
+
+  get contentType(): string {
+    return this.version.getMeta(ContentTypeKey);
   }
 }

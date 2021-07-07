@@ -14,3 +14,5 @@
 
 export const TitleKey = 'mn-title';
 export const DraftKey = 'mn-draft';
+export const InstantiateKey = 'mn-instantiate';
+export const ContentTypeKey = 'content-type';

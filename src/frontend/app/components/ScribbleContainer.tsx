@@ -100,7 +100,7 @@ function ScribbleContainer({ scribble }: { scribble: Scribble}) {
     scribble.createDraftVersion();
   }, [scribble]);
 
-  if (version.isDraft) {
+  if (version.meta.isDraft) {
     return (
       <View style={styles.container}>
         <ScribbleEditorController scribble={scribble} />

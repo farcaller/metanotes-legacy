@@ -20,7 +20,6 @@ import { CoreScribble } from './core_scribble';
 import { ScribbleID, VersionID } from './ids';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import ComputedMetadata from './computed_metadata';
-import { DraftKey, TitleKey } from './metadata';
 
 /**
  * Generates a costant VersionID for the given ScribbleID.
@@ -77,8 +76,8 @@ export default class Version {
   /** @internal */
   toString(): string {
     let desc = `${this.versionID}`;
-    if (this.title !== '') {
-      desc += ` "${this.title}"`;
+    if (this.meta.title !== '') {
+      desc += ` "${this.meta.title}"`;
     }
     return desc;
   }
@@ -151,16 +150,8 @@ export default class Version {
     return this.$meta.get(key);
   })
 
-  get computedMeta(): ComputedMetadata {
+  get meta(): ComputedMetadata {
     return this.$computedMeta;
-  }
-
-  get isDraft(): boolean {
-    return this.getMeta(DraftKey) === 'true';
-  }
-
-  get title(): string {
-    return this.getMeta(TitleKey) ?? '';
   }
 
   get clonedMetadata(): Map<string, string> {

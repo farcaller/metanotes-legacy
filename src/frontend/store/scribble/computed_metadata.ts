@@ -107,6 +107,6 @@ export default class ComputedMetadata {
   }
 
   get contentType(): string {
-    return this.version.getMeta(ContentTypeKey);
+    return this.version.getMeta(ContentTypeKey) ?? '';
   }
 }

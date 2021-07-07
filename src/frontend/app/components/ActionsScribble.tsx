@@ -46,6 +46,7 @@ function ActionsScribble({ spread = false }: ActionsScribbleProps) {
 
   const onCreate = useCallback(() => spreadStore.createScribble(), [spreadStore]);
 
+  // TODO: should this be wrapped in action in case the open scribble changes?
   const onOpen = useCallback(() => spreadStore.openScribbleByTitle('$:ui/scribbles/open'), [spreadStore]);
 
   return (

@@ -15,11 +15,13 @@
 import { makeAutoObservable } from 'mobx';
 import { ulid, decodeTime } from 'ulid';
 import { computedFn } from 'mobx-utils';
+import * as wpb from 'google-protobuf/google/protobuf/wrappers_pb';
 
 import { CoreScribble } from './core_scribble';
 import { ScribbleID, VersionID } from './ids';
 import * as pb from '../../../common/api/api_web_pb/src/common/api/api_pb';
 import ComputedMetadata from './computed_metadata';
+import Scribble from './scribble_interface';
 
 /**
  * Generates a costant VersionID for the given ScribbleID.
@@ -36,6 +38,9 @@ function coreVersionForScribbleID(scribbleID: ScribbleID): VersionID {
  * Mobx model for the scribble version.
  */
 export default class Version {
+  /** Owning scribble. */
+  readonly scribble: Scribble;
+
   /** Version ID. */
   readonly versionID: VersionID;
 
@@ -51,22 +56,33 @@ export default class Version {
   /** True when the version needs to be uploaded. */
   private $dirty = false;
 
+  /** True if the store is currently fetching this version. */
+  fetching = false;
+
   /**
    * Creates a new scribble version.
    *
+   * @param scribble Owning scribble.
    * @param versionID Version ID, defaults to a new ulid.
    * @param meta Version metadata.
    * @param body Optional version body. If there's no body the version isn't fully fetched.
    */
-  constructor(versionID: VersionID = ulid(), meta: Map<string, string>, body: string | null = null) {
-    makeAutoObservable<Version, 'toString'>(this, {
+  constructor(
+    scribble: Scribble,
+    versionID: VersionID = ulid(),
+    meta: Map<string, string>,
+    body?: string,
+  ) {
+    makeAutoObservable<Version, 'toString'|'scribble'>(this, {
       versionID: false,
       toString: false as never,
+      scribble: false,
     });
     this.versionID = versionID;
     this.$computedMeta = new ComputedMetadata(this);
     this.$meta = meta;
-    this.$body = body;
+    this.$body = body ?? null;
+    this.scribble = scribble;
   }
 
   get creationDate(): Date {
@@ -85,16 +101,17 @@ export default class Version {
   /**
    * Builds a version from a core scribble.
    *
+   * @param scribble Owning scribble.
    * @param coreScribble Source core scribble.
    * @returns New version.
    * @internal
    */
-  static fromCoreScribble(coreScribble: CoreScribble): Version {
+  static fromCoreScribble(scribble: Scribble, coreScribble: CoreScribble): Version {
     const m = new Map();
     for (const k of Object.keys(coreScribble.meta)) {
       m.set(k, coreScribble.meta[k]);
     }
-    const v = new Version(coreVersionForScribbleID(coreScribble.id), m, coreScribble.body);
+    const v = new Version(scribble, coreVersionForScribbleID(coreScribble.id), m, coreScribble.body);
 
     return v;
   }
@@ -102,14 +119,15 @@ export default class Version {
   /**
    * Builds a version from a protobuf message.
    *
+   * @param scribble Owning scribble.
    * @param vpb Source protobuf message.
    * @returns New version.
    * @internal
    */
-  static fromProto(vpb: pb.Version): Version {
+  static fromProto(scribble: Scribble, vpb: pb.Version): Version {
     const m = new Map();
     vpb.getMetaMap().forEach((val: string, key: string) => { m.set(key, val); });
-    const v = new Version(vpb.getVersionId(), m, vpb.getTextBody());
+    const v = new Version(scribble, vpb.getVersionId(), m, vpb.getTextBody()?.getValue());
     return v;
   }
 
@@ -122,7 +140,7 @@ export default class Version {
   toProto(): pb.Version {
     const v = new pb.Version();
     v.setVersionId(this.versionID);
-    v.setTextBody(this.body!); // TODO: fail if null
+    v.setTextBody(new wpb.StringValue().setValue(this.body!)); // TODO: fail if null
     const m = v.getMetaMap();
     this.$meta.forEach((vv, k) => m.set(k, vv));
     return v;
@@ -136,6 +154,9 @@ export default class Version {
   }
 
   get body(): string | null {
+    if (this.$body === null) {
+      this.scribble.fetchVersion(this);
+    }
     return this.$body;
   }
 

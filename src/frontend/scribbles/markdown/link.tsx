@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function Strong({ url, title, children }: React.PropsWithChildren<{ url: string, title?: string }>) {
+function Link({ url, title, children }: React.PropsWithChildren<{ url: string, title?: string }>) {
   const spreadStore = useSpreadStore();
 
   const openScribble = useCallback(() => {
@@ -49,4 +49,4 @@ function Strong({ url, title, children }: React.PropsWithChildren<{ url: string,
   );
 }
 
-export default React.memo(Strong);
+export default React.memo(Link);

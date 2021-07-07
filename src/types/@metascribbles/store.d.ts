@@ -18,6 +18,7 @@ import useEvalStore_ from '../../frontend/store/scribble/eval/use_context';
 import useSpreadStore_ from '../../frontend/store/spread_store/use_context';
 
 export { observer } from 'mobx-react-lite';
+export { computed, comparer } from 'mobx';
 
 export { Scribble } from '../../frontend/store/scribble/scribble_interface';
 export { EvalStore } from '../../frontend/store/scribble/eval/context';

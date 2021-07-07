@@ -20,16 +20,12 @@ interface UploadPending {
   type: 'pending';
 }
 
-interface UploadPendingQueued {
-  type: 'pending-queued';
-}
-
 export interface UploadFailed {
   type: 'failed';
   error: Error;
 }
 
-export type UploadStatus = UploadIdle | UploadPending | UploadPendingQueued | UploadFailed;
+export type UploadStatus = UploadIdle | UploadPending | UploadFailed;
 
 /**
  * Type guard for the UploadStatus.
@@ -49,16 +45,6 @@ export function isIdleUpload(status: UploadStatus): status is UploadIdle {
  */
 export function isPendingUpload(status: UploadStatus): status is UploadPending {
   return status.type === 'pending';
-}
-
-/**
- * Type guard for the UploadStatus.
- *
- * @param status The status.
- * @returns UploadPendingQueued if the status is pending queued.
- */
-export function isPendingQueuedUpload(status: UploadStatus): status is UploadPendingQueued {
-  return status.type === 'pending-queued';
 }
 
 /**

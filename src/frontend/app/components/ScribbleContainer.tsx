@@ -15,6 +15,7 @@
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import { comparer, computed } from 'mobx';
 
 import ScribblesStore from '../../store/scribbles_store/scribbles_store_interface';
 import useStore from '../../store/scribbles_store/use_context';
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function useComponents(store: ScribblesStore): Components {
+function withComponents(store: ScribblesStore): Components {
   return {
     ...components,
     paragraph: store.requireScribble('$:core/markdown/paragraph'),
@@ -48,12 +49,23 @@ function useComponents(store: ScribblesStore): Components {
   };
 }
 
+function MarkdownBodyWrapper({ body, parserScribbles, comps }:
+  { body: string; parserScribbles: Scribble[], comps: Components}) {
+  return render(body, false, parserScribbles, comps);
+}
+
+const MarkdownBodyWrapperEl = observer(MarkdownBodyWrapper);
+
 function MarkdownBodyEl({ scribble }: { scribble: Scribble }) {
   const store = useStore();
   const evalStore = useEvalStore();
 
-  const parserScribbles = store.scribblesByTag('$:core/parser');
-  const comps = useComponents(store);
+  const parserScribbles = computed(() => store.scribblesByTag('$:core/parser'), {
+    equals: comparer.shallow,
+  }).get();
+  const comps = computed(() => withComponents(store), {
+    equals: comparer.shallow,
+  }).get();
 
   useEffect(() => {
     // TODO: I should feel bad about doing this.
@@ -61,7 +73,13 @@ function MarkdownBodyEl({ scribble }: { scribble: Scribble }) {
   }, [evalStore, comps]);
 
   // TODO: load
-  return render(scribble.latestVersion.body! + '\n', false, parserScribbles, comps);
+  return (
+    <MarkdownBodyWrapperEl
+      body={scribble.latestVersion.body! + '\n'}
+      parserScribbles={parserScribbles}
+      comps={comps}
+    />
+  );
 }
 
 const MarkdownBody = observer(MarkdownBodyEl);

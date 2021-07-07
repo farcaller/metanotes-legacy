@@ -16,6 +16,7 @@ import * as ParsimmonModule from 'parsimmon';
 import * as ReactModule from 'react';
 import * as ReactNativeModule from 'react-native';
 import { observer } from 'mobx-react-lite';
+import { computed, comparer } from 'mobx';
 
 import useEvalStore from '../../eval_store/use_context';
 import EvalStoreContext from '../../eval_store/context';
@@ -46,6 +47,8 @@ export default function scribbleRequire(mod: string, store: ScribblesStore): unk
         useStore,
         useSpreadStore,
         observer,
+        computed,
+        comparer,
         // TODO: stop exposing the context and the store (used in for widget)
         useEvalStore,
         EvalStore,

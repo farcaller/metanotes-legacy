@@ -38,8 +38,6 @@ export default class Scribble {
   /** All the versions keyed by {@link VersionID}. */
   private $versionsByID: Map<VersionID, Version> = new Map();
 
-  private $uploading = false;
-
   /**
    * Creates a new scribble.
    *
@@ -68,8 +66,8 @@ export default class Scribble {
    * @internal
    */
   static fromCoreScribble(store: ScribblesStoreInterface, coreScribble: CoreScribble): Scribble {
-    const v = Version.fromCoreScribble(coreScribble);
     const s = new Scribble(store, coreScribble.id);
+    const v = Version.fromCoreScribble(s, coreScribble);
     s.$versionsByID.set(v.versionID, v);
 
     return s;
@@ -86,11 +84,19 @@ export default class Scribble {
   static fromProto(store: ScribblesStoreInterface, spb: pb.Scribble): Scribble {
     const s = new Scribble(store, spb.getScribbleId());
     spb.getVersionList().forEach((vpb) => {
-      const v = Version.fromProto(vpb);
+      const v = Version.fromProto(s, vpb);
       s.$versionsByID.set(v.versionID, v);
     });
 
     return s;
+  }
+
+  /** @internal */
+  updateFromProto(spb: pb.Scribble): void {
+    spb.getVersionList().forEach((vpb) => {
+      const v = Version.fromProto(this, vpb);
+      this.$versionsByID.set(v.versionID, v);
+    });
   }
 
   /**
@@ -128,14 +134,6 @@ export default class Scribble {
     for (const v of this.dirtyVersions) {
       v.dirty = false;
     }
-  }
-
-  get uploading(): boolean {
-    return this.$uploading;
-  }
-
-  set uploading(isUploading: boolean) {
-    this.$uploading = isUploading;
   }
 
   /**
@@ -243,7 +241,7 @@ export default class Scribble {
 
     const oldTitle = this.title;
 
-    const version = new Version(undefined, meta, body);
+    const version = new Version(this, undefined, meta, body);
     version.dirty = true;
     this.$versionsByID.set(version.versionID, version);
 
@@ -268,7 +266,7 @@ export default class Scribble {
       const newMeta = new Map();
       newMeta.set('mn-draft', 'true');
       newMeta.set('content-type', 'text/markdown');
-      const version = new Version(undefined, newMeta, '');
+      const version = new Version(this, undefined, newMeta, '');
       this.$versionsByID.set(version.versionID, version);
 
       return version.versionID;
@@ -280,7 +278,7 @@ export default class Scribble {
     }
     const newMeta = latestStableVersion.clonedMetadata;
     newMeta.set('mn-draft', 'true');
-    const version = new Version(undefined, newMeta, latestStableVersion.body);
+    const version = new Version(this, undefined, newMeta, latestStableVersion.body);
     this.$versionsByID.set(version.versionID, version);
 
     return version.versionID;
@@ -303,5 +301,9 @@ export default class Scribble {
     if (this.title !== oldTitle) {
       this.store.renameScribble(this, oldTitle);
     }
+  }
+
+  fetchVersion(version: Version) {
+    this.store.fetchScribbleVersion(version);
   }
 }

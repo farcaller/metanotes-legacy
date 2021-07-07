@@ -9,10 +9,12 @@ ts_extracted_interface(
     src = "scribbles_store.ts",
     rewrite = {
         "../scribble/scribble": "../scribble/scribble_interface",
+        "../scribble/version": "../scribble/version_interface",
     },
     deps = [
         "//src/frontend/store/scribble:ids",
         "//src/frontend/store/scribble:scribble_interface",
+        "//src/frontend/store/scribble:version_interface",
     ],
 )
 

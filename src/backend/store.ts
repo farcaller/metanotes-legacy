@@ -14,6 +14,7 @@
 
 import { Database } from 'better-sqlite3';
 import { Map as PbMap } from 'google-protobuf';
+import * as wpb from 'google-protobuf/google/protobuf/wrappers_pb';
 
 import * as pb from '../common/api/api_node_pb/src/common/api/api_pb';
 import syncDBSchema from './schema';
@@ -53,7 +54,7 @@ export default class Store {
     for (const row of stmt.iterate(scribbleID, ...versionIDs)) {
       const version = new pb.Version();
       version.setVersionId(row.version_id);
-      version.setTextBody(row.body);
+      version.setTextBody(new wpb.StringValue().setValue(row.body));
       JSONStringToMeta(row.meta, version.getMetaMap());
       scribble.addVersion(version);
     }
@@ -109,7 +110,7 @@ VALUES
 
     for (const version of scribble.getVersionList()) {
       const versionId = version.getVersionId();
-      const body = version.getTextBody();
+      const body = version.getTextBody()?.getValue();
       const meta = metaToJSONString(version.getMetaMap());
 
       stmt.run(scribbleId, versionId, body, meta);

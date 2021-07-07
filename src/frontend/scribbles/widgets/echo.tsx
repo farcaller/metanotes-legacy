@@ -20,13 +20,16 @@
 
 import React from '@metascribbles/react';
 import { Text } from '@metascribbles/react-native';
-import { useEvalStore, observer } from '@metascribbles/store';
+import { useEvalStore, observer, computed, comparer } from '@metascribbles/store';
 
-function EchoWidget({ name }) {
+function EchoWidget({ name }: { name: string }) {
   const evalStore = useEvalStore();
 
-  const val = evalStore.get(name) as any ?? '';
-  const render = typeof val.toMarkdown === 'function' ? val.toMarkdown(evalStore.get('components')) : val;
+  const val = evalStore.get(name) as { toMarkdown?: (c: unknown) => JSX.Element } ?? '';
+  const render = computed(
+    () => (typeof val.toMarkdown === 'function' ? val.toMarkdown(evalStore.get('components')) : val),
+    { equals: comparer.shallow },
+  ).get();
 
   return (
     <Text>{render}</Text>

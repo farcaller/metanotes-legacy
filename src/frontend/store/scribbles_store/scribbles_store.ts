@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import {
+  action, autorun, IReactionDisposer, makeAutoObservable, runInAction, toJS,
+} from 'mobx';
 
 import { StorageAPI } from '../client';
 import { FetchStatus, isPending } from './fetch_status';
 import { CoreScribble } from '../scribble/core_scribble';
 import { ScribbleID } from '../scribble/ids';
 import Scribble from '../scribble/scribble';
+import Version from '../scribble/version';
 import sortedScribblesByTag from './tagging';
-import { isPendingQueuedUpload, isPendingUpload, UploadStatus } from './upload_status';
+import { isFailedUpload, isPendingUpload, UploadStatus } from './upload_status';
 
 /**
  * The mobx store for scribbles, both core and remote.
@@ -41,6 +44,8 @@ class ScribblesStore {
   /** Remote push status. */
   private $uploadStatus: UploadStatus = { type: 'idle' };
 
+  private $saverDisposer: IReactionDisposer;
+
   /**
    * Creates a new store.
    *
@@ -54,6 +59,11 @@ class ScribblesStore {
       createDraftScribble: action,
     });
     this.api = api;
+    this.$saverDisposer = autorun(() => this.saverAction());
+  }
+
+  dispose() {
+    this.$saverDisposer();
   }
 
   /**
@@ -100,42 +110,70 @@ class ScribblesStore {
     return Promise.resolve();
   }
 
-  async uploadScribbles(): Promise<void> {
+  /** @internal */
+  saverAction() {
     if (isPendingUpload(this.$uploadStatus)) {
-      this.$uploadStatus = { type: 'pending-queued' };
+      console.log('retrigger saver - waiting');
       return;
     }
-    if (isPendingQueuedUpload(this.$uploadStatus)) {
+    if (isFailedUpload(this.$uploadStatus)) {
+      console.log('retrigger saver - waiting for error clear');
+      setTimeout(() => runInAction(() => { this.clearUploadError(); }), 5000);
       return;
     }
 
-    this.$uploadStatus = { type: 'pending' };
     const scribblesToUpload = [...this.$scribblesByID.values()].filter((scribble) => scribble.dirty);
+    if (scribblesToUpload.length === 0) {
+      return;
+    }
+
+    this.uploadScribbles(scribblesToUpload);
+  }
+
+  /** @internal */
+  clearUploadError() {
+    if (isFailedUpload(this.$uploadStatus)) {
+      this.$uploadStatus = { type: 'idle' };
+    }
+  }
+
+  /** @internal */
+  async uploadScribbles(scribblesToUpload: Scribble[]): Promise<void> {
+    console.log(`will upload ${scribblesToUpload.length} scribbles`);
+    this.$uploadStatus = { type: 'pending' };
 
     const uploadPromises = scribblesToUpload.map((scribble) => {
       const scribblePb = scribble.toProto(true /* dirtyOnly */);
-      scribble.uploading = true;
       return this.api.putScribble(scribblePb).then(() => {
-        scribble.uploading = false;
         scribble.dirty = false;
       }).catch((e) => {
-        scribble.uploading = false;
         throw e;
       });
     });
 
     try {
       await Promise.all(uploadPromises);
-
-      if (isPendingQueuedUpload(this.$uploadStatus)) {
-        // TODO: is this dangerously stacked?
-        await this.uploadScribbles();
-      } else {
-        this.$uploadStatus = { type: 'idle' };
-      }
+      runInAction(() => { this.$uploadStatus = { type: 'idle' }; });
     } catch (e) {
-      this.$uploadStatus = { type: 'failed', error: e };
+      runInAction(() => { this.$uploadStatus = { type: 'failed', error: e }; });
     }
+    console.log('final upload status', toJS(this.$uploadStatus));
+  }
+
+  async fetchScribbleVersion(version: Version) {
+    console.log('asked to fetch', version);
+    if (version.fetching) {
+      return;
+    }
+    version.fetching = true;
+    try {
+      const scribble = version.scribble as Scribble;
+      const scribblePb = await this.api.getScribble(scribble.scribbleID, [version.versionID]);
+      scribble.updateFromProto(scribblePb);
+    } catch (e) {
+      console.error('failed to fetch the scribble', e);
+    }
+    version.fetching = false;
   }
 
   /**

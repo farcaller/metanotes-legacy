@@ -18,6 +18,7 @@ import CommonUIProvider from '../ui';
 import Store from './Store';
 import ScribblesContainer from './ScribblesContainer';
 import SpreadStoreProvider from '../../store/spread_store/provider';
+import Toolbar from './Toolbar';
 
 function Root() {
   return (
@@ -25,6 +26,7 @@ function Root() {
       <CommonUIProvider>
         <SpreadStoreProvider>
           <ScribblesContainer />
+          <Toolbar />
         </SpreadStoreProvider>
       </CommonUIProvider>
     </Store>

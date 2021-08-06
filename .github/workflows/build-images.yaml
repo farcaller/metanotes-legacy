@@ -20,7 +20,7 @@ jobs:
         key: ${{ runner.os }}-bazel-${{ github.sha }}
         restore-keys: ${{ runner.os }}-bazel-
     - name: Setup Node
-      uses: actions/setup-node@v2.1.5
+      uses: actions/setup-node@v2.4.0
       with:
         node-version: '14'
     - name: Setup Dependencies

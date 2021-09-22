@@ -104,7 +104,7 @@ class ScribblesStore {
       });
     } catch (e) {
       runInAction(() => {
-        this.$fetchStatus = { type: 'failed', error: e };
+        this.$fetchStatus = { type: 'failed', error: e as Error };
       });
     }
     return Promise.resolve();

@@ -6,5 +6,5 @@ display-title: Open Scribble
 <TextInput label="search" bind="query" />
 <Query query="Get-Scribbles | With-Title '${query}'" bind="results" />
 <For values="results" bind="result">
-* <$result>
+<$result/>
 </For>

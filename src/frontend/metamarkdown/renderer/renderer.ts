@@ -13,10 +13,13 @@
 // limitations under the License.
 
 import unified from 'unified';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { mdxJsxFromMarkdown } from 'mdast-util-mdx-jsx';
+import { mdx } from 'micromark-extension-mdx';
 
 import Scribble from '../../store/scribble/scribble_interface';
 import makeParser from '../parser/parser';
-import makeCompiler from './compiler';
+import makeCompiler, { astToReact } from './compiler';
 import Components from './components';
 
 export default function render(
@@ -25,10 +28,10 @@ export default function render(
   parserScribbles: Scribble[],
   components: Components,
 ): JSX.Element {
-  const parser = unified()
-    .use(makeParser, { parserScribbles })
-    .use(makeCompiler, { components, inline });
+  const ast = fromMarkdown(contents, {
+    extensions: [mdx()],
+    mdastExtensions: [mdxJsxFromMarkdown],
+  });
 
-  const f = parser.processSync({ contents });
-  return (f.result as any).jsx as JSX.Element;
+  return astToReact(ast, { components, inline });
 }

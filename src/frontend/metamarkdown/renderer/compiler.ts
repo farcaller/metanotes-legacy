@@ -14,7 +14,9 @@
 
 import React from 'react';
 
+// TODO: drop ts-mdast
 import * as ast from 'ts-mdast';
+import { Root } from 'mdast';
 import unified from 'unified';
 
 import Components from './components';
@@ -181,6 +183,28 @@ function emitWidget(node: Widget, options: CompileOptions): JSX.Element {
   return React.createElement(components.widget(node.name), node.props, ...emitChildren(node.children, options));
 }
 
+function emitWidgetMDX(node: ast.Node, options: CompileOptions): JSX.Element {
+  const { components } = options;
+  const name = node.name as string;
+
+  if (name.startsWith('$')) {
+    return emitWidget({
+      type: 'widget',
+      name: 'echo',
+      props: { name: name.slice(1) },
+      children: [],
+    }, options);
+  }
+
+  const props = {} as React.Attributes;
+  (node.attributes as unknown[]).forEach((a: any) => { (props as any)[a.name] = a.value });
+  return React.createElement(
+    components.widget(name.toLowerCase()),
+    props,
+    ...emitChildren(node.children as ast.Content[], options),
+  );
+}
+
 function emitNode(
   node: ast.Node,
   options: CompileOptions,
@@ -232,6 +256,9 @@ function emitNode(
   if (isWidget(node)) {
     return emitWidget(node, options);
   }
+  if (node.type === 'mdxJsxFlowElement') {
+    return emitWidgetMDX(node, options);
+  }
 
   // PhrasingContent = StaticPhrasingContent | Link | LinkReference
 
@@ -265,6 +292,10 @@ function emitNode(
   // eslint-disable-next-line no-console
   console.error(`unhandled node type ${node.type}`, node);
   return React.createElement(React.Fragment);
+}
+
+export function astToReact(root: Root, options: CompileOptions): JSX.Element {
+  return emitNode(root, options) as unknown as JSX.Element;
 }
 
 export default function makeCompiler(this: unified.Processor, options: CompileOptions): void {

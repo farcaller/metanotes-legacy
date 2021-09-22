@@ -21,6 +21,6 @@ module.exports = {
     '\\.jsx?$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    `/node_modules/(?!react-native-paper|@react-native/|react-native)`,
+    `/node_modules/(google-protobuf)`,
   ],
 };

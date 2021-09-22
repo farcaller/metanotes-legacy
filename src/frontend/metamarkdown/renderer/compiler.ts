@@ -17,10 +17,8 @@ import React from 'react';
 // TODO: drop ts-mdast
 import * as ast from 'ts-mdast';
 import { Root } from 'mdast';
-import unified from 'unified';
 
 import Components from './components';
-import Widget, { isWidget } from '../parser/widget';
 
 export interface CompileOptions {
   components: Components;
@@ -178,26 +176,16 @@ function emitLink(node: ast.Link, options: CompileOptions): JSX.Element {
   }, ...emitChildren(node.children, options));
 }
 
-function emitWidget(node: Widget, options: CompileOptions): JSX.Element {
-  const { components } = options;
-  return React.createElement(components.widget(node.name), node.props, ...emitChildren(node.children, options));
-}
-
 function emitWidgetMDX(node: ast.Node, options: CompileOptions): JSX.Element {
   const { components } = options;
   const name = node.name as string;
 
   if (name.startsWith('$')) {
-    return emitWidget({
-      type: 'widget',
-      name: 'echo',
-      props: { name: name.slice(1) },
-      children: [],
-    }, options);
+    return React.createElement(components.widget('echo'), { name: name.slice(1) } as unknown as React.Attributes);
   }
 
   const props = {} as React.Attributes;
-  (node.attributes as unknown[]).forEach((a: any) => { (props as any)[a.name] = a.value });
+  (node.attributes as unknown[]).forEach((a: any) => { (props as any)[a.name] = a.value; });
   return React.createElement(
     components.widget(name.toLowerCase()),
     props,
@@ -253,9 +241,6 @@ function emitNode(
   if (ast.isCode(node)) {
     return emitCode(node, options);
   }
-  if (isWidget(node)) {
-    return emitWidget(node, options);
-  }
   if (node.type === 'mdxJsxFlowElement') {
     return emitWidgetMDX(node, options);
   }
@@ -294,13 +279,6 @@ function emitNode(
   return React.createElement(React.Fragment);
 }
 
-export function astToReact(root: Root, options: CompileOptions): JSX.Element {
+export default function astToReact(root: Root, options: CompileOptions): JSX.Element {
   return emitNode(root, options) as unknown as JSX.Element;
-}
-
-export default function makeCompiler(this: unified.Processor, options: CompileOptions): void {
-  this.Compiler = (root: ast.Node) => ({
-    ast: root,
-    jsx: emitNode(root, options),
-  }) as unknown as string;
 }

@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import unified from 'unified';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { mdxJsxFromMarkdown } from 'mdast-util-mdx-jsx';
 import { mdx } from 'micromark-extension-mdx';
 
 import Scribble from '../../store/scribble/scribble_interface';
-import makeParser from '../parser/parser';
-import makeCompiler, { astToReact } from './compiler';
+import astToReact from './compiler';
 import Components from './components';
 
 export default function render(

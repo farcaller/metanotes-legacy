@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React, { useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { View, StyleSheet, Text } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import colors from './colors';
 import useSpreadStore from '../../store/spread_store/use_context';
@@ -51,18 +51,22 @@ function ActionsScribble({ spread = false }: ActionsScribbleProps) {
 
   return (
     <View style={[styles.container, spread ? styles.spreadContainer : undefined]}>
-      <IconButton
+      <Button
+        color={colors.button}
         icon="shape-square-plus"
         accessibilityLabel="create new scribble"
-        size={40}
         onPress={onCreate}
-      />
+      >
+        create scribble
+      </Button>
       <View style={styles.spacer} />
-      <IconButton
+      <Button
+        color={colors.button}
         icon="feature-search-outline"
-        size={40}
         onPress={onOpen}
-      />
+      >
+        open scribble
+      </Button>
     </View>
   );
 }

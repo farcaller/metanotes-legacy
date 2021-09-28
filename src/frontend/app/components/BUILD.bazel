@@ -28,9 +28,11 @@ ts_project(
         "@npm//@monaco-editor/react",
         "@npm//@types/react",
         "@npm//@types/react-native",
+        "@npm//@types/react-router-dom",
         "@npm//mobx-react-lite",
         "@npm//react",
         "@npm//react-native",
+        "@npm//react-router-dom",
         "@npm//use-debounce",
     ],
 )

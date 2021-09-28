@@ -13,33 +13,26 @@
 // limitations under the License.
 
 import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { observer } from 'mobx-react-lite';
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from 'react-router-dom';
+import colors from './colors';
+import ActionsScribble from './ActionsScribble';
 
-import CommonUIProvider from '../ui';
-import Store from './Store';
-import StatusBar from './StatusBar';
-import EmptyEditor from './EmptyEditor';
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: colors.background,
+  },
+});
 
-function Root() {
+function EmptyEditor() {
   return (
-    <Router>
-      <Store>
-        <CommonUIProvider>
-          <Switch>
-            <Route path="/">
-              <EmptyEditor />
-              <StatusBar />
-            </Route>
-          </Switch>
-        </CommonUIProvider>
-      </Store>
-    </Router>
+    <View style={styles.container}>
+      <ActionsScribble spread />
+    </View>
   );
 }
 
-export default Root;
+export default observer(EmptyEditor);

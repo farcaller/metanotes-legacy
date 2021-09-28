@@ -16,4 +16,5 @@ export default {
   separator: '#586e75',
   background: '#fdf6e3',
   backgroundDarker: '#eee8d5',
+  button: '#586e75',
 };

@@ -18,35 +18,37 @@ import { StyleSheet, View, Text } from 'react-native';
 import useStore from '../../store/scribbles_store/use_context';
 import colors from './colors';
 
+const toolbarTextColor = 'rgb(88, 110, 117)';
+
 const styles = StyleSheet.create({
   toolbar: {
     position: 'absolute',
     backgroundColor: colors.backgroundDarker,
-    right: 40,
-    top: 0,
-    borderColor: colors.separator,
-    borderWidth: 1,
-    borderTopWidth: 0,
+    left: 0,
+    bottom: 0,
+    width: '100%',
+    height: 22,
     padding: 2,
+    textAlignVertical: 'center',
+  },
+  text: {
+    fontSize: 14,
+    color: toolbarTextColor,
   },
 });
 
-function Toolbar(): JSX.Element {
+function StatusBar(): JSX.Element {
   const store = useStore();
-
-  const dirtyVersions = store.scribbles.reduce(
-    (acc, scribble) => acc + scribble.allVersions.filter((v) => v.dirty).length,
-    0,
-  );
 
   return (
     <View style={styles.toolbar}>
       <Text>
-        <Text>dirty versions: </Text>
-        <Text>{dirtyVersions}</Text>
+        <Text style={styles.text}>
+          {`total scribbles: ${store.scribbles.length}`}
+        </Text>
       </Text>
     </View>
   );
 }
 
-export default observer(Toolbar);
+export default observer(StatusBar);

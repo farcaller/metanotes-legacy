@@ -51,7 +51,7 @@ jobs:
         yarn run bazel run //:publish_envoy &&
         yarn run bazel run //:publish_backend
     - name: Set Up GCloud Cloud SDK Environment
-      uses: google-github-actions/setup-gcloud@v0.2.1
+      uses: google-github-actions/setup-gcloud@v0.3
       with:
         service_account_key: ${{ secrets.VERSIONSTORE_SA }}
         export_default_credentials: true
